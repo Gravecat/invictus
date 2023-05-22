@@ -94,6 +94,48 @@ uint16_t Terminal::get_key()
             getmaxyx(stdscr, size_y_, size_x_);
             return Key::RESIZE;
         }
+        case KEY_DC: return Key::DELETE;
+        case KEY_DOWN: return Key::ARROW_DOWN;
+        case KEY_END: return Key::END;
+        case KEY_ENTER: return Key::ENTER;
+        case KEY_F0 + 1: return Key::F1;
+        case KEY_F0 + 2: return Key::F2;
+        case KEY_F0 + 3: return Key::F3;
+        case KEY_F0 + 4: return Key::F4;
+        case KEY_F0 + 5: return Key::F5;
+        case KEY_F0 + 6: return Key::F6;
+        case KEY_F0 + 7: return Key::F7;
+        case KEY_F0 + 8: return Key::F8;
+        case KEY_F0 + 9: return Key::F9;
+        case KEY_F0 + 10: return Key::F10;
+        case KEY_F0 + 11: return Key::F11;
+        case KEY_F0 + 12: return Key::F12;
+        case KEY_HOME: return Key::HOME;
+        case KEY_IC: return Key::INSERT;
+        case KEY_LEFT: return Key::ARROW_LEFT;
+        case KEY_NPAGE: return Key::PAGE_DOWN;
+        case KEY_PPAGE: return Key::PAGE_UP;
+        case KEY_RIGHT: return Key::ARROW_RIGHT;
+        case KEY_UP: return Key::ARROW_UP;
+
+#ifdef INVICTUS_TARGET_WINDOWS
+        case KEY_A1: return Key::KP7;
+        case KEY_A2: return Key::KP8;
+        case KEY_A3: return Key::KP9;
+        case KEY_B1: return Key::KP4;
+        case KEY_B2: return Key::KP5;
+        case KEY_B3: return Key::KP6;
+        case KEY_C1: return Key::KP1;
+        case KEY_C2: return Key::KP2;
+        case KEY_C3: return Key::KP3;
+        case PAD0: return Key::KP0;
+        case PADENTER: return Key::ENTER;
+        case PADSTOP: return '.';
+        case PADMINUS: return '-';
+        case PADPLUS: return '+';
+        case PADSLASH: return '/';
+        case PADSTAR: return '*';
+#endif
     }
     if (key > 255 || key < 0) return Key::UNKNOWN;  // Any other unrecognized keys are just returned as unknown.
     return key;
