@@ -14,4 +14,8 @@ Morior Invictus is an open-source, traditional roguelike game currently in the v
 
 Morior Invictus is copyright © 2023 [Raine "Gravecat" Simmons](https://github.com/Gravecat). The game is free and open-source, licensed under the [GNU Affero General Public License v3 or any later version](https://www.gnu.org/licenses/agpl-3.0.en.html).
 
+[Application icon](https://github.com/malcolmriley/unused-textures) copyright © 2020 Malcolm Riley, modified by Raine Simmons.
+
+[PDCurses](https://github.com/wmcbrine/PDCurses) maintained by William McBrine.
+
 GCC runtime library DLLs and any embedded GCC library code is copyright © Free Software Foundation, Inc., distrubuted under the GCC Runtime Library Exception, version 3.1 of the GNU General Public License version 3.

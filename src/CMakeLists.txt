@@ -33,10 +33,10 @@ if(TARGET_WINDOWS)
   set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -static-libgcc -static-libstdc++ -Wl,-Bstatic,--whole-archive -lwinpthread -Wl,-Bdynamic,--no-whole-archive")
 
   # Application icon
-#  enable_language(RC)
-#  set(CMAKE_RC_COMPILER_INIT windres)
-#  set(CMAKE_RC_COMPILE_OBJECT "<CMAKE_RC_COMPILER> <FLAGS> -O coff <DEFINES> -i <SOURCE> -o <OBJECT>")
-#  set(INVICTUS_RC 3rdparty/app-icon/app-icon.rc)
+  enable_language(RC)
+  set(CMAKE_RC_COMPILER_INIT windres)
+  set(CMAKE_RC_COMPILE_OBJECT "<CMAKE_RC_COMPILER> <FLAGS> -O coff <DEFINES> -i <SOURCE> -o <OBJECT>")
+  set(INVICTUS_RC 3rdparty/app-icon/app-icon.rc)
   
 elseif(TARGET_LINUX)
 
