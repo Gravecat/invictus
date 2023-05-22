@@ -36,3 +36,4 @@ endif()
 option(WARNINGS_AS_ERRORS "WARNINGS_AS_ERRORS" OFF)
 
 add_subdirectory(src)
+add_subdirectory(binfiles)

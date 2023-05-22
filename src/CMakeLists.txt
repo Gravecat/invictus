@@ -27,6 +27,7 @@ if(TARGET_WINDOWS)
   # Platform-specific libraries.
   add_definitions(-DWIN32_LEAN_AND_MEAN)
   set(OS_LIBRARIES mingw32)
+  set(CURSES_LIBRARIES pdcurses)
   
   # Platform-specific linker flags. In this case, we're static-linking the MinGW C/C++ libraries and libwinpthread.
   set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -static-libgcc -static-libstdc++ -Wl,-Bstatic,--whole-archive -lwinpthread -Wl,-Bdynamic,--no-whole-archive")
@@ -38,6 +39,9 @@ if(TARGET_WINDOWS)
 #  set(INVICTUS_RC 3rdparty/app-icon/app-icon.rc)
   
 elseif(TARGET_LINUX)
+
+  # Platform-specific libraries.
+  set(CURSES_LIBRARIES ncurses)
 
   # Platform-specific linker flags.
   set(CMAKE_EXE_LINKER_FLAGS_RELEASE "${CMAKE_EXE_LINKER_FLAGS_RELEASE} -Wl,-rpath='${ORIGIN}'")
@@ -67,13 +71,11 @@ add_executable(invictus ${INVICTUS_CPPS} ${INVICTUS_RC})
 if(TARGET_WINDOWS)
   target_include_directories(invictus PRIVATE
     "${CMAKE_SOURCE_DIR}/src"
-    "${CMAKE_SOURCE_DIR}/src/3rdparty"
-    "${CMAKE_SOURCE_DIR}/src/3rdparty/windows"
+    "${CMAKE_SOURCE_DIR}/src/3rdparty/pdcurses"
   )
 else()
   target_include_directories(invictus PRIVATE
     "${CMAKE_SOURCE_DIR}/src"
-    "${CMAKE_SOURCE_DIR}/src/3rdparty"
   )
 endif()
 
@@ -92,6 +94,7 @@ endif(TARGET_WINDOWS)
 target_link_libraries(invictus
   ${OS_LIBRARIES}
   ${CMAKE_THREAD_LIBS_INIT}
+  ${CURSES_LIBRARIES}
 )
 
 
