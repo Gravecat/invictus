@@ -4,3 +4,4 @@
 .github/*
 docs/*
 LICENSE
+src/3rdparty/pdcurses/*

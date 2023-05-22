@@ -18,3 +18,6 @@
 *.md text
 *.rc text
 *.txt text
+
+# Third-party code that should be ignored by GitHub Linguist.
+src/3rdparty/pdcurses/*
