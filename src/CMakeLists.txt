@@ -60,6 +60,8 @@ endif(TARGET_WINDOWS)
 # Source files.
 set(INVICTUS_CPPS
   core/core.cpp
+  core/strx.cpp
+  core/terminal.cpp
 )
 
 
