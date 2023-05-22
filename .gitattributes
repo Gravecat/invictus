@@ -1,0 +1,20 @@
+# Basic .gitattributes file for Morior Invictus, primarily to keep things correctly identified by GitHub Linguist.
+# Copyright (c) 2023 Raine "Gravecat" Simmons. Licensed under the GNU Affero General Public License v3 or any later version.
+
+# Ensure that text files that any contributor introduces to the repository have
+# their line endings normalized.
+* text=auto
+
+# Just making absolutely sure Linguist knows what's what.
+*.a binary
+*.c text linguist-language=C
+*.cc text linguist-language=C++
+*.cmake text linguist-language=CMake
+*.cpp text linguist-language=C++
+*.dll binary
+*.h text linguist-language=C
+*.hpp text linguist-language=C++
+*.ico binary
+*.md text
+*.rc text
+*.txt text
