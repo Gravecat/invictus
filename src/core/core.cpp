@@ -1,6 +1,8 @@
 // core/core.hpp -- Main program entry, initialization and cleanup routines, along with links to the key subsystems of the game.
 // Copyright © 2023 Raine "Gravecat" Simmons. Licensed under the GNU Affero General Public License v3 or any later version.
 
+#include <cstdlib>
+
 #include "core/core.hpp"
 #include "core/terminal.hpp"
 

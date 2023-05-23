@@ -3,7 +3,10 @@
 
 #ifndef CORE_CORE_HPP_
 #define CORE_CORE_HPP_
-#include "core/invictus.hpp"
+
+#include <memory>
+#include <string>
+#include <vector>
 
 class Terminal; // defined in core/terminal.hpp
 

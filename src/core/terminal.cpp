@@ -2,7 +2,6 @@
 // Copyright © 2023 Raine "Gravecat" Simmons. Licensed under the GNU Affero General Public License v3 or any later version.
 
 #include <curses.h>
-
 #include <fstream>
 
 #include "core/strx.hpp"

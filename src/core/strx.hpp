@@ -3,7 +3,8 @@
 
 #ifndef CORE_STRX_HPP_
 #define CORE_STRX_HPP_
-#include "core/invictus.hpp"
+
+#include <string>
 
 
 class StrX

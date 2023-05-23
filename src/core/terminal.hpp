@@ -3,7 +3,10 @@
 
 #ifndef CORE_TERMINAL_HPP_
 #define CORE_TERMINAL_HPP_
-#include "core/invictus.hpp"
+
+#include <cstdint>
+#include <map>
+#include <string>
 
 
 enum class Colour : uint8_t { BLACK, BLACK_BOLD, RED, RED_BOLD, GREEN, GREEN_BOLD, YELLOW, YELLOW_BOLD, BLUE, BLUE_BOLD, MAGENTA, MAGENTA_BOLD, CYAN, CYAN_BOLD,
