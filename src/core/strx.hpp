@@ -1,10 +1,9 @@
 // core/strx.hpp -- Various utility functions that deal with string manipulation/conversion.
-// Copyright (c) 2023 Raine "Gravecat" Simmons. Licensed under the GNU Affero General Public License v3 or any later version.
+// Copyright © 2023 Raine "Gravecat" Simmons. Licensed under the GNU Affero General Public License v3 or any later version.
 
 #ifndef CORE_STRX_HPP_
 #define CORE_STRX_HPP_
-
-#include <string>
+#include "core/invictus.hpp"
 
 
 class StrX

@@ -1,5 +1,5 @@
 // core/strx.cpp -- Various utility functions that deal with string manipulation/conversion.
-// Copyright (c) 2023 Raine "Gravecat" Simmons. Licensed under the GNU Affero General Public License v3 or any later version.
+// Copyright © 2023 Raine "Gravecat" Simmons. Licensed under the GNU Affero General Public License v3 or any later version.
 
 #include "core/strx.hpp"
 

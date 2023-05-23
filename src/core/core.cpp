@@ -1,7 +1,6 @@
 #include "core/terminal.hpp"
 
 #include <curses.h>
-#include <vector>
 
 int main(int, char**)
 {
