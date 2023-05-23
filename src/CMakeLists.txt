@@ -41,7 +41,7 @@ if(TARGET_WINDOWS)
 elseif(TARGET_LINUX)
 
   # Platform-specific libraries.
-  set(CURSES_LIBRARIES ncurses)
+  set(CURSES_LIBRARIES ncurses panel)
 
   # Platform-specific linker flags.
   set(CMAKE_EXE_LINKER_FLAGS_RELEASE "${CMAKE_EXE_LINKER_FLAGS_RELEASE} -Wl,-rpath='${ORIGIN}'")
