@@ -4,7 +4,7 @@
 #include <cstdlib>
 
 #include "core/core.hpp"
-#include "core/terminal.hpp"
+#include "terminal/terminal.hpp"
 
 
 std::shared_ptr<Core> invictus_core = nullptr;  // The main Core object.

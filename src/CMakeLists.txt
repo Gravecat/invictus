@@ -62,7 +62,9 @@ set(INVICTUS_CPPS
   core/core.cpp
   core/filex.cpp
   core/strx.cpp
-  core/terminal.cpp
+  terminal/escape-code-index.cpp
+  terminal/terminal.cpp
+  terminal/window.cpp
 )
 
 
