@@ -1,6 +1,9 @@
 // core/strx.cpp -- Various utility functions that deal with string manipulation/conversion.
 // Copyright © 2023 Raine "Gravecat" Simmons. Licensed under the GNU Affero General Public License v3 or any later version.
 
+#include <algorithm>
+#include <sstream>
+
 #include "core/strx.hpp"
 
 
@@ -18,4 +21,21 @@ bool StrX::find_and_replace(std::string &input, const std::string &to_find, cons
         pos += replace_len;
     }
     return found;
+}
+
+// Converts an integer into a hex string.
+std::string StrX::itoh(uint32_t num, uint8_t min_len)
+{
+    std::stringstream ss;
+    ss << std::hex << num;
+    std::string hex = ss.str();
+    while (min_len && hex.size() < min_len) hex = "0" + hex;
+    return hex;
+}
+
+// Converts a string to upper-case.
+std::string StrX::str_toupper(std::string str)
+{
+    std::transform(str.begin(), str.end(), str.begin(), ::toupper);
+    return str;
 }

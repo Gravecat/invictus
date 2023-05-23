@@ -5,6 +5,7 @@
 #include <panel.h>
 
 #include "core/core.hpp"
+#include "core/guru.hpp"
 #include "terminal/terminal.hpp"
 #include "terminal/window.hpp"
 
@@ -45,13 +46,14 @@ void Window::move(int new_x, int new_y)
     x_ = new_x;
     y_ = new_y;
     move_panel(panel_ptr_, y_, x_);
+    if (border_ptr_) border_ptr_->move(new_x - 1, new_y - 1);
 }
 
 // Re-renders the border around this Window, if any.
-void Window::redraw_border(Colour col)
+void Window::redraw_border(Colour col, uint32_t flags)
 {
-    if (border_ptr_) core()->terminal()->box(border_ptr_, col);
-    //guru::nonfatal("Attempt to re-render window border, with no border defined.", GURU_WARN);
+    if (border_ptr_) core()->terminal()->box(border_ptr_, col, flags);
+    else core()->guru()->nonfatal("Attempt to re-render window border, with no border defined.", Guru::GURU_WARN);
 }
 
 // Set this Window's panel as visible or invisible.

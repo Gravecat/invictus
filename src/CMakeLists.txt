@@ -61,6 +61,7 @@ endif(TARGET_WINDOWS)
 set(INVICTUS_CPPS
   core/core.cpp
   core/filex.cpp
+  core/guru.cpp
   core/strx.cpp
   terminal/escape-code-index.cpp
   terminal/terminal.cpp

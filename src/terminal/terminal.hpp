@@ -21,20 +21,21 @@ public:
                 Terminal();     // Sets up the Curses terminal.
                 ~Terminal();    // Cleans up Curses, resets the terminal to its former state.
     void        box(std::shared_ptr<Window> window = nullptr, Colour colour = Colour::NONE, unsigned int flags = 0);    // Draws a box around the edge of a Window.
+    void        cleanup();      // Attempts to gracefully clean up Curses.
     void        clear_line(std::shared_ptr<Window> window = nullptr);   // Clears the current line.
     void        cls(std::shared_ptr<Window> window = nullptr);          // Clears the screen.
     void        flip();     // Updates the screen.
     void        flush();    // Flushes the input buffer.
     uint16_t    get_cols(std::shared_ptr<Window> window = nullptr); // Gets the number of columns available on the screen right now.
-    uint16_t    get_cursor_x(std::shared_ptr<Window> window);       // Gets the current cursor X coordinate.
-    uint16_t    get_cursor_y(std::shared_ptr<Window> window);       // Gets the current cursor Y coordinate.
-    int         get_key(std::shared_ptr<Window> window);            // Gets keyboard input from the user.
-    uint16_t    get_midcol(std::shared_ptr<Window> window);         // Gets the central column of the specified Window.
-    uint16_t    get_midrow(std::shared_ptr<Window> window);         // Gets the central row of the specified Window.
-    uint16_t    get_rows(std::shared_ptr<Window> window = nullptr); // Gets the number of rows available on the screen right now.
-    std::string get_string(std::shared_ptr<Window> window);         // C++ std::string wrapper around the PDCurses wgetnstr() function.
-    void        move_cursor(int x, int y, std::shared_ptr<Window> window);  // Moves the cursor to the given coordinates.
-                                                                            // -1 for either coordinate retains its current position on that axis.
+    uint16_t    get_cursor_x(std::shared_ptr<Window> window = nullptr); // Gets the current cursor X coordinate.
+    uint16_t    get_cursor_y(std::shared_ptr<Window> window = nullptr); // Gets the current cursor Y coordinate.
+    int         get_key(std::shared_ptr<Window> window = nullptr);      // Gets keyboard input from the user.
+    uint16_t    get_midcol(std::shared_ptr<Window> window = nullptr);   // Gets the central column of the specified Window.
+    uint16_t    get_midrow(std::shared_ptr<Window> window = nullptr);   // Gets the central row of the specified Window.
+    uint16_t    get_rows(std::shared_ptr<Window> window = nullptr);     // Gets the number of rows available on the screen right now.
+    std::string get_string(std::shared_ptr<Window> window = nullptr);   // C++ std::string wrapper around the PDCurses wgetnstr() function.
+    void        move_cursor(int x, int y, std::shared_ptr<Window> window = nullptr);    // Moves the cursor to the given coordinates.
+                                                                                        // -1 for either coordinate retains its current position on that axis.
                 // Prints a string at a given coordinate on the screen.
     void        print(std::string str, int x, int y, Colour col = Colour::WHITE, unsigned int flags = 0, std::shared_ptr<Window> window = nullptr);
                 // Prints a character at a given coordinate on the screen.
@@ -44,8 +45,9 @@ public:
 private:
     unsigned long   colour_pair_code(Colour col);   // Returns a colour pair code.
 
-    int     cursor_state_;              // The current state of the cursor.
-    bool    has_colour_;                // The terminal has colour support.
+    int     cursor_state_;  // The current state of the cursor.
+    bool    has_colour_;    // The terminal has colour support.
+    bool    initialized_;   // Has Curses been initialized?
 
     static std::map<std::string, int>   escape_code_index_; // Hard-coded list of escape codes used by various terminals.
 };

@@ -8,17 +8,22 @@
 #include <string>
 #include <vector>
 
+class Guru;     // defined in core/guru.hpp
 class Terminal; // defined in core/terminal.hpp
 
 
 class Core
 {
 public:
-            Core(std::vector<std::string> parameters);  // Sets up the core game classes and data, and the terminal subsystem.
+            Core();     // Constructor, sets some default values.
             ~Core();    // Destructor, cleans up memory used and subsystems.
-    const std::shared_ptr<Terminal> terminal() const;   // Returns a pointer to the terminal emulator object.
+    void    cleanup();          // Attempts to gracefully clean up memory and subsystems.
+    const std::shared_ptr<Guru>         guru() const;   // Returns a pointer to the Guru Meditation object.
+    void    init(std::vector<std::string> parameters);  // Sets up the core game classes and data, and the terminal subsystem.
+    const std::shared_ptr<Terminal>     terminal() const;   // Returns a pointer to the terminal emulator object.
 
 private:
+    std::shared_ptr<Guru>       guru_meditation_;   // The Guru Meditation error-handling system.
     std::shared_ptr<Terminal>   terminal_;  // The Terminal class, which handles low-level interaction with terminal emulation libraries.
 };
 

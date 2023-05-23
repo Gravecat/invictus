@@ -4,13 +4,17 @@
 #ifndef CORE_STRX_HPP_
 #define CORE_STRX_HPP_
 
+#include <cstdint>
 #include <string>
 
 
 class StrX
 {
 public:
-    static bool find_and_replace(std::string &input, const std::string &to_find, const std::string &to_replace);    // Find and replace one string with another.
+                        // Find and replace one string with another.
+    static bool         find_and_replace(std::string &input, const std::string &to_find, const std::string &to_replace);
+    static std::string  itoh(uint32_t num, uint8_t min_len);    // Converts an integer into a hex string.
+    static std::string  str_toupper(std::string str);           // Converts a string to upper-case.
 };
 
 #endif  // CORE_STRX_HPP_

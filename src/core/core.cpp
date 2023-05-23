@@ -2,8 +2,12 @@
 // Copyright © 2023 Raine "Gravecat" Simmons. Licensed under the GNU Affero General Public License v3 or any later version.
 
 #include <cstdlib>
+#include <exception>
+#include <iostream>
 
 #include "core/core.hpp"
+#include "core/filex.hpp"
+#include "core/guru.hpp"
 #include "terminal/terminal.hpp"
 
 
@@ -18,32 +22,63 @@ int main(int argc, char** argv)
     // Create the main Core object.
     try
     {
-        invictus_core = std::make_shared<Core>(parameters);
+        invictus_core = std::make_shared<Core>();
+        invictus_core->init(parameters);
     }
     catch (std::exception &e)
     {
-        //core()->guru()->halt(e.what());
+        std::cout << e.what() << std::endl;
         return EXIT_FAILURE;
     }
     if (!invictus_core) return EXIT_FAILURE;    // This should never happen, but just in case...
 
     // Game manager setup and main game loop goes here.
+    core()->guru()->halt("Test error!", 61050, 10248);
 
     invictus_core = nullptr;    // Trigger destructor cleanup code.
     return EXIT_SUCCESS;
 }
 
-// Sets up the core game classes and data, and the terminal subsystem.
-Core::Core(std::vector<std::string>) : terminal_(nullptr)
-{
-    // Sets up the terminal emulator (Curses)
-    terminal_ = std::make_shared<Terminal>();
-}
+// Constructor, sets some default values.
+Core::Core() : guru_meditation_(nullptr), terminal_(nullptr) { }
 
 // Destructor, cleans up memory used and subsystems.
 Core::~Core()
 {
-    terminal_ = nullptr;    // Run destructor cleanup code on Terminal.
+    cleanup();
+}
+
+// Attempts to gracefully clean up memory and subsystems.
+void Core::cleanup()
+{
+    if (guru_meditation_)
+    {
+        guru_meditation_->log("Attempting to shut down cleanly.");
+        guru_meditation_->log("Cleaning up Curses terminal.");
+    }
+    terminal_ = nullptr;        // Run destructor cleanup code on Terminal.
+    guru_meditation_ = nullptr; // The Guru system goes last.
+}
+
+// Returns a pointer to the Guru Meditation object.
+const std::shared_ptr<Guru> Core::guru() const
+{
+    if (!guru_meditation_) exit(EXIT_FAILURE);
+    return guru_meditation_;
+}
+
+// Sets up the core game classes and data, and the terminal subsystem.
+void Core::init(std::vector<std::string>)
+{
+    // Create user data folders.
+    FileX::make_dir("userdata");
+    FileX::make_dir("userdata/save");
+
+    // Sets up the error-handling subsystem.
+    guru_meditation_ = std::make_shared<Guru>("userdata/log.txt");
+
+    // Sets up the terminal emulator (Curses)
+    terminal_ = std::make_shared<Terminal>();
 }
 
 // Returns a pointer  to the terminal emulator object.

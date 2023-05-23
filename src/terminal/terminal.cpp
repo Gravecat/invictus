@@ -6,13 +6,14 @@
 #include <panel.h>
 
 #include "core/core.hpp"
+#include "core/guru.hpp"
 #include "core/strx.hpp"
 #include "terminal/terminal.hpp"
 #include "terminal/window.hpp"
 
 
 // Sets up the Curses terminal.
-Terminal::Terminal() : cursor_state_(1), has_colour_(false)
+Terminal::Terminal() : cursor_state_(1), has_colour_(false), initialized_(false)
 {
     initscr();  // Curses initialization
     cbreak();   // Disable line-buffering.
@@ -39,17 +40,15 @@ Terminal::Terminal() : cursor_state_(1), has_colour_(false)
 
 #ifdef INVICTUS_TARGET_WINDOWS
     PDC_set_title("Morior Invictus prototype");
+    PDC_set_blink(true);
 #endif
+    core()->guru()->console_ready(true);
+    core()->guru()->log("Curses terminal is up and running.");
+    initialized_ = true;
 }
 
 // Cleans up Curses, resets the terminal to its former state.
-Terminal::~Terminal()
-{
-    echo();                 // Re-enables keyboard input being printed to the screen (normal console behaviour)
-    keypad(stdscr, false);  // Disables the numeric keypad (it's off by default)
-    curs_set(1);            // Re-enables the blinking cursor
-    endwin();
-}
+Terminal::~Terminal() { cleanup(); }
 
 // Draws a box around the edge of a Window.
 void Terminal::box(std::shared_ptr<Window> window, Colour colour, unsigned int flags)
@@ -67,6 +66,18 @@ void Terminal::box(std::shared_ptr<Window> window, Colour colour, unsigned int f
     if (colour != Colour::NONE) wattron(win, colour_pair_code(colour) | colour_flags);
     ::box(win, 0, 0);
     if (colour != Colour::NONE) wattroff(win, colour_pair_code(colour) | colour_flags);
+}
+
+// Attempts to gracefully clean up Curses.
+void Terminal::cleanup()
+{
+    if (!initialized_) return;
+    echo();                 // Re-enables keyboard input being printed to the screen (normal console behaviour)
+    keypad(stdscr, false);  // Disables the numeric keypad (it's off by default)
+    curs_set(1);            // Re-enables the blinking cursor
+    nocbreak();             // Re-enables line buffering.
+    endwin();               // Cleans up Curses internally.
+    initialized_ = false;
 }
 
 // Clears the current line.
@@ -235,10 +246,18 @@ int Terminal::get_key(std::shared_ptr<Window> window)
 }
 
 // Gets the central column of the specified Window.
-uint16_t Terminal::get_midcol(std::shared_ptr<Window> window) { return get_cols(window) / 2; }
+uint16_t Terminal::get_midcol(std::shared_ptr<Window> window)
+{
+    if (window) return window->get_width() / 2;
+    else return getmaxx(stdscr) / 2;
+}
 
 // Gets the central row of the specified Window.
-uint16_t Terminal::get_midrow(std::shared_ptr<Window> window) { return get_rows(window) / 2; }
+uint16_t Terminal::get_midrow(std::shared_ptr<Window> window)
+{
+    if (window) return window->get_height() / 2;
+    else return getmaxy(stdscr) / 2;
+}
 
 // Gets the number of rows available on the screen right now.
 uint16_t Terminal::get_rows(std::shared_ptr<Window> window)
