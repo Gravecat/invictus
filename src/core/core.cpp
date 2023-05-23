@@ -1,17 +1,21 @@
 #include "core/terminal.hpp"
 
 #include <curses.h>
+#include <vector>
 
 int main(int, char**)
 {
     auto term = new Terminal();
-    uint16_t key = 0;
+    int key = 0;
+    std::vector<int> keys;
     do
     {
         term->cls();
-        term->print("{G}" + std::to_string(key), 1, 1);
+        for (unsigned int i = 0; i < keys.size(); i++)
+            term->print("{G}" + std::to_string(keys.at(i)), 0, i);
         term->flip();
         key = term->get_key();
+        if (key == ' ') keys.clear(); else keys.push_back(key);
     } while (key != Key::CLOSE);
     delete term;
     return 0;
