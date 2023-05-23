@@ -4,6 +4,7 @@
 #ifndef CORE_TERMINAL_HPP_
 #define CORE_TERMINAL_HPP_
 
+#include <climits>
 #include <cstdint>
 #include <map>
 #include <string>
