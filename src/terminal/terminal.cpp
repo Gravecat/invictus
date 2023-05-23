@@ -2,7 +2,6 @@
 // Copyright © 2019, 2023 Raine "Gravecat" Simmons. Licensed under the GNU Affero General Public License v3 or any later version.
 
 #include <curses.h>
-#include <fstream>
 #include <panel.h>
 
 #include "core/core.hpp"
@@ -179,9 +178,7 @@ int Terminal::get_key(std::shared_ptr<Window> window)
         auto result = escape_code_index_.find(key_str);
         if (result == escape_code_index_.end())
         {
-            std::ofstream file("out.txt", std::ios::app);
-            file << key_str << std::endl;
-            file.close();
+            core()->guru()->log("Unknown escape keycode: " + key_str);
             return Key::UNKNOWN;
         }
         else return result->second;
