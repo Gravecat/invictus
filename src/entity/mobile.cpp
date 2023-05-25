@@ -62,8 +62,8 @@ bool Mobile::move_or_attack(std::shared_ptr<Mobile> self, int dx, int dy)
 
         if (openable)
         {
-            //if (is_player) core()->message("You open the " + the_tile->name() + ".");
-            //else if (area->is_in_fov(xdx, ydy)) core()->message("{b}You see a " + the_tile->name() + " open.");
+            if (is_player) core()->message("You open the " + the_tile->name() + ".");
+            else if (area->is_in_fov(xdx, ydy)) core()->message("{b}You see a " + the_tile->name() + " open.");
             auto tile = area->tile(xdx, ydy);
             tile->set_ascii('\'');
             tile->clear_tag(TileTag::Openable);

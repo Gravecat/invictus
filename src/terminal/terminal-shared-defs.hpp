@@ -22,6 +22,7 @@ namespace invictus
 constexpr int   PRINT_FLAG_BOLD =       1;  // The specified string should be printed in bold.
 constexpr int   PRINT_FLAG_REVERSE =    2;  // The string's colours should be inverted.
 constexpr int   PRINT_FLAG_BLINK =      4;  // Blinking colour effect.
+constexpr int   PRINT_FLAG_DARK =       8;  // The opposite of PRINT_FLAG_BOLD, ensures all text will be non-bold.
 
 enum class Colour : uint8_t { NONE, BLACK, BLACK_BOLD, RED, RED_BOLD, GREEN, GREEN_BOLD, YELLOW, YELLOW_BOLD, BLUE, BLUE_BOLD, MAGENTA, MAGENTA_BOLD, CYAN,
     CYAN_BOLD, WHITE, WHITE_BOLD };

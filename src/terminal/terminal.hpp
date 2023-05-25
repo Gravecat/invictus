@@ -51,7 +51,7 @@ public:
     void        set_cursor(bool enabled);   // Turns the cursor on or off.
 
 private:
-    unsigned long   colour_pair_code(Colour col);   // Returns a colour pair code.
+    unsigned long   colour_pair_code(Colour col, uint32_t flags = 0);   // Returns a colour pair code.
 
     bool        cleanup_done_;      // Has the cleanup routine already run once?
     int         cursor_state_;      // The current state of the cursor.

@@ -26,6 +26,7 @@ public:
     const std::shared_ptr<GameManager>  game() const;       // Returns a pointer to the GameManager object.
     const std::shared_ptr<Guru>         guru() const;       // Returns a pointer to the Guru Meditation object.
     void    init(std::vector<std::string> parameters);      // Sets up the core game classes and data, and the terminal subsystem.
+    void    message(std::string msg, unsigned char awaken_chance = 0);  // A shortcut to core()->game()->ui()->msglog()->message().
     const std::shared_ptr<Prefs>        prefs() const;      // Returns a pointer to the user preferences object.
     const std::shared_ptr<Terminal>     terminal() const;   // Returns a pointer to the terminal emulator object.
 

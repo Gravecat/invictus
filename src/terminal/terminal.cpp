@@ -110,26 +110,29 @@ void Terminal::cls(std::shared_ptr<Window> window)
 }
 
 // Returns a colour pair code.
-unsigned long Terminal::colour_pair_code(Colour col)
+unsigned long Terminal::colour_pair_code(Colour col, uint32_t flags)
 {
+    chtype bold = A_BOLD;
+    if ((flags & PRINT_FLAG_DARK) == PRINT_FLAG_DARK) bold = 0;
+
     switch(col)
     {
         case Colour::BLACK: return COLOR_PAIR(1);
-        case Colour::BLACK_BOLD: return COLOR_PAIR(1) | A_BOLD;
+        case Colour::BLACK_BOLD: return COLOR_PAIR(1) | bold;
         case Colour::RED: return COLOR_PAIR(2);
-        case Colour::RED_BOLD: return COLOR_PAIR(2) | A_BOLD;
+        case Colour::RED_BOLD: return COLOR_PAIR(2) | bold;
         case Colour::GREEN: return COLOR_PAIR(3);
-        case Colour::GREEN_BOLD: return COLOR_PAIR(3) | A_BOLD;
+        case Colour::GREEN_BOLD: return COLOR_PAIR(3) | bold;
         case Colour::YELLOW: return COLOR_PAIR(4);
-        case Colour::YELLOW_BOLD: return COLOR_PAIR(4) | A_BOLD;
+        case Colour::YELLOW_BOLD: return COLOR_PAIR(4) | bold;
         case Colour::BLUE: return COLOR_PAIR(5);
-        case Colour::BLUE_BOLD: return COLOR_PAIR(5) | A_BOLD;
+        case Colour::BLUE_BOLD: return COLOR_PAIR(5) | bold;
         case Colour::MAGENTA: return COLOR_PAIR(6);
-        case Colour::MAGENTA_BOLD: return COLOR_PAIR(6) | A_BOLD;
+        case Colour::MAGENTA_BOLD: return COLOR_PAIR(6) | bold;
         case Colour::CYAN: return COLOR_PAIR(7);
-        case Colour::CYAN_BOLD: return COLOR_PAIR(7) | A_BOLD;
+        case Colour::CYAN_BOLD: return COLOR_PAIR(7) | bold;
         case Colour::WHITE: return COLOR_PAIR(8);
-        case Colour::WHITE_BOLD: return COLOR_PAIR(8) | A_BOLD;
+        case Colour::WHITE_BOLD: return COLOR_PAIR(8) | bold;
         default: return 0;
     }
 }
@@ -322,7 +325,7 @@ void Terminal::print(std::string str, int x, int y, Colour col, unsigned int fla
     if (str.find("{") == std::string::npos)
     {
         // If no colour codes are present, this is fairly easy.
-        const unsigned long ansi_code = colour_pair_code(col);
+        const unsigned long ansi_code = colour_pair_code(col, flags);
         if (has_colour_) wattron(win, ansi_code | colour_flags);
         mvwprintw(win, y, x, "%s", str.c_str());
         if (has_colour_) wattroff(win, ansi_code | colour_flags);
@@ -373,7 +376,7 @@ void Terminal::print(std::string str, int x, int y, Colour col, unsigned int fla
             }
         }
 
-        const unsigned long ansi_code = colour_pair_code(col);
+        const unsigned long ansi_code = colour_pair_code(col, flags);
         if (has_colour_) wattron(win, ansi_code | colour_flags);
         const unsigned int first_word_size = first_word.size();
         StrX::find_and_replace(first_word, "%", "%%");
@@ -442,7 +445,7 @@ void Terminal::put(uint32_t letter, int x, int y, Colour col, unsigned int flags
         colour_flags |= A_REVERSE | A_BLINK | A_BOLD;
     }
     
-    const unsigned long ansi_code = colour_pair_code(col);
+    const unsigned long ansi_code = colour_pair_code(col, flags);
     if (has_colour_) wattron(win, ansi_code | colour_flags);
     mvwaddch(win, y, x, letter);
     if (has_colour_) wattroff(win, ansi_code | colour_flags);

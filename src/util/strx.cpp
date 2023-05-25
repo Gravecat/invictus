@@ -89,4 +89,125 @@ std::vector<std::string> StrX::string_explode(std::string str, const std::string
     return results;
 }
 
+// Similar to string_explode(), but takes colour and high/low-ASCII tags into account, and wraps to a given line length.
+std::vector<std::string> StrX::string_explode_colour(const std::string &str, unsigned int line_len)
+{
+    std::vector<std::string> output;
+
+    // Check to see if the line of text has the no-split tag (ASCII character 0) at the start.
+    if (str.size() >= 5)
+    {
+        if (!str.substr(0, 5).compare("^000^"))
+        {
+            output.push_back(str);
+            return output;
+        }
+    }
+
+    // Check to see if the line is too short to be worth splitting.
+    if (strlen_colour(str) <= line_len)
+    {
+        output.push_back(str);
+        return output;
+    }
+
+    // Split the string into individual words.
+    std::vector<std::string> words = string_explode(str, " ");
+
+    // Keep track of the current line and our position on it.
+    unsigned int current_line = 0, line_pos = 0;
+    std::string last_colour = "{w}";    // The last colour tag we encountered; white by default.
+
+    // Start with an empty string.
+    output.push_back("");
+
+    for (auto word : words)
+    {
+        unsigned int length = word.length();    // Find the length of the word.
+
+        // If the word includes high/low-ASCII tags, adjust the length.
+        size_t htag_pos = word.find("^");
+        bool high_ascii = false;
+        if (htag_pos != std::string::npos)
+        {
+            if (word.size() > htag_pos + 4)
+            {
+                if (word.at(htag_pos + 4) == '^')
+                {
+                    length -= word_count(word, "^") * 2;
+                    high_ascii = true;
+                }
+            }
+        }
+
+        const int colour_count = word_count(word, "{"); // Count the colour tags.
+        if (colour_count) length -= (colour_count * 3); // Reduce the length if one or more colour tags are found.
+        if (length + line_pos >= line_len)  // Is the word too long for the current line?
+        {
+            line_pos = 0; current_line++;   // CR;LF
+            output.push_back(last_colour);  // Start the line with the last colour tag we saw.
+        }
+        if (colour_count)
+        {
+            // Duplicate the last-used colour tag.
+            const std::string::size_type flo = word.find_last_of("{");
+            if (flo != std::string::npos && word.size() >= flo + 3) last_colour = word.substr(flo, 3);
+        }
+        if (line_pos != 0)  // NOT the start of a new line?
+        {
+            length++;
+            output.at(current_line) += " ";
+        }
+
+        // Is the word STILL too long to fit over a single line?
+        // Don't attempt this on high/low-ASCII 'words'.
+        while (length > line_len && !high_ascii)
+        {
+            const std::string trunc = word.substr(0, line_len);
+            word = word.substr(line_len);
+            output.at(current_line) += trunc;
+            line_pos = 0;
+            current_line++;
+            output.push_back(last_colour);  // Start the line with the last colour tag we saw.
+            length = word.size();   // Adjusts the length for what we have left over.
+        }
+        output.at(current_line) += word;
+        line_pos += length;
+    }
+
+    return output;
+}
+
+// Returns the length of a string, taking colour and high/low-ASCII tags into account.
+unsigned int StrX::strlen_colour(const std::string &str)
+{
+    unsigned int len = str.size();
+    if (!len) return 0;
+
+    // Count any colour tags.
+    const int openers = std::count(str.begin(), str.end(), '{');
+    const int symbols = std::count(str.begin(), str.end(), '^');
+    if (openers) len -= openers * 3;
+    if (symbols) len -= (symbols / 2) * 4;
+
+    return len;
+}
+
+// Returns a count of the amount of times a string is found in a parent string.
+unsigned int StrX::word_count(const std::string &str, const std::string &word)
+{
+    unsigned int count = 0;
+    std::string::size_type word_pos = 0;
+    while(word_pos != std::string::npos)
+    {
+        word_pos = str.find(word, word_pos);
+        if (word_pos != std::string::npos)
+        {
+            count++;
+            word_pos += word.length();
+        }
+    }
+    return count;
+}
+
 }   // namespace invictus
