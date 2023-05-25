@@ -54,7 +54,8 @@ std::map<std::string, int> Terminal::escape_code_index_ = {
     { "\x1b[8~", Key::END }, { "\x1b[a", Key::ARROW_UP }, { "\x1b[b", Key::ARROW_DOWN }, { "\x1b[c", Key::ARROW_RIGHT }, { "\x1b[d", Key::ARROW_LEFT },
     { "\x1bOM", Key::ENTER }, { "\x1bOa", Key::ARROW_UP }, { "\x1bOb", Key::ARROW_DOWN }, { "\x1bOc", Key::ARROW_RIGHT }, { "\x1bOd", Key::ARROW_LEFT },
     { "\x1bOl", '+' }, { "\x1bOn", '.' }, { "\x1bOp", Key::KP0 }, { "\x1bOq", Key::KP1 }, { "\x1bOr", Key::KP2 }, { "\x1bOs", Key::KP3 }, { "\x1bOt", Key::KP4 },
-    { "\x1bOu", Key::KP5 }, { "\x1bOv", Key::KP6 }, { "\x1bOw", Key::KP7 }, { "\x1bOx", Key::KP8 },  { "\x1bOy", Key::KP9 },
+    { "\x1bOu", Key::KP5 }, { "\x1bOv", Key::KP6 }, { "\x1bOw", Key::KP7 }, { "\x1bOx", Key::KP8 },  { "\x1bOy", Key::KP9 }, { "\x1b[1~", Key::HOME },
+    { "\x1b[4~", Key::END }
 };
 
 }   // namespace invictus
