@@ -24,6 +24,8 @@ void DevKeycodeCheck::begin()
         key = terminal->get_key();
         if (key <= 0 || key == Key::RESIZE) continue;
         key_str.clear();
+        key_raw = terminal->last_key_raw();
+        escape_sequence = terminal->last_escape_sequence();
         
         switch (key)
         {
@@ -33,7 +35,10 @@ void DevKeycodeCheck::begin()
             case 10: key_str = "{G}Enter{g}, {G}LF{g}, or {G}Ctrl-J"; break;
             case 13: key_str = "{G}CR {g}or {G}Ctrl-M"; break;
             case 27: key_str = "{G}Escape"; break;
-            case Key::CLOSE: key_str = "{G}Ctrl-C"; break;
+            case Key::CLOSE:
+                if (key_raw == 3) key_str = "{G}Ctrl-C";
+                else if (key_raw == 0x130) key_str = "{G}Alt-F4";
+                break;
             case Key::ARROW_UP: key_str = "{G}Arrow Up"; break;
             case Key::ARROW_DOWN: key_str = "{G}Arrow Down"; break;
             case Key::ARROW_LEFT: key_str = "{G}Arrow Left"; break;
@@ -59,8 +64,6 @@ void DevKeycodeCheck::begin()
             if (!key_str.size()) key_str = "{M}Unrecognized Key {m}(this should be impossible! please report!)";
         }
 
-        key_raw = terminal->last_key_raw();
-        escape_sequence = terminal->last_escape_sequence();
         message = "{W}Detected ";
         if (escape_sequence.size() > 1) message += "escape sequence: {C}" + escape_sequence.substr(1) + " {W}(" + key_str + "{W})";
         else message += "key: {C}" + std::to_string(key_raw) + " {W}({C}0x" + StrX::str_toupper(StrX::itoh(key_raw, 1)) + "{W}) (" + key_str + "{W})";

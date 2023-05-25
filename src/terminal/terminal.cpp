@@ -232,6 +232,7 @@ int Terminal::get_key(std::shared_ptr<Window> window)
         case KEY_UP: return Key::ARROW_UP;
         case 0xA3: return Key::POUND;
         case 0xAC: return Key::NOT;
+        case 0x130: return Key::CLOSE;
 #ifdef INVICTUS_TARGET_WINDOWS
         case KEY_A1: return Key::KP7;
         case KEY_A2: return Key::KP8;
