@@ -4,3 +4,4 @@ The entity source folder contains the Entity class, which defines all objects th
 Entity has multiple derived classes, which represent more specialized forms.
 
 * **entity.cpp** - The main Entity class, from which everything else in this source folder derives.
+* **mobile.cpp** - The Mobile class represents Entities which can move around and fight; generally represents living creatures, but can also represent automata.

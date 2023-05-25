@@ -66,6 +66,7 @@ set(INVICTUS_CPPS
   dev/acs-display.cpp
   dev/keycode-check.cpp
   entity/entity.cpp
+  entity/mobile.cpp
   terminal/escape-code-index.cpp
   terminal/terminal.cpp
   terminal/window.cpp
