@@ -7,6 +7,7 @@
 
 #include "core/core.hpp"
 #include "core/guru.hpp"
+#include "core/prefs.hpp"
 #include "dev/keycode-check.hpp"
 #include "terminal/terminal.hpp"
 #include "util/filex.hpp"
@@ -67,7 +68,7 @@ namespace invictus
 {
 
 // Constructor, sets some default values.
-Core::Core() : cleanup_done_(false), guru_meditation_(nullptr), terminal_(nullptr) { }
+Core::Core() : cleanup_done_(false), guru_meditation_(nullptr), prefs_(nullptr), terminal_(nullptr) { }
 
 // Destructor, calls cleanup code.
 Core::~Core() { cleanup(); }
@@ -87,11 +88,12 @@ void Core::cleanup()
         terminal_->cleanup();
         terminal_ = nullptr;
     }
-    if (guru_meditation_)   // The Guru Meditation system goes last.
+    if (guru_meditation_)   // Clean up the Guru Meditation system and shut down.
     {
         guru_meditation_->cleanup();
         guru_meditation_ = nullptr;
     }
+    prefs_ = nullptr;   // There should be no destructor/cleanup code to worry about here.
 }
 
 // Returns a pointer to the Guru Meditation object.
@@ -111,9 +113,17 @@ void Core::init(std::vector<std::string>)
     // Sets up the error-handling subsystem.
     guru_meditation_ = std::make_shared<Guru>("userdata/log.txt");
 
+    // Load user preferences.
+    prefs_ = std::make_shared<Prefs>("userdata/prefs.txt");
+    prefs_->load();
+    prefs_->save();
+
     // Sets up the terminal emulator (Curses)
     terminal_ = std::make_shared<Terminal>();
 }
+
+// Returns a pointer to the user preferences object.
+const std::shared_ptr<Prefs> Core::prefs() const { return prefs_; }
 
 // Returns a pointer  to the terminal emulator object.
 const std::shared_ptr<Terminal> Core::terminal() const { return terminal_; }

@@ -6,6 +6,7 @@
 
 #include "core/core.hpp"
 #include "core/guru.hpp"
+#include "core/prefs.hpp"
 #include "terminal/terminal.hpp"
 #include "terminal/window.hpp"
 #include "util/strx.hpp"
@@ -19,7 +20,7 @@ Terminal::Terminal() : cursor_state_(1), has_colour_(false), initialized_(false)
 {
     initscr();  // Curses initialization
     cbreak();   // Disable line-buffering.
-    if (has_colors())
+    if (core()->prefs()->use_colour() && has_colors())
     {
         start_color();  // Enables use of colour
         has_colour_ = true;
