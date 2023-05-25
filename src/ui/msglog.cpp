@@ -135,7 +135,7 @@ void MessageLog::render()
         unsigned int end = output_prc_.size();
         if (end - buffer_pos_ > UI::MESSAGE_LOG_HEIGHT - 2) end = buffer_pos_ + UI::MESSAGE_LOG_HEIGHT - 2;
         for (unsigned int i = buffer_pos_; i < end; i++)
-            terminal->print(output_prc_.at(i), 1, i - buffer_pos_ + 1, Colour::WHITE, output_prc_fade_.at(i) ? PRINT_FLAG_DARK : 0, msg_window);
+            terminal->print(output_prc_.at(i), 1, i - buffer_pos_ + 1, Colour::WHITE, output_prc_fade_.at(i) ? PRINT_FLAG_DARK : PRINT_FLAG_BOLD, msg_window);
     }
 }
 
