@@ -9,6 +9,8 @@
 #include "terminal/terminal.hpp"
 #include "ui/ui.hpp"
 
+#include "factory/factory-tile.hpp" // temp
+
 
 namespace invictus
 {
@@ -47,26 +49,43 @@ void GameManager::cleanup()
 void GameManager::game_loop()
 {
     auto terminal = core()->terminal();
-    int key = 0;
-    bool do_redraw = true;
+
+    if (game_state_ == GameState::NEW_GAME)
+    {
+        core()->guru()->log("Setting up new game...");
+        new_game();
+        game_state_ = GameState::DUNGEON;
+    }
 
     core()->guru()->log("Starting main game lööp, brøther.");
     while (game_state_ != GameState::QUIT)
     {
-        key = terminal->get_key();
-        if (key == Key::CLOSE) break;
-        else if (key == Key::RESIZE) do_redraw = true;
+        ui_->render();
 
-        if (do_redraw)
-        {
-            terminal->flip();
-            do_redraw = false;
-        }
+        int key = terminal->get_key();
+        if (key == Key::CLOSE) break;
+        else if (key == Key::RESIZE) ui_->window_resized();
     }
 }
 
 // Retrieves the current state of the game.
 GameState GameManager::game_state() const { return game_state_; }
+
+// Sets up for a new game.
+void GameManager::new_game()
+{
+    area_ = std::make_shared<Area>(30, 30);
+    for (int x = 0; x < 30; x++)
+    {
+        for (int y = 0; y < 30; y++)
+        {
+            if (x == 0 || x == 29) area_->set_tile(x, y, TileID::WALL_BEDROCK);
+            else if (y == 0 || y == 29) area_->set_tile(x, y, TileID::WALL_BEDROCK);
+            else area_->set_tile(x, y, TileID::FLOOR_STONE);
+        }
+    }
+    player_->set_pos(5, 5);
+}
 
 // Returns a pointer to the player character object.
 const std::shared_ptr<Player> GameManager::player() const { return player_; }

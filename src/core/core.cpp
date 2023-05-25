@@ -65,7 +65,11 @@ int main(int argc, char** argv)
         parameters.clear();
 
         // Start the main game loop, unless we're running an abnormal start.
-        if (normal_start) invictus::core()->game()->game_loop();
+        if (normal_start)
+        {
+            invictus::core()->game()->set_game_state(invictus::GameState::NEW_GAME);
+            invictus::core()->game()->game_loop();
+        }
     }
     catch (std::exception &e) { invictus::core()->guru()->halt(e); }
 
@@ -94,15 +98,15 @@ void Core::cleanup()
         game_manager_->cleanup();
         game_manager_ = nullptr;
     }
-    if (terminal_)  // Run cleanup code on Terminal.
-    {
-        terminal_->cleanup();
-        terminal_ = nullptr;
-    }
     if (guru_meditation_)   // Clean up the Guru Meditation system and shut down.
     {
         guru_meditation_->cleanup();
         guru_meditation_ = nullptr;
+    }
+    if (terminal_)  // Run cleanup code on Terminal.
+    {
+        terminal_->cleanup();
+        terminal_ = nullptr;
     }
     prefs_ = nullptr;   // There should be no destructor/cleanup code to worry about here.
 }
@@ -132,11 +136,11 @@ void Core::init(std::vector<std::string>)
     prefs_->load();
     prefs_->save();
 
-    // Set up the game manager.
-    game_manager_ = std::make_shared<GameManager>();
-
     // Sets up the terminal emulator (Curses)
     terminal_ = std::make_shared<Terminal>();
+
+    // Set up the game manager.
+    game_manager_ = std::make_shared<GameManager>();
 }
 
 // Returns a pointer to the user preferences object.

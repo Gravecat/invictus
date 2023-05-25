@@ -15,7 +15,7 @@ class Player;   // defined in entity/player.hpp
 class UI;       // defined in ui/ui.hpp
 
 
-enum class GameState : uint8_t { INITIALIZING, QUIT };
+enum class GameState : uint8_t { INITIALIZING, QUIT, NEW_GAME, DUNGEON };
 
 class GameManager
 {
@@ -32,6 +32,8 @@ public:
     const std::shared_ptr<UI>       ui() const;     // Returns a pointer to the user interface manager.
 
 private:
+    void    new_game(); // Sets up for a new game.
+
     std::shared_ptr<Area>   area_;  // The currently-loaded Area of the game world.
     bool        cleanup_done_;      // Has the cleanup routine already run once?
     GameState   game_state_;        // The current game state.

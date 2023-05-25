@@ -5,12 +5,16 @@
 #include <cmath>
 
 #include "area/area.hpp"
+#include "area/shadowcast.hpp"
 #include "area/tile.hpp"
 #include "core/core.hpp"
 #include "core/game-manager.hpp"
 #include "core/guru.hpp"
 #include "entity/player.hpp"
 #include "factory/factory-tile.hpp"
+#include "terminal/terminal.hpp"
+#include "terminal/window.hpp"
+#include "ui/ui.hpp"
 #include "util/bresenham.hpp"
 
 
@@ -126,10 +130,75 @@ int Area::offset_x() const { return offset_x_; }
 int Area::offset_y() const { return offset_y_; }
 
 // Recalculates the player's field of view.
-void Area::recalc_fov() { } // TBC
+void Area::recalc_fov()
+{
+    if (!needs_fov_recalc_) return;
+
+    for (unsigned int i = 0; i < size_x_ * size_y_; i++)
+        if (visible_[i] > 0) visible_[i]--;
+    auto game = core()->game();
+    auto player = game->player();
+    Shadowcast::calc_fov(this, player->x(), player->y(), player->fov_radius());
+
+    needs_fov_recalc_ = false;
+}
 
 // Renders this Area on the screen.
-void Area::render() { } // TBC
+void Area::render()
+{
+    auto terminal = core()->terminal();
+    auto player = core()->game()->player();
+    auto dungeon_view = core()->game()->ui()->dungeon_view();
+
+    recalc_fov();   // Recalculates the player's field of view and lighting, if needed.
+
+    int visible_x = dungeon_view->get_width(), visible_y = dungeon_view->get_height();
+    offset_x_ = offset_y_ = 0;
+
+    if (size_x_ >= visible_x)
+    {
+        offset_x_ = player->x() - (visible_x / 2);
+        if (offset_x_ < 0) offset_x_ = 0;
+        else if (offset_x_ + visible_x > size_x_) offset_x_ = size_x_ - visible_x;
+    }
+    else if (size_x_ < visible_x) offset_x_ = -((visible_x - size_x_) / 2);
+    if (size_y_ >= visible_y)
+    {
+        offset_y_ = player->y() - (visible_y / 2);
+        if (offset_y_ < 0) offset_y_ = 0;
+        else if (offset_y_ + visible_y > size_y_) offset_y_ = size_y_ - visible_y;
+    }
+    else if (size_y_ < visible_y) offset_y_ = -((visible_y - size_y_) / 2);
+
+    for (int x = 0; x < size_x_; x++)
+    {
+        int ox = x - offset_x_;
+        if (ox < 0 || ox >= visible_x) continue;
+        for (int y = 0; y < size_y_; y++)
+        {
+            int oy = y - offset_y_;
+            if (oy < 0 || oy >= visible_y) continue;
+
+            auto the_tile = tile(x, y);
+            bool is_visible = is_in_fov(x, y);
+            bool is_explored = the_tile->tag(TileTag::Explored);
+            if (!is_visible && !is_explored) continue;
+
+            terminal->put(the_tile->ascii(), ox, oy, the_tile->colour(), 0, dungeon_view);
+        }
+    }
+
+    // We'll render Actors in several passes, to ensure more important things are on top.
+
+    // First pass: Corpses.
+
+    // Second pass: Items.
+
+    // Third pass: Mobiles.
+
+    // Fourth pass: the player. No need for off-screen checks here, the player should always be on the screen.
+    terminal->put(player->ascii(), player->x() - offset_x_, player->y() - offset_y_, player->colour(), 0, dungeon_view);
+}
 
 // Sets a Tile to something else.
 void Area::set_tile(int x, int y, TileID tile_id)

@@ -4,8 +4,14 @@
 #ifndef UI_UI_HPP_
 #define UI_UI_HPP_
 
+#include <memory>
+
+
 namespace invictus
 {
+
+class Window;   // defined in terminal/window.hpp
+
 
 class UI
 {
@@ -17,10 +23,16 @@ public:
             ~UI();      // Destructor, calls cleanup function.
     void    cleanup();  // Cleans up any sub-elements.
     void    render();   // Renders the UI elements, if needed.
-    void    visible_area(int *x, int *y);   // Returns the visible area not covered by the UI.
+    void    window_resized();   // The terminal window has been resized.
+
+    const std::shared_ptr<Window>   dungeon_view() const;   // Gets a pointer to the dungeon view window.
 
 private:
-    bool    cleanup_done_;  // Has the cleanup routine already run once?
+    void    generate_dungeon_view();    // Generates the dungeon view window.
+
+    bool    cleanup_done_;          // Has the cleanup routine already run once?
+    bool    dungeon_needs_redraw_;  // Does the dungeon need re-rendering?
+    std::shared_ptr<Window> dungeon_view_;  // The corner of the screen where we view the dungeon.
 };
 
 }       // namespace invictus
