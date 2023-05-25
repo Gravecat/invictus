@@ -24,7 +24,6 @@ enum class TileTag : uint16_t
     Immutable = 3,      // This Tile is important and should not be changed.
 
     // Transient tags which are (usually) not defined by default, but are set by player behaviour.
-    Explored = 100,     // This Tile has been seen and memorized by the player.
     Bloodied = 102,     // This Tile has been splashed with blood and gore.
     Open = 103,         // This Tile is currently open.
 

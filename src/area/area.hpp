@@ -53,6 +53,7 @@ private:
     bool        needs_fov_recalc_;  // Set this to TRUE to force a field-of-view recalculation on the next render.
     int         offset_x_, offset_y_;   // Screen rendering offsets.
     uint16_t    size_x_, size_y_;   // The X/Y dimensions of this Area.
+    char*       tile_memory_;   // The player's memory of previously-seen Tiles.
     Tile*       tiles_;     // An array of Tiles that make up this Area.
     bool*       visible_;   // Which tiles are currently visible by the player.
 };

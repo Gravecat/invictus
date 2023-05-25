@@ -28,6 +28,8 @@ Area::Area(int width, int height) : cleanup_done_(false), needs_fov_recalc_(true
     tiles_ = new Tile[width * height]();
     visible_ = new bool[width * height];
     std::fill_n(visible_, width * height, false);
+    tile_memory_ = new char[width * height];
+    std::fill_n(tile_memory_, width * height, ' ');
 }
 
 // Destructor, cleans up memory.
@@ -57,6 +59,11 @@ void Area::cleanup()
     {
         delete[] visible_;
         visible_ = nullptr;
+    }
+    if (tile_memory_)
+    {
+        delete[] tile_memory_;
+        tile_memory_ = nullptr;
     }
 }
 
@@ -178,10 +185,18 @@ void Area::render()
 
             auto the_tile = tile(x, y);
             bool is_visible = is_in_fov(x, y);
-            bool is_explored = the_tile->tag(TileTag::Explored);
+            char tile_memory = tile_memory_[x + (y * size_x_)];
+            bool is_explored = (tile_memory != ' ');
             if (!is_visible && !is_explored) continue;
 
-            terminal->put(the_tile->ascii(), ox, oy, (is_visible ? the_tile->colour() : Colour::BLUE), 0, dungeon_view);
+            Colour colour = the_tile->colour();
+            char ascii = the_tile->ascii();
+            if (!is_visible)
+            {
+                colour = Colour::BLUE;
+                ascii = tile_memory;
+            }
+            terminal->put(ascii, ox, oy, colour, 0, dungeon_view);
         }
     }
 
@@ -209,7 +224,7 @@ void Area::set_visible(int x, int y)
 {
     if (x < 0 || y < 0 || x >= width() || y >= height()) core()->guru()->halt("Invalid map tile requested!", x, y);
     visible_[x + (y * size_x_)] = true;
-    tile(x, y)->set_tag(TileTag::Explored);
+    tile_memory_[x + (y * size_x_)] = tile(x, y)->ascii();
 }
 
 // Gets a specified Tile.
@@ -223,12 +238,11 @@ Tile* Area::tile(int x, int y)
 void Area::void_area()
 {
     for (int i = 0; i < size_x_ * size_y_; i++)
-    {
         FactoryTile::generate(&tiles_[i], TileID::VOID_TILE);
-        visible_[i] = 0;
-    }
     entities_.clear();
     entities_.push_back(core()->game()->player());
+    std::fill_n(visible_, size_x_ * size_y_, false);
+    std::fill_n(tile_memory_, size_x_ * size_y_, ' ');
 }
 
 // Read-only access to the Area's width.
