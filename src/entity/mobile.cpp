@@ -70,7 +70,7 @@ void Mobile::close_door(int dx, int dy)
     else
     {
         spend_banked_ticks(Timing::TIME_CLOSE_DOOR);
-        if (area->is_in_fov(dx, dy)) core()->message("{b}You see a " + door_name + " close.");
+        if (area->is_in_fov(dx, dy)) core()->message("{U}You see a " + door_name + " close.");
     }
     
     the_tile->set_ascii('+');
@@ -87,6 +87,8 @@ bool Mobile::is_dead() const { return false; }
 // Moves in a given direction, or attacks something in the destination tile
 bool Mobile::move_or_attack(std::shared_ptr<Mobile> self, int dx, int dy)
 {
+    auto game = core()->game();
+
     if (!dx && !dy)
     {
         core()->guru()->nonfatal("move_or_attack called with no direction!", Guru::GURU_WARN);
@@ -94,20 +96,20 @@ bool Mobile::move_or_attack(std::shared_ptr<Mobile> self, int dx, int dy)
     }
     const bool is_player = self->type() == EntityType::PLAYER;
     int xdx = x() + dx, ydy = y() + dy;
-    auto area = core()->game()->area();
+    auto area = game->area();
     if (area->can_walk(xdx, ydy))
     {
         auto the_tile = area->tile(xdx, ydy);
         const bool openable = (the_tile->tag(TileTag::Openable));
         const float movement_cost = (openable ? Timing::TIME_OPEN_DOOR : self->movement_speed());
         if (!is_player && banked_ticks() < movement_cost) return false;
-        if (is_player) core()->game()->pass_time(movement_cost);
+        if (is_player) game->pass_time(movement_cost);
         else spend_banked_ticks(movement_cost);
 
         if (openable)
         {
             if (is_player) core()->message("You open the " + the_tile->name() + ".");
-            else if (area->is_in_fov(xdx, ydy)) core()->message("{b}You see a " + the_tile->name() + " open.");
+            else if (area->is_in_fov(xdx, ydy)) core()->message("{U}You see a " + the_tile->name() + " open.");
             auto tile = area->tile(xdx, ydy);
             tile->set_ascii('\'');
             tile->clear_tag(TileTag::Openable);
@@ -121,6 +123,20 @@ bool Mobile::move_or_attack(std::shared_ptr<Mobile> self, int dx, int dy)
         set_pos(xdx, ydy);
         last_dir_ = ((dx + 2) << 4) + (dy + 2);
         area->need_fov_recalc();
+
+        if (is_player)
+        {
+            Tile* self_tile = area->tile(xdx, ydy);
+            if (self_tile->tag(TileTag::StairsDown)) core()->message("You see a staircase leading downward.");
+            else if (self_tile->tag(TileTag::StairsUp)) core()->message("You see a staircase leading upward.");
+            else if (self_tile->tag(TileTag::Open))
+            {
+                std::string door_name = self_tile->name();
+                StrX::find_and_replace(door_name, " (open)", "");
+                core()->message("You pass through an open " + door_name + ".");
+            }
+        }
+
         return true;
     }
 
