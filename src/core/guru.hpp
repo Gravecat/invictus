@@ -10,6 +10,9 @@
 #include <string>
 
 
+namespace invictus
+{
+
 class Guru
 {
 public:
@@ -48,4 +51,5 @@ private:
     std::ofstream       syslog_;            // The system log file.
 };
 
+}       // namespace invictus
 #endif  // CORE_GURU_HPP_

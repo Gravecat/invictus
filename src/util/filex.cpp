@@ -13,6 +13,9 @@
 #include "util/filex.hpp"
 
 
+namespace invictus
+{
+
 // Deletes a specified file. Simple enough, but we'll keep this function around in case there's any platform-specific weirdness that needs to be worked in.
 void FileX::delete_file(const std::string &filename) { unlink(filename.c_str()); }
 
@@ -90,3 +93,5 @@ void FileX::make_dir(const std::string &dir)
 
 // Renames a file. Seems simple, but this function exists for when inevitably some platform-specific fuckery arises.
 void FileX::rename_file(const std::string &old_name, const std::string &new_name) { rename(old_name.c_str(), new_name.c_str()); }
+
+}   // namespace invictus

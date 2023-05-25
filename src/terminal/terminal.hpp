@@ -12,6 +12,10 @@
 
 #include "terminal/terminal-shared-defs.hpp"
 
+
+namespace invictus
+{
+
 class Window;   // defined in terminal/window.hpp
 
 
@@ -52,4 +56,5 @@ private:
     static std::map<std::string, int>   escape_code_index_; // Hard-coded list of escape codes used by various terminals.
 };
 
+}       // namespace invictus
 #endif  // TERMINAL_TERMINAL_HPP_

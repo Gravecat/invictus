@@ -4,6 +4,9 @@
 #include "terminal/terminal.hpp"
 
 
+namespace invictus
+{
+
 std::map<std::string, int> Terminal::escape_code_index_ = {
     { "\x1b", Key::ESCAPE }, { "\x1b[11^", Key::F1 }, { "\x1b[11~", Key::F1 }, { "\x1b[12^", Key::F2 }, { "\x1b[12~", Key::F2 }, { "\x1b[13^", Key::F3 },
     { "\x1b[13~", Key::F3 }, { "\x1b[14^", Key::F4 }, { "\x1b[14~", Key::F4 }, { "\x1b[15;2~", Key::F5 }, { "\x1b[15;3~", Key::F5 }, { "\x1b[15;4~", Key::F5 },
@@ -53,3 +56,5 @@ std::map<std::string, int> Terminal::escape_code_index_ = {
     { "\x1bOl", '+' }, { "\x1bOn", '.' }, { "\x1bOp", Key::KP0 }, { "\x1bOq", Key::KP1 }, { "\x1bOr", Key::KP2 }, { "\x1bOs", Key::KP3 }, { "\x1bOt", Key::KP4 },
     { "\x1bOu", Key::KP5 }, { "\x1bOv", Key::KP6 }, { "\x1bOw", Key::KP7 }, { "\x1bOx", Key::KP8 },  { "\x1bOy", Key::KP9 },
 };
+
+}   // namespace invictus

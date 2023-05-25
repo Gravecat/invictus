@@ -15,6 +15,10 @@ typedef struct _win_st WINDOW;
 #endif
 typedef struct panel PANEL;
 
+
+namespace invictus
+{
+
 constexpr int   PRINT_FLAG_BOLD =       1;  // The specified string should be printed in bold.
 constexpr int   PRINT_FLAG_REVERSE =    2;  // The string's colours should be inverted.
 constexpr int   PRINT_FLAG_BLINK =      4;  // Blinking colour effect.
@@ -29,4 +33,5 @@ enum Key { BACKSPACE = 8, TAB = 9, ENTER = 10, CR = 13, ESCAPE = 27, CLOSE = 256
     PAGE_UP, PAGE_DOWN, F1, F2, F3, F4, F5, F6, F7, F8, F9, F10, F11, F12, KP0, KP1, KP2, KP3, KP4, KP5, KP6, KP7, KP8, KP9, UNKNOWN = USHRT_MAX };
 
 
+}       // namespace invictus
 #endif  // TERMINAL_TERMINAL_SHARED_DEFS_HPP_

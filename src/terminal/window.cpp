@@ -10,6 +10,9 @@
 #include "terminal/window.hpp"
 
 
+namespace invictus
+{
+
 Window::Window(uint16_t width, uint16_t height, int new_x, int new_y, bool new_border) : border_ptr_(nullptr)
 {
     if (new_border)
@@ -65,3 +68,5 @@ void Window::set_visible(bool vis)
 
 // Returns a pointer to the WINDOW struct.
 WINDOW* Window::win() const { return window_ptr_; }
+
+}   // namespace invictus

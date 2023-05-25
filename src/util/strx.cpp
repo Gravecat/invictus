@@ -7,6 +7,9 @@
 #include "util/strx.hpp"
 
 
+namespace invictus
+{
+
 // Find and replace one string with another.
 bool StrX::find_and_replace(std::string &input, const std::string &to_find, const std::string &to_replace)
 {
@@ -39,3 +42,5 @@ std::string StrX::str_toupper(std::string str)
     std::transform(str.begin(), str.end(), str.begin(), ::toupper);
     return str;
 }
+
+}   // namespace invictus

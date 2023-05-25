@@ -11,9 +11,9 @@
 #include "util/filex.hpp"
 
 
-std::shared_ptr<Core> invictus_core = nullptr;  // The main Core object.
+namespace invictus { std::shared_ptr<Core> invictus_core = nullptr; }   // The main Core object.
 
-// Main program entry point.
+// Main program entry point. Must be OUTSIDE the invictus namespace.
 int main(int argc, char** argv)
 {
     // Check command-line parameters.
@@ -22,22 +22,25 @@ int main(int argc, char** argv)
     // Create the main Core object.
     try
     {
-        invictus_core = std::make_shared<Core>();
-        invictus_core->init(parameters);
+        invictus::invictus_core = std::make_shared<invictus::Core>();
+        invictus::invictus_core->init(parameters);
     }
     catch (std::exception &e)
     {
         std::cout << e.what() << std::endl;
         return EXIT_FAILURE;
     }
-    if (!invictus_core) return EXIT_FAILURE;    // This should never happen, but just in case...
+    if (!invictus::invictus_core) return EXIT_FAILURE;  // This should never happen, but just in case...
 
     // Game manager setup and main game loop goes here.
-    core()->guru()->halt("Test error!", 61050, 10248);
+    invictus::core()->guru()->halt("Test error!", 61050, 10248);
 
-    invictus_core = nullptr;    // Trigger destructor cleanup code.
+    invictus::invictus_core = nullptr;  // Trigger destructor cleanup code.
     return EXIT_SUCCESS;
 }
+
+namespace invictus
+{
 
 // Constructor, sets some default values.
 Core::Core() : guru_meditation_(nullptr), terminal_(nullptr) { }
@@ -90,3 +93,5 @@ const std::shared_ptr<Core> core()
     if (!invictus_core) exit(EXIT_FAILURE);
     else return invictus_core;
 }
+
+}   // namespace invictus

@@ -8,6 +8,9 @@
 #include <vector>
 
 
+namespace invictus
+{
+
 class FileX
 {
 public:
@@ -20,4 +23,5 @@ public:
     static void rename_file(const std::string &old_name, const std::string &new_name);  // Renames a file.
 };
 
+}       // namespace invictus
 #endif  // UTIL_FILEX_HPP_

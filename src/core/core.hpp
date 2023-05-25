@@ -8,6 +8,9 @@
 #include <string>
 #include <vector>
 
+namespace invictus
+{
+
 class Guru;     // defined in core/guru.hpp
 class Terminal; // defined in core/terminal.hpp
 
@@ -29,4 +32,5 @@ private:
 
 const std::shared_ptr<Core> core(); // Allows external access to the main Core object.
 
+}       // namespace invictus
 #endif  // CORE_CORE_HPP_

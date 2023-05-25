@@ -11,6 +11,9 @@
 #include "util/strx.hpp"
 
 
+namespace invictus
+{
+
 // Sets up the Curses terminal.
 Terminal::Terminal() : cursor_state_(1), has_colour_(false), initialized_(false)
 {
@@ -427,3 +430,5 @@ void Terminal::set_cursor(bool enabled)
         curs_set(0);
     }
 }
+
+}   // namespace invictus

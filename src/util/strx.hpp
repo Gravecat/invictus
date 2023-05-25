@@ -8,6 +8,9 @@
 #include <string>
 
 
+namespace invictus
+{
+
 class StrX
 {
 public:
@@ -17,4 +20,5 @@ public:
     static std::string  str_toupper(std::string str);           // Converts a string to upper-case.
 };
 
+}       // namespace invictus
 #endif  // UTIL_STRX_HPP_

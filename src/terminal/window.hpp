@@ -9,6 +9,9 @@
 #include "terminal/terminal-shared-defs.hpp"
 
 
+namespace invictus
+{
+
 class Window
 {
 public:
@@ -30,4 +33,5 @@ private:
     int         x_, y_;         // The screen coordinates of this Window.
 };
 
+}       // namespace invictus
 #endif  // TERMINAL_WINDOW_HPP_

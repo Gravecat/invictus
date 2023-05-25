@@ -13,6 +13,9 @@
 #include "util/strx.hpp"
 
 
+namespace invictus
+{
+
 constexpr char  Guru::FILENAME_LOG[] = "log.txt";   // The default name of the log file. Another filename can be specified with open_syslog().
 
 
@@ -207,3 +210,5 @@ void Guru::nonfatal(std::string error, int type)
         }
     }
 }
+
+}   // namespace invictus
