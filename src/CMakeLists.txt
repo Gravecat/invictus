@@ -79,6 +79,7 @@ set(INVICTUS_CPPS
   util/bresenham.cpp
   util/filex.cpp
   util/strx.cpp
+  util/timer.cpp
   util/winx.cpp
 )
 
