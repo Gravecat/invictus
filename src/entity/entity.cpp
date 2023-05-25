@@ -7,6 +7,7 @@
 #include "core/guru.hpp"
 #include "entity/entity.hpp"
 #include "terminal/terminal.hpp"
+#include "terminal/window.hpp"
 
 
 namespace invictus
@@ -52,10 +53,8 @@ int Entity::light_power() const { return get_prop(EntityProp::LIGHT_POWER); }
 std::string Entity::name() const { return name_; }
 
 // Renders this Entity on the screen.
-void Entity::render(int screen_x, int screen_y) const
-{
-    core()->terminal()->put(ascii_, screen_x, screen_y, colour_);
-}
+void Entity::render(std::shared_ptr<Window> window, int screen_x, int screen_y) const
+{ core()->terminal()->put(ascii_, screen_x, screen_y, colour_, 0, window); }
 
 // Sets this Entity's ASCII character.
 void Entity::set_ascii(char new_ascii) { ascii_ = new_ascii; }

@@ -15,6 +15,9 @@
 namespace invictus
 {
 
+class Window;   // defined in terminal/window.hpp
+
+
 // Various properties that can be on Entities and their derived classes.
 enum class EntityProp : uint8_t
 {
@@ -35,7 +38,7 @@ public:
     virtual bool        is_at(int ax, int ay) const;    // Checks if this Entity claims to be occupying a specified tile.
     int                 light_power() const;    // Returns the power of this Entity's light source, if any.
     std::string         name() const;   // Retrieves this Entity's name.
-    void                render(int screen_x, int screen_y) const;   // Renders this Entity on the screen.
+    void                render(std::shared_ptr<Window> window, int screen_x, int screen_y) const;   // Renders this Entity on the screen.
     void                set_ascii(char new_ascii);      // Sets this Entity's ASCII character.
     void                set_colour(Colour new_colour);  // Sets this Entity's colour.
     void                set_light_power(int new_power); // Sets the power of this Entity's light source.
