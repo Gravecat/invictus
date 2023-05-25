@@ -76,6 +76,7 @@ set(INVICTUS_CPPS
   terminal/escape-code-index.cpp
   terminal/terminal.cpp
   terminal/window.cpp
+  ui/bars.cpp
   ui/msglog.cpp
   ui/nearby.cpp
   ui/ui.cpp
