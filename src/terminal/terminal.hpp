@@ -46,6 +46,8 @@ public:
     void        print(std::string str, int x, int y, Colour col = Colour::WHITE, unsigned int flags = 0, std::shared_ptr<Window> window = nullptr);
                 // Prints a character at a given coordinate on the screen.
     void        put(uint32_t letter, int x, int y, Colour col = Colour::WHITE, unsigned int flags = 0, std::shared_ptr<Window> window = nullptr);
+                // As above, but a wrapper to allow use of the Glyph enum.
+    void        put(Glyph letter, int x, int y, Colour col = Colour::WHITE, unsigned int flags = 0, std::shared_ptr<Window> window = nullptr);
     void        set_cursor(bool enabled);   // Turns the cursor on or off.
 
 private:

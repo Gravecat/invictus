@@ -62,6 +62,7 @@ set(INVICTUS_CPPS
   core/core.cpp
   core/guru.cpp
   core/prefs.cpp
+  dev/acs-display.cpp
   dev/keycode-check.cpp
   terminal/escape-code-index.cpp
   terminal/terminal.cpp

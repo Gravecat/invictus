@@ -15,7 +15,18 @@ namespace invictus
 {
 
 // Constructor, sets default values.
-Prefs::Prefs(std::string filename) : filename_(filename), use_colour_(true) { }
+Prefs::Prefs(std::string filename) : filename_(filename), use_colour_(true)
+{
+#ifdef INVICTUS_TARGET_WINDOWS
+    acs_flags_ = 15;
+#endif
+#ifdef INVICTUS_TARGET_LINUX
+    acs_flags_ = 11;
+#endif
+}
+
+// Retrieves the ACS glyph usage flags.
+uint8_t Prefs::acs_flags() const { return acs_flags_; }
 
 // Loads user prefs from a file, if it exists.
 void Prefs::load()
@@ -45,6 +56,7 @@ void Prefs::load()
             pref = StrX::str_tolower(pref_vec.at(0));
             pref_val = pref_vec.at(1);
             if (!pref.compare("use_colour")) use_colour_ = StrX::str_to_bool(pref_val);
+            else if (!pref.compare("acs_flags")) acs_flags_ = std::stoi(pref_val);
             else guru->nonfatal("Invalid line in " + filename_ + ": " + line, Guru::GURU_WARN);
         }
     }
@@ -56,6 +68,7 @@ void Prefs::save()
 {
     std::ofstream save_file(filename_);
     save_file << "use_colour:" << StrX::bool_to_str(use_colour_) << std::endl;
+    save_file << "acs_flags:" << std::to_string(acs_flags_) << std::endl;
     save_file.close();
 }
 

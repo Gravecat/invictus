@@ -387,44 +387,55 @@ void Terminal::put(uint32_t letter, int x, int y, Colour col, unsigned int flags
     if ((flags & PRINT_FLAG_REVERSE) == PRINT_FLAG_REVERSE) colour_flags |= A_REVERSE;
     if ((flags & PRINT_FLAG_BLINK) == PRINT_FLAG_BLINK) colour_flags |= A_BLINK;
     WINDOW *win = (window ? window->win() : stdscr);
+    uint8_t acs_flags = core()->prefs()->acs_flags();
+    const bool acs_box = ((acs_flags & 1) == 1);
+    const bool acs_vt100 = ((acs_flags & 2) == 2);
+    const bool acs_teletype = ((acs_flags & 4) == 4);
+    const bool acs_sysv = ((acs_flags & 8) == 8);
+    const bool acs_s = ((acs_flags & 16) == 16);
 
-    if (letter > 255)
+    if (letter >= 256 && letter <= 287)
     {
         switch(static_cast<Glyph>(letter))
         {
-            case Glyph::ULCORNER: letter = ACS_ULCORNER; break;
-            case Glyph::LLCORNER: letter = ACS_LLCORNER; break;
-            case Glyph::URCORNER: letter = ACS_URCORNER; break;
-            case Glyph::LRCORNER: letter = ACS_LRCORNER; break;
-            case Glyph::RTEE: letter = ACS_RTEE; break;
-            case Glyph::LTEE: letter = ACS_LTEE; break;
-            case Glyph::BTEE: letter = ACS_BTEE; break;
-            case Glyph::TTEE: letter = ACS_TTEE; break;
-            case Glyph::HLINE: letter = ACS_HLINE; break;
-            case Glyph::VLINE: letter = ACS_VLINE; break;
-            case Glyph::PLUS: letter = ACS_PLUS; break;
-            case Glyph::S1: letter = ACS_S1; break;
-            case Glyph::S9: letter = ACS_S9; break;
-            case Glyph::DIAMOND: letter = ACS_DIAMOND; break;
-            case Glyph::CKBOARD: letter = ACS_CKBOARD; break;
-            case Glyph::DEGREE: letter = ACS_DEGREE; break;
-            case Glyph::PLMINUS: letter = ACS_PLMINUS; break;
-            case Glyph::BULLET: letter = ACS_BULLET; break;
-            case Glyph::LARROW: letter = ACS_LARROW; break;
-            case Glyph::RARROW: letter = ACS_RARROW; break;
-            case Glyph::DARROW: letter = ACS_DARROW; break;
-            case Glyph::UARROW: letter = ACS_UARROW; break;
-            case Glyph::BOARD: letter = ACS_BOARD; break;
-            case Glyph::LANTERN: letter = ACS_LANTERN; break;
-            case Glyph::BLOCK: letter = ACS_BLOCK; break;
-            case Glyph::S3: letter = ACS_S3; break;
-            case Glyph::S7: letter = ACS_S7; break;
-            case Glyph::LEQUAL: letter = ACS_LEQUAL; break;
-            case Glyph::GEQUAL: letter = ACS_GEQUAL; break;
-            case Glyph::PI: letter = ACS_PI; break;
-            case Glyph::NEQUAL: letter = ACS_NEQUAL; break;
-            case Glyph::STERLING: letter = ACS_STERLING; break;
+            case Glyph::ULCORNER: letter = (acs_box ? ACS_ULCORNER : '+'); break;
+            case Glyph::LLCORNER: letter = (acs_box ? ACS_LLCORNER : '+'); break;
+            case Glyph::URCORNER: letter = (acs_box ? ACS_URCORNER : '+'); break;
+            case Glyph::LRCORNER: letter = (acs_box ? ACS_LRCORNER : '+'); break;
+            case Glyph::RTEE: letter = (acs_box ? ACS_RTEE : '+'); break;
+            case Glyph::LTEE: letter = (acs_box ? ACS_LTEE : '+'); break;
+            case Glyph::BTEE: letter = (acs_box ? ACS_BTEE : '+'); break;
+            case Glyph::TTEE: letter = (acs_box ? ACS_TTEE : '+'); break;
+            case Glyph::HLINE: letter = (acs_box ? ACS_HLINE : '-'); break;
+            case Glyph::VLINE: letter = (acs_box ? ACS_VLINE : '|'); break;
+            case Glyph::PLUS: letter = (acs_box ? ACS_PLUS : '+'); break;
+            case Glyph::S1: letter = (acs_s ? ACS_S1 : '-'); break;
+            case Glyph::S9: letter = (acs_s ? ACS_S9 : '_'); break;
+            case Glyph::DIAMOND: letter = (acs_vt100 ? ACS_DIAMOND : '*'); break;
+            case Glyph::CKBOARD: letter = (acs_vt100 ? ACS_CKBOARD : '#'); break;
+            case Glyph::DEGREE: letter = (acs_vt100 ? ACS_DEGREE : '\''); break;
+            case Glyph::PLMINUS: letter = (acs_vt100 ? ACS_PLMINUS : '+'); break;
+            case Glyph::BULLET: letter = (acs_vt100 ? ACS_BULLET : '.'); break;
+            case Glyph::LARROW: letter = (acs_teletype ? ACS_LARROW : '<'); break;
+            case Glyph::RARROW: letter = (acs_teletype ? ACS_RARROW : '>'); break;
+            case Glyph::DARROW: letter = (acs_teletype ? ACS_DARROW : 'v'); break;
+            case Glyph::UARROW: letter = (acs_teletype ? ACS_UARROW : '^'); break;
+            case Glyph::BOARD: letter = (acs_teletype ? ACS_BOARD : '#'); break;
+            case Glyph::LANTERN: letter = (acs_teletype ? ACS_LANTERN : '*'); break;
+            case Glyph::BLOCK: letter = (acs_teletype ? ACS_BLOCK : '#'); break;
+            case Glyph::S3: letter = (acs_s ? ACS_S3 : '-'); break;
+            case Glyph::S7: letter = (acs_s ? ACS_S7 : '_'); break;
+            case Glyph::LEQUAL: letter = (acs_sysv ? ACS_LEQUAL : '<'); break;
+            case Glyph::GEQUAL: letter = (acs_sysv ? ACS_GEQUAL : '>'); break;
+            case Glyph::PI: letter = (acs_sysv ? ACS_PI : '^'); break;
+            case Glyph::NEQUAL: letter = (acs_sysv ? ACS_NEQUAL : '='); break;
+            case Glyph::STERLING: letter = (acs_sysv ? ACS_STERLING : '&'); break;
         }
+    }
+    else if (letter < ' ' || letter > '~')
+    {
+        letter = '?';
+        colour_flags |= A_REVERSE | A_BLINK | A_BOLD;
     }
     
     const unsigned long ansi_code = colour_pair_code(col);
@@ -432,6 +443,10 @@ void Terminal::put(uint32_t letter, int x, int y, Colour col, unsigned int flags
     mvwaddch(win, y, x, letter);
     if (has_colour_) wattroff(win, ansi_code | colour_flags);
 }
+
+// As above, but a wrapper to allow use of the Glyph enum.
+void Terminal::put(Glyph letter, int x, int y, Colour col, unsigned int flags, std::shared_ptr<Window> window)
+{ put(static_cast<uint32_t>(letter), x, y, col, flags, window); }
 
 // Turns the cursor on or off.
 void Terminal::set_cursor(bool enabled)

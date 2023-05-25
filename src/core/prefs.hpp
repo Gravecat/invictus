@@ -14,11 +14,13 @@ class Prefs
 {
 public:
             Prefs(std::string filename);    // Constructor, sets default values.
-    void    load();     // Loads user prefs from a file, if it exists.
-    void    save();     // Saves user prefs to a file.
+    uint8_t acs_flags() const;  // Retrieves the ACS glyph usage flags.
+    void    load();             // Loads user prefs from a file, if it exists.
+    void    save();             // Saves user prefs to a file.
     bool    use_colour() const; // Check if using colour is allowed.
 
 private:
+    uint8_t     acs_flags_;     // The ACS glyph usage flags.
     std::string filename_;      // The filename of the user prefs file.
     bool        use_colour_;    // Is colour enabled?
 };

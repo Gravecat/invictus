@@ -8,6 +8,7 @@
 #include "core/core.hpp"
 #include "core/guru.hpp"
 #include "core/prefs.hpp"
+#include "dev/acs-display.hpp"
 #include "dev/keycode-check.hpp"
 #include "terminal/terminal.hpp"
 #include "util/filex.hpp"
@@ -49,6 +50,11 @@ int main(int argc, char** argv)
             if (!param.compare("-keycode-check"))
             {
                 invictus::DevKeycodeCheck::begin();
+                normal_start = false;
+            }
+            if (!param.compare("-acs-display"))
+            {
+                invictus::DevACSDisplay::display_test();
                 normal_start = false;
             }
         }
