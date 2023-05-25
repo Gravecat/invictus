@@ -5,4 +5,6 @@ class (Tiles are the component blocks that make up an Area), and anything direct
 
 * **area.cpp** - The Area class defines... well, *areas* of the game world where the gameplay takes place. Each Area consists of a square grid of Tiles.
 
+* **shadowcast.cpp** - Shadowcasting algorithm, used to calculate line-of-sight and basic lighting.
+
 * **tile.cpp** - The Tile class defines the blocks that make up the game world, be it floors, walls, doors, or whatever.
