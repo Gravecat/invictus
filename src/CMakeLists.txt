@@ -68,6 +68,7 @@ set(INVICTUS_CPPS
   entity/entity.cpp
   entity/mobile.cpp
   entity/player.cpp
+  factory/factory-tile.cpp
   terminal/escape-code-index.cpp
   terminal/terminal.cpp
   terminal/window.cpp

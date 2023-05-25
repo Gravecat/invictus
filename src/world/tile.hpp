@@ -52,6 +52,8 @@ private:
     Colour      colour_;    // The colour of this Tile.
     std::string name_;      // The name of this Tile.
     std::set<TileTag>   tags_;  // Any and all TileTags on this Tile.
+
+friend class FactoryTile;
 };
 
 }       // namespace invictus
