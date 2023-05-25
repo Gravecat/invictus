@@ -66,6 +66,7 @@ set(INVICTUS_CPPS
   terminal/window.cpp
   util/filex.cpp
   util/strx.cpp
+  util/winx.cpp
 )
 
 

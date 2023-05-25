@@ -9,6 +9,7 @@
 #include "core/guru.hpp"
 #include "terminal/terminal.hpp"
 #include "util/filex.hpp"
+#include "util/winx.hpp"
 
 
 namespace invictus { std::shared_ptr<Core> invictus_core = nullptr; }   // The main Core object.
@@ -16,6 +17,11 @@ namespace invictus { std::shared_ptr<Core> invictus_core = nullptr; }   // The m
 // Main program entry point. Must be OUTSIDE the invictus namespace.
 int main(int argc, char** argv)
 {
+#ifdef INVICTUS_TARGET_WINDOWS
+    // Check if invictus.exe is already running (Windows only).
+    invictus::WinX::check_if_already_running();
+#endif
+
     // Check command-line parameters.
     std::vector<std::string> parameters(argv, argv + argc);
 
