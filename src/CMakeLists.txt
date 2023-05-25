@@ -78,6 +78,7 @@ set(INVICTUS_CPPS
   ui/ui.cpp
   util/bresenham.cpp
   util/filex.cpp
+  util/random.cpp
   util/strx.cpp
   util/timer.cpp
   util/winx.cpp
