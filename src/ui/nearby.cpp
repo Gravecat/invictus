@@ -102,9 +102,7 @@ void Nearby::render()
 
     if (current_y >= window_h - 1) return;
     terminal->print(" Other Symbols ", window_midcol - 7, current_y, Colour::WHITE, PRINT_FLAG_REVERSE, nearby_window);
-    terminal->put(player->ascii(), 2, 1 + current_y, player->colour(), 0, nearby_window);
-    terminal->print("you!", 4, 1 + current_y, Colour::WHITE, 0, nearby_window);
-    current_y += 2;
+    current_y++;
 
     for (auto tile : tiles)
     {
@@ -118,6 +116,9 @@ void Nearby::render()
             current_y++;
         }
     }
+    if (current_y >= window_h - 1) return;
+    terminal->put(player->ascii(), 2, current_y, player->colour(), 0, nearby_window);
+    terminal->print("you!", 4, current_y, Colour::WHITE, 0, nearby_window);
 }
 
 }   // namespace invictus
