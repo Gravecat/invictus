@@ -13,5 +13,5 @@ public:
     static void render();   // Renders the Nearby bar.
 };
 
-};      // namespace invictus
+}       // namespace invictus
 #endif  // UI_NEARBY_HPP_

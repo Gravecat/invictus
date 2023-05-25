@@ -31,7 +31,5 @@ private:
     uint8_t last_dir_;      // The last direction this Mobile moved in.
 };
 
-};
-
-
+}       // namespace invictus
 #endif  // ENTITY_MOBILE_HPP_
