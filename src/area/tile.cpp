@@ -24,6 +24,17 @@ void Tile::clear_tag(TileTag the_tag)
 // Gets the colour of this Tile.
 Colour Tile::colour() const { return colour_; }
 
+// Checks if this Tile is identical to another.
+bool Tile::is_identical_to(Tile* tile)
+{
+    if (ascii_ != tile->ascii_ || colour_ != tile->colour_ || name_.compare(tile->name_)) return false;
+    for (auto the_tag : tags_)
+        if (!tile->tag(the_tag)) return false;
+    for (auto the_tag : tile->tags_)
+        if (!tag(the_tag)) return false;
+    return true;
+}
+
 // Gets the name of this Tile.
 std::string Tile::name() const
 {

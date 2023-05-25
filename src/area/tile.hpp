@@ -42,6 +42,7 @@ public:
     void        clear_tag(TileTag the_tag); // Clears a TileTag from this Tile.
     char        ascii() const;  // Get the ASCII character for this Tile.
     Colour      colour() const; // Gets the colour of this Tile.
+    bool        is_identical_to(Tile* tile);    // Checks if this Tile is identical to another.
     std::string name() const;   // Gets the name of this Tile.
     void        set_ascii(char new_ascii);      // Sets this Tile's ASCII character.
     void        set_colour(Colour new_colour);  // Sets this Tile's colour.

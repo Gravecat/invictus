@@ -76,6 +76,7 @@ set(INVICTUS_CPPS
   terminal/terminal.cpp
   terminal/window.cpp
   ui/msglog.cpp
+  ui/nearby.cpp
   ui/ui.cpp
   util/bresenham.cpp
   util/filex.cpp

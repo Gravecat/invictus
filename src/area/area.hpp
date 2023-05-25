@@ -42,6 +42,7 @@ public:
     void        set_tile(int x, int y, TileID tile_id); // Sets a Tile to something else.
     void        set_visible(int x, int y);  // Sets a specified Tile as visible.
     Tile*       tile(int x, int y); // Gets a specified Tile.
+    char        tile_memory(int x, int y);  // Retrieves the player's memory of a given Tile.
     void        void_area();        // Erases this entire Area.
     uint16_t    width() const;      // Read-only access to the Area's width.
 

@@ -234,6 +234,13 @@ Tile* Area::tile(int x, int y)
     return &tiles_[x + (y * size_x_)];
 }
 
+// Retrieves the player's memory of a given Tile.
+char Area::tile_memory(int x, int y)
+{
+    if (x < 0 || y < 0 || x >= size_x_ || y >= size_y_) core()->guru()->halt("Invalid map tile requested!", x, y);
+    return tile_memory_[x + (y * size_x_)];
+}
+
 // Erases this entire Area.
 void Area::void_area()
 {
