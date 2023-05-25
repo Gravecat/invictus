@@ -9,12 +9,11 @@
 #include <memory>
 #include <string>
 
-#include "terminal/terminal-shared-defs.hpp"
-
 
 namespace invictus
 {
 
+enum class Colour : uint8_t;    // defined in terminal/terminal-shared-defs.hpp
 class Window;   // defined in terminal/window.hpp
 
 

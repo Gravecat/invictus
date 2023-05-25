@@ -4,6 +4,7 @@
 #include <cmath>
 
 #include "entity/player.hpp"
+#include "terminal/terminal-shared-defs.hpp"
 
 
 namespace invictus
