@@ -75,6 +75,7 @@ set(INVICTUS_CPPS
   util/filex.cpp
   util/strx.cpp
   util/winx.cpp
+  world/tile.cpp
 )
 
 
