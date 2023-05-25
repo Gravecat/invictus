@@ -1,8 +1,8 @@
-// world/tile.hpp -- The Tile class, defining floors, walls, and other semi-permanent obstacles in the game.
+// area/tile.hpp -- The Tile class, defining floors, walls, and other semi-permanent obstacles in the game.
 // Copyright © 2023 Raine "Gravecat" Simmons. Licensed under the GNU Affero General Public License v3 or any later version.
 
-#ifndef WORLD_TILE_HPP_
-#define WORLD_TILE_HPP_
+#ifndef AREA_TILE_HPP_
+#define AREA_TILE_HPP_
 
 #include <cstdint>
 #include <set>
@@ -57,4 +57,4 @@ friend class FactoryTile;
 };
 
 }       // namespace invictus
-#endif  // WORLD_TILE_HPP_
+#endif  // AREA_TILE_HPP_

@@ -59,6 +59,7 @@ endif(TARGET_WINDOWS)
 
 # Source files.
 set(INVICTUS_CPPS
+  area/tile.cpp
   core/core.cpp
   core/game-manager.cpp
   core/guru.cpp
@@ -76,7 +77,6 @@ set(INVICTUS_CPPS
   util/filex.cpp
   util/strx.cpp
   util/winx.cpp
-  world/tile.cpp
 )
 
 

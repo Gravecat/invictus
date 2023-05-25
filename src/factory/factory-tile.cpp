@@ -1,11 +1,11 @@
 // factory/factory-tile.cpp -- Factory class, generating preset types of Tiles that make up the game world's structure.
 // Copyright © 2023 Raine "Gravecat" Simmons. Licensed under the GNU Affero General Public License v3 or any later version.
 
+#include "area/tile.hpp"
 #include "core/core.hpp"
 #include "core/guru.hpp"
 #include "factory/factory-tile.hpp"
 #include "terminal/terminal-shared-defs.hpp"
-#include "world/tile.hpp"
 
 
 namespace invictus

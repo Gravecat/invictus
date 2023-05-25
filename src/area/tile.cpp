@@ -1,8 +1,8 @@
-// world/tile.cpp -- The Tile class, defining floors, walls, and other semi-permanent obstacles in the game.
+// area/tile.cpp -- The Tile class, defining floors, walls, and other semi-permanent obstacles in the game.
 // Copyright © 2023 Raine "Gravecat" Simmons. Licensed under the GNU Affero General Public License v3 or any later version.
 
 #include "terminal/terminal-shared-defs.hpp"
-#include "world/tile.hpp"
+#include "area/tile.hpp"
 
 
 namespace invictus
