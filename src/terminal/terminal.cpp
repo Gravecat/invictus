@@ -16,7 +16,7 @@ namespace invictus
 {
 
 // Sets up the Curses terminal.
-Terminal::Terminal() : cursor_state_(1), has_colour_(false), initialized_(false), key_raw_(0)
+Terminal::Terminal() : cleanup_done_(false), cursor_state_(1), has_colour_(false), initialized_(false), key_raw_(0)
 {
     initscr();  // Curses initialization
     cbreak();   // Disable line-buffering.
@@ -167,6 +167,7 @@ uint16_t Terminal::get_cursor_y(std::shared_ptr<Window> window)
 // Gets keyboard input from the user.
 int Terminal::get_key(std::shared_ptr<Window> window)
 {
+    if (!initialized_) return 0;
     WINDOW *win = (window ? window->win() : stdscr);
     key_raw_ = wgetch(win);
     escape_key_string_.clear();
