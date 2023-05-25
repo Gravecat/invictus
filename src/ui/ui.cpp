@@ -42,11 +42,15 @@ void UI::generate_dungeon_view()
     dungeon_view_ = std::make_shared<Window>(terminal->get_cols() - NEARBY_BAR_WIDTH, terminal->get_rows() - MESSAGE_LOG_HEIGHT - 2, 0, 0);
 }
 
+// Marks the dungeon view as needing to be redrawn.
+void UI::redraw_dungeon() { dungeon_needs_redraw_ = true; }
+
 // Renders the UI elements, if needed.
 void UI::render()
 {
     if (dungeon_needs_redraw_)
     {
+        core()->terminal()->cls(dungeon_view_);
         core()->game()->area()->render();
         dungeon_needs_redraw_ = false;
     }

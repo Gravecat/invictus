@@ -25,10 +25,20 @@ void Tile::clear_tag(TileTag the_tag)
 Colour Tile::colour() const { return colour_; }
 
 // Gets the name of this Tile.
-std::string Tile::name() const { return name_; }
+std::string Tile::name() const
+{
+    if (tag(TileTag::Open)) return name_ + " (open)";
+    return name_;
+}
+
+// Sets this Tile's ASCII character.
+void Tile::set_ascii(char new_ascii) { ascii_ = new_ascii; }
 
 // Sets this Tile's colour.
 void Tile::set_colour(Colour new_colour) { colour_ = new_colour; }
+
+// Sets this Tile's name.
+void Tile::set_name(const std::string &new_name) { name_ = new_name; }
 
 // Sets a TileTag on this Tile.
 void Tile::set_tag(TileTag the_tag)

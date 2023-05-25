@@ -1,7 +1,10 @@
 // entity/mobile.cpp -- The Mobile class is a kind of Entity that can move around and fight. This includes monsters and the player character.
 // Copyright © 2023 Raine "Gravecat" Simmons. Licensed under the GNU Affero General Public License v3 or any later version.
 
+#include "area/area.hpp"
+#include "area/tile.hpp"
 #include "core/core.hpp"
+#include "core/game-manager.hpp"
 #include "core/guru.hpp"
 #include "entity/mobile.hpp"
 #include "world/timing.hpp"
@@ -11,7 +14,7 @@ namespace invictus
 {
 
 // Constructor.
-Mobile::Mobile() : Entity(), banked_ticks_(0)
+Mobile::Mobile() : Entity(), banked_ticks_(0), last_dir_(0)
 {
     set_prop_f(EntityProp::SPEED, Timing::TIME_BASE_MOVEMENT);
 }
@@ -36,6 +39,50 @@ void Mobile::clear_banked_ticks() { banked_ticks_ = 0; }
 
 // Checks if this Mobile is dead.
 bool Mobile::is_dead() const { return false; }
+
+// Moves in a given direction, or attacks something in the destination tile
+bool Mobile::move_or_attack(std::shared_ptr<Mobile> self, int dx, int dy)
+{
+    if (!dx && !dy)
+    {
+        core()->guru()->nonfatal("move_or_attack called with no direction!", Guru::GURU_WARN);
+        return false;
+    }
+    const bool is_player = self->type() == EntityType::PLAYER;
+    int xdx = x() + dx, ydy = y() + dy;
+    auto area = core()->game()->area();
+    if (area->can_walk(xdx, ydy))
+    {
+        auto the_tile = area->tile(xdx, ydy);
+        const bool openable = (the_tile->tag(TileTag::Openable));
+        const float movement_cost = (openable ? Timing::TIME_OPEN_DOOR : self->movement_speed());
+        if (!is_player && banked_ticks() < movement_cost) return false;
+        if (is_player) core()->game()->pass_time(movement_cost);
+        else spend_banked_ticks(movement_cost);
+
+        if (openable)
+        {
+            //if (is_player) core()->message("You open the " + the_tile->name() + ".");
+            //else if (area->is_in_fov(xdx, ydy)) core()->message("{b}You see a " + the_tile->name() + " open.");
+            auto tile = area->tile(xdx, ydy);
+            tile->set_ascii('\'');
+            tile->clear_tag(TileTag::Openable);
+            tile->set_tag(TileTag::Closeable);
+            tile->set_tag(TileTag::Open);
+            area->need_fov_recalc();
+            return true;
+        }
+
+        set_pos(xdx, ydy);
+        last_dir_ = ((dx + 2) << 4) + (dy + 2);
+        area->need_fov_recalc();
+        return true;
+    }
+
+    // We're not taking an action right now.
+    if (!is_player) clear_banked_ticks();
+    return false;
+}
 
 // Returns the amount of ticks needed for this Mobile to move one tile.
 float Mobile::movement_speed() const { return get_prop_f(EntityProp::SPEED); }

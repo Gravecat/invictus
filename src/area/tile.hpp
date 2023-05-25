@@ -26,6 +26,7 @@ enum class TileTag : uint16_t
     // Transient tags which are (usually) not defined by default, but are set by player behaviour.
     Explored = 100,     // This Tile has been seen and memorized by the player.
     Bloodied = 102,     // This Tile has been splashed with blood and gore.
+    Open = 103,         // This Tile is currently open.
 
     // Special types of Tiles.
     StairsUp = 200,     // This Tile is an upward stairway.
@@ -43,7 +44,9 @@ public:
     char        ascii() const;  // Get the ASCII character for this Tile.
     Colour      colour() const; // Gets the colour of this Tile.
     std::string name() const;   // Gets the name of this Tile.
+    void        set_ascii(char new_ascii);      // Sets this Tile's ASCII character.
     void        set_colour(Colour new_colour);  // Sets this Tile's colour.
+    void        set_name(const std::string &new_name);  // Sets this Tile's name.
     void        set_tag(TileTag the_tag);   // Sets a TileTag on this Tile.
     bool        tag(TileTag the_tag) const; // Checks if a TileTag is set on this Tile.
 

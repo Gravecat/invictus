@@ -25,18 +25,23 @@ public:
     void        cleanup();          // Cleans up anything that needs cleaning up.
     void        game_loop();        // Brøther, may I have some lööps?
     GameState   game_state() const; // Retrieves the current state of the game.
+    void        pass_time(float time);  // The player has taken an action which causes some time to pass.
     void        set_game_state(GameState new_state);    // Sets the game state.
+    void        tick();             // Processes non-player actions and progresses the world state.
 
     const std::shared_ptr<Area>     area() const;   // Returns a pointer to the currently-loaded Area, if any.
     const std::shared_ptr<Player>   player() const; // Returns a pointer to the player character object.
     const std::shared_ptr<UI>       ui() const;     // Returns a pointer to the user interface manager.
 
 private:
+    void    dungeon_input(int key); // Handles the player's input, when in dungeon mode.
     void    new_game(); // Sets up for a new game.
 
     std::shared_ptr<Area>   area_;  // The currently-loaded Area of the game world.
     bool        cleanup_done_;      // Has the cleanup routine already run once?
     GameState   game_state_;        // The current game state.
+    float       heartbeat_;         // The main timer of the world, incremented when the player takes actions.
+    float       heartbeat10_;       // As above, but this one's a slower heartbeat that causes things like buffs/debuffs to trigger at a 1/10 speed rate
     std::shared_ptr<Player> player_;    // The player character object.
     std::shared_ptr<UI> ui_;        // The user interface manager.
 };

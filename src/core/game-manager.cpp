@@ -8,6 +8,7 @@
 #include "entity/player.hpp"
 #include "terminal/terminal.hpp"
 #include "ui/ui.hpp"
+#include "world/timing.hpp"
 
 #include "factory/factory-tile.hpp" // temp
 
@@ -16,8 +17,8 @@ namespace invictus
 {
 
 // Constructor, sets default values.
-GameManager::GameManager() : area_(nullptr), cleanup_done_(false), game_state_(GameState::INITIALIZING), player_(std::make_shared<Player>()),
-    ui_(std::make_shared<UI>())
+GameManager::GameManager() : area_(nullptr), cleanup_done_(false), game_state_(GameState::INITIALIZING), heartbeat_(0), heartbeat10_(0),
+    player_(std::make_shared<Player>()), ui_(std::make_shared<UI>())
 { core()->guru()->log("Game manager ready!"); }
 
 // Destructor, calls cleanup code.
@@ -45,10 +46,34 @@ void GameManager::cleanup()
     if (player_) player_ = nullptr;
 }
 
+void GameManager::dungeon_input(int key)
+{
+    int dx = 0, dy = 0;
+    switch(key)
+    {
+        case 'k': case Key::ARROW_UP: case Key::KP8: dy = -1; break;    // Move north
+        case 'j': case Key::ARROW_DOWN: case Key::KP2: dy = 1; break;   // Move south
+        case 'h': case Key::ARROW_LEFT: case Key::KP4: dx = -1; break;  // Move west
+        case 'l': case Key::ARROW_RIGHT: case Key::KP6: dx = 1; break;  // Move east
+        case 'b': case Key::KP1: dx = -1; dy = 1; break;    // Move southwest
+        case 'n': case Key::KP3: dx = 1; dy = 1; break;     // Move southeast
+        case 'y': case Key::KP7: dx = -1; dy = -1; break;   // Move northwest
+        case 'u': case Key::KP9: dx = 1; dy = -1; break;    // Move northeast
+        case ',': case Key::KP5: pass_time(Timing::TIME_DO_NOTHING); break; // Do nothing.
+    }
+
+    if (dx || dy)
+    {
+        bool success = player_->move_or_attack(player_, dx, dy);
+        if (success) ui_->redraw_dungeon();
+    }
+}
+
 // Brøther, may I have some lööps?
 void GameManager::game_loop()
 {
     auto terminal = core()->terminal();
+    auto guru = core()->guru();
 
     if (game_state_ == GameState::NEW_GAME)
     {
@@ -65,6 +90,17 @@ void GameManager::game_loop()
         int key = terminal->get_key();
         if (key == Key::CLOSE) break;
         else if (key == Key::RESIZE) ui_->window_resized();
+
+        switch(game_state_)
+        {
+            case GameState::QUIT: return;
+            case GameState::DUNGEON: dungeon_input(key); break;
+            case GameState::INITIALIZING: case GameState::NEW_GAME:
+                guru->halt("Invalid game state!", static_cast<int>(game_state_));
+                break;
+        }
+
+        tick();
     }
 }
 
@@ -87,11 +123,44 @@ void GameManager::new_game()
     player_->set_pos(5, 5);
 }
 
+// The player has taken an action which causes some time to pass.
+void GameManager::pass_time(float time)
+{
+    heartbeat_ += time;
+    heartbeat10_ += time;
+}
+
 // Returns a pointer to the player character object.
 const std::shared_ptr<Player> GameManager::player() const { return player_; }
 
 // Sets the game state.
 void GameManager::set_game_state(GameState new_state) { game_state_ = new_state; }
+
+// Processes non-player actions and progresses the world state.
+void GameManager::tick()
+{
+    if (!area_) return;
+
+    while (heartbeat_ >= Timing::TICK_SPEED)
+    {
+        heartbeat_ -= Timing::TICK_SPEED;
+        for (auto entity : *area_->entities())
+        {
+            if (game_state_ != GameState::DUNGEON) break;   // If the game state changes, just stop processing Entity ticks.
+            entity->tick(entity);
+        }
+    }
+
+    while (heartbeat10_ >= Timing::TICK_SPEED * 10)
+    {
+        heartbeat10_ -= Timing::TICK_SPEED * 10;
+        for (auto entity : *area_->entities())
+        {
+            if (game_state_ != GameState::DUNGEON) break;   // If the game state changes, just stop processing Entity ticks.
+            entity->tick10(entity);
+        }
+    }
+}
 
 // Returns a pointer to the user interface manager.
 const std::shared_ptr<UI> GameManager::ui() const { return ui_; }
