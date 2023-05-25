@@ -68,7 +68,8 @@ void Terminal::box(std::shared_ptr<Window> window, Colour colour, unsigned int f
     if (blink) colour_flags |= A_BLINK;
 
     if (colour != Colour::NONE) wattron(win, colour_pair_code(colour) | colour_flags);
-    ::box(win, 0, 0);
+    if ((core()->prefs()->acs_flags() & 1) == 1) ::box(win, 0, 0);
+    else wborder(win, '|', '|', '-', '-', '+', '+', '+', '+');
     if (colour != Colour::NONE) wattroff(win, colour_pair_code(colour) | colour_flags);
 }
 
