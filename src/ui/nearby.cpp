@@ -85,6 +85,14 @@ void Nearby::render()
         }
     }
 
+    // Add a fake 'tile' for the player.
+    std::shared_ptr<Tile> fake_player_tile = std::make_shared<Tile>();
+    fake_player_tile->set_ascii(player->ascii());
+    fake_player_tile->set_colour(player->colour());
+    fake_player_tile->set_name("you!");
+    // okay okay yes, putting a raw pointer from a shared_ptr in here is a kinda bad idea, but it's only for the scope of this method, so it's safe enough.
+    tiles.push_back(fake_player_tile.get());
+
     bool rearranged = false;
     do
     {
@@ -116,9 +124,6 @@ void Nearby::render()
             current_y++;
         }
     }
-    if (current_y >= window_h - 1) return;
-    terminal->put(player->ascii(), 2, current_y, player->colour(), 0, nearby_window);
-    terminal->print("you!", 4, current_y, Colour::WHITE, 0, nearby_window);
 }
 
 }   // namespace invictus
