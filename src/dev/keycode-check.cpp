@@ -45,6 +45,7 @@ void DevKeycodeCheck::begin()
             case Key::PAGE_UP: key_str = "{G}Page Up"; break;
             case Key::PAGE_DOWN: key_str = "{G}Page Down"; break;
             case Key::POUND: key_str = "{G}Pound"; break;
+            case Key::NOT: key_str = "{G}Not"; break;
             case Key::UNKNOWN_KEY: key_str = "{R}Unknown Key"; break;
             case Key::UNKNOWN_ESCAPE_SEQUENCE: key_str = "{R}Unknown Escape Sequence"; break;
         }
