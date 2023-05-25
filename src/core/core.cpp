@@ -6,9 +6,9 @@
 #include <iostream>
 
 #include "core/core.hpp"
-#include "core/filex.hpp"
 #include "core/guru.hpp"
 #include "terminal/terminal.hpp"
+#include "util/filex.hpp"
 
 
 std::shared_ptr<Core> invictus_core = nullptr;  // The main Core object.

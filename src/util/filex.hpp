@@ -1,8 +1,8 @@
-// core/filex.hpp -- Various utility functions that deal with creating, deleting, and manipulating files.
+// util/filex.hpp -- Various utility functions that deal with creating, deleting, and manipulating files.
 // Copyright © 2023 Raine "Gravecat" Simmons. Licensed under the GNU Affero General Public License v3 or any later version.
 
-#ifndef CORE_FILEX_HPP_
-#define CORE_FILEX_HPP_
+#ifndef UTIL_FILEX_HPP_
+#define UTIL_FILEX_HPP_
 
 #include <string>
 #include <vector>
@@ -20,4 +20,4 @@ public:
     static void rename_file(const std::string &old_name, const std::string &new_name);  // Renames a file.
 };
 
-#endif  // CORE_FILEX_HPP_
+#endif  // UTIL_FILEX_HPP_

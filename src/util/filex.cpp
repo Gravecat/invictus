@@ -1,4 +1,4 @@
-// core/filex.cpp -- Various utility functions that deal with creating, deleting, and manipulating files.
+// util/filex.cpp -- Various utility functions that deal with creating, deleting, and manipulating files.
 // Copyright © 2023 Raine "Gravecat" Simmons. Licensed under the GNU Affero General Public License v3 or any later version.
 
 #include <cstdio>
@@ -10,7 +10,7 @@
 #include <windows.h>
 #endif
 
-#include "core/filex.hpp"
+#include "util/filex.hpp"
 
 
 // Deletes a specified file. Simple enough, but we'll keep this function around in case there's any platform-specific weirdness that needs to be worked in.

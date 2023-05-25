@@ -6,11 +6,11 @@
 #include <memory>
 
 #include "core/core.hpp"
-#include "core/filex.hpp"
 #include "core/guru.hpp"
-#include "core/strx.hpp"
 #include "terminal/terminal.hpp"
 #include "terminal/window.hpp"
+#include "util/filex.hpp"
+#include "util/strx.hpp"
 
 
 constexpr char  Guru::FILENAME_LOG[] = "log.txt";   // The default name of the log file. Another filename can be specified with open_syslog().

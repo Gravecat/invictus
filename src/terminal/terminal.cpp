@@ -6,9 +6,9 @@
 
 #include "core/core.hpp"
 #include "core/guru.hpp"
-#include "core/strx.hpp"
 #include "terminal/terminal.hpp"
 #include "terminal/window.hpp"
+#include "util/strx.hpp"
 
 
 // Sets up the Curses terminal.
