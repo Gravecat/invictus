@@ -60,6 +60,7 @@ endif(TARGET_WINDOWS)
 # Source files.
 set(INVICTUS_CPPS
   area/area.cpp
+  area/gen-dungeon.cpp
   area/shadowcast.cpp
   area/tile.cpp
   core/core.cpp

@@ -67,6 +67,7 @@ bool Mobile::move_or_attack(std::shared_ptr<Mobile> self, int dx, int dy)
             auto tile = area->tile(xdx, ydy);
             tile->set_ascii('\'');
             tile->clear_tag(TileTag::Openable);
+            tile->clear_tag(TileTag::BlocksLight);
             tile->set_tag(TileTag::Closeable);
             tile->set_tag(TileTag::Open);
             area->need_fov_recalc();

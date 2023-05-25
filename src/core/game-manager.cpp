@@ -2,6 +2,8 @@
 // Copyright © 2023 Raine "Gravecat" Simmons. Licensed under the GNU Affero General Public License v3 or any later version.
 
 #include "area/area.hpp"
+#include "area/gen-dungeon.hpp"
+#include "area/tile.hpp"
 #include "core/core.hpp"
 #include "core/game-manager.hpp"
 #include "core/guru.hpp"
@@ -79,8 +81,6 @@ void GameManager::game_loop()
     {
         core()->guru()->log("Setting up new game...");
         new_game();
-        game_state_ = GameState::DUNGEON;
-        ui_->dungeon_mode_ui(true);
     }
 
     core()->guru()->log("Starting main game lööp, brøther.");
@@ -111,17 +111,13 @@ GameState GameManager::game_state() const { return game_state_; }
 // Sets up for a new game.
 void GameManager::new_game()
 {
-    area_ = std::make_shared<Area>(30, 30);
-    for (int x = 0; x < 30; x++)
-    {
-        for (int y = 0; y < 30; y++)
-        {
-            if (x == 0 || x == 29) area_->set_tile(x, y, TileID::WALL_BEDROCK);
-            else if (y == 0 || y == 29) area_->set_tile(x, y, TileID::WALL_BEDROCK);
-            else area_->set_tile(x, y, TileID::FLOOR_STONE);
-        }
-    }
-    player_->set_pos(5, 5);
+    area_ = std::make_shared<Area>(50, 50);
+    auto generator = std::make_unique<DungeonGenerator>(area_);
+    generator->generate();
+    auto stair_coords = area_->find_tile_tag(TileTag::StairsUp);
+    player_->set_pos(stair_coords.first, stair_coords.second);
+    game_state_ = GameState::DUNGEON;
+    ui_->dungeon_mode_ui(true);
 }
 
 // The player has taken an action which causes some time to pass.

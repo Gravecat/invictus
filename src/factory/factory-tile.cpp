@@ -16,6 +16,7 @@ void FactoryTile::generate(Tile* tile, TileID id)
 {
     if (!tile) core()->guru()->halt("Attempt to generate nullptr tile!");
     tile->tags_.clear();
+    tile->id_ = id;
 
     switch(id)
     {
@@ -53,7 +54,7 @@ void FactoryTile::generate(Tile* tile, TileID id)
             tile->ascii_ = '<';
             tile->colour_ = Colour::WHITE_BOLD;
             tile->set_tag(TileTag::Immutable);
-            tile->set_tag(TileTag::StairsDown);
+            tile->set_tag(TileTag::StairsUp);
             break;
 
         case TileID::WALL_BEDROCK:  // Indestructible walls surrounding the map.

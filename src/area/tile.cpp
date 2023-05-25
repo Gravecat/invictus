@@ -1,15 +1,16 @@
 // area/tile.cpp -- The Tile class, defining floors, walls, and other semi-permanent obstacles in the game.
 // Copyright © 2023 Raine "Gravecat" Simmons. Licensed under the GNU Affero General Public License v3 or any later version.
 
-#include "terminal/terminal-shared-defs.hpp"
 #include "area/tile.hpp"
+#include "factory/factory-tile.hpp"
+#include "terminal/terminal-shared-defs.hpp"
 
 
 namespace invictus
 {
 
 // Constructor.
-Tile::Tile() : ascii_('.'), colour_(Colour::WHITE), name_("tile") { }
+Tile::Tile() : ascii_('.'), colour_(Colour::WHITE), id_(TileID::VOID_TILE), name_("tile") { }
 
 // Get the ASCII character for this Tile.
 char Tile::ascii() const { return ascii_; }
@@ -24,10 +25,13 @@ void Tile::clear_tag(TileTag the_tag)
 // Gets the colour of this Tile.
 Colour Tile::colour() const { return colour_; }
 
+// Retrieves the ID of this Tile.
+TileID Tile::id() const { return id_; }
+
 // Checks if this Tile is identical to another.
 bool Tile::is_identical_to(Tile* tile)
 {
-    if (ascii_ != tile->ascii_ || colour_ != tile->colour_ || name_.compare(tile->name_)) return false;
+    if (id_ != tile->id_ || ascii_ != tile->ascii_ || colour_ != tile->colour_ || name_.compare(tile->name_)) return false;
     for (auto the_tag : tags_)
         if (!tile->tag(the_tag)) return false;
     for (auto the_tag : tile->tags_)
