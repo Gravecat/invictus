@@ -38,6 +38,8 @@ public:
     uint16_t    get_midrow(std::shared_ptr<Window> window = nullptr);   // Gets the central row of the specified Window.
     uint16_t    get_rows(std::shared_ptr<Window> window = nullptr);     // Gets the number of rows available on the screen right now.
     std::string get_string(std::shared_ptr<Window> window = nullptr);   // C++ std::string wrapper around the PDCurses wgetnstr() function.
+    std::string last_escape_sequence() const;   // Retrieves the last escape-key sequence processed by get_key().
+    int         last_key_raw() const;           // The raw, unprocessed value of the last key processed by get_key().
     void        move_cursor(int x, int y, std::shared_ptr<Window> window = nullptr);    // Moves the cursor to the given coordinates.
                                                                                         // -1 for either coordinate retains its current position on that axis.
                 // Prints a string at a given coordinate on the screen.
@@ -49,10 +51,12 @@ public:
 private:
     unsigned long   colour_pair_code(Colour col);   // Returns a colour pair code.
 
-    bool    cleanup_done_;  // Has the cleanup routine already run once?
-    int     cursor_state_;  // The current state of the cursor.
-    bool    has_colour_;    // The terminal has colour support.
-    bool    initialized_;   // Has Curses been initialized?
+    bool        cleanup_done_;      // Has the cleanup routine already run once?
+    int         cursor_state_;      // The current state of the cursor.
+    std::string escape_key_string_; // The last escape key string processed.
+    bool        has_colour_;        // The terminal has colour support.
+    bool        initialized_;       // Has Curses been initialized?
+    int         key_raw_;           // The raw, unprocessed input from wgetch().
 
     static std::map<std::string, int>   escape_code_index_; // Hard-coded list of escape codes used by various terminals.
 };

@@ -7,6 +7,7 @@
 
 #include "core/core.hpp"
 #include "core/guru.hpp"
+#include "dev/keycode-check.hpp"
 #include "terminal/terminal.hpp"
 #include "util/filex.hpp"
 #include "util/winx.hpp"
@@ -38,8 +39,25 @@ int main(int argc, char** argv)
     }
     if (!invictus::invictus_core) return EXIT_FAILURE;  // This should never happen, but just in case...
 
-    // Game manager setup and main game loop goes here.
-    invictus::core()->guru()->halt("Test error!", 61050, 10248);
+    // Check for command-line options.
+    bool normal_start = true;
+    if (parameters.size() >= 2)
+    {
+        for (auto param : parameters)
+        {
+            if (!param.compare("-keycode-check"))
+            {
+                invictus::DevKeycodeCheck::begin();
+                normal_start = false;
+            }
+        }
+    }
+
+    if (normal_start)
+    {
+        // Game manager setup and main game loop goes here.
+        invictus::core()->guru()->halt("Test error!", 61050, 10248);
+    }
 
     invictus::core()->cleanup();    // Trigger cleanup code.
     return EXIT_SUCCESS;

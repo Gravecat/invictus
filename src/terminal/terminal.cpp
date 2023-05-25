@@ -15,7 +15,7 @@ namespace invictus
 {
 
 // Sets up the Curses terminal.
-Terminal::Terminal() : cursor_state_(1), has_colour_(false), initialized_(false)
+Terminal::Terminal() : cursor_state_(1), has_colour_(false), initialized_(false), key_raw_(0)
 {
     initscr();  // Curses initialization
     cbreak();   // Disable line-buffering.
@@ -167,29 +167,35 @@ uint16_t Terminal::get_cursor_y(std::shared_ptr<Window> window)
 int Terminal::get_key(std::shared_ptr<Window> window)
 {
     WINDOW *win = (window ? window->win() : stdscr);
-    int the_key = wgetch(win);
+    key_raw_ = wgetch(win);
+    escape_key_string_.clear();
 
-    if (the_key == 27)
+    if (key_raw_ == Key::ESCAPE)
     {
-        std::string key_str = "\x1b";
+        escape_key_string_ = "\x1b";
         nodelay(win, true);
         do
         {
-            the_key = wgetch(win);
-            if (the_key > 0 && the_key != Key::ESCAPE) key_str += std::string(1, static_cast<char>(the_key));
-        } while (the_key > 0);
+            key_raw_ = wgetch(win);
+            if (key_raw_ > 0 && key_raw_ != Key::ESCAPE) escape_key_string_ += std::string(1, static_cast<char>(key_raw_));
+        } while (key_raw_ > 0);
         nodelay(win, false);
-        auto result = escape_code_index_.find(key_str);
+        if (escape_key_string_.size() == 1)
+        {
+            key_raw_ = Key::ESCAPE;
+            return Key::ESCAPE;
+        }
+        auto result = escape_code_index_.find(escape_key_string_);
         if (result == escape_code_index_.end())
         {
-            core()->guru()->log("Unknown escape keycode: " + key_str);
-            return Key::UNKNOWN;
+            core()->guru()->log("Unknown escape keycode: " + escape_key_string_);
+            return Key::UNKNOWN_ESCAPE_SEQUENCE;
         }
         else return result->second;
     }
 
-    if ((the_key >= 5 && the_key <= 26) || (the_key >= ' ' && the_key <= '~')) return the_key;
-    else switch(the_key)
+    if ((key_raw_ >= 4 && key_raw_ <= 26) || (key_raw_ >= ' ' && key_raw_ <= '~')) return key_raw_;
+    else switch(key_raw_)
     {
         case KEY_RESIZE:    // Window resized event.
         {
@@ -198,8 +204,8 @@ int Terminal::get_key(std::shared_ptr<Window> window)
             curs_set(cursor_state_);
             return Key::RESIZE;
         }
-        case 1: case 2: return the_key;
-        case 3: case 4: return Key::CLOSE;
+        case 1: case 2: return key_raw_;
+        case 3: return Key::CLOSE;
         case KEY_BACKSPACE: return Key::BACKSPACE;
         case KEY_DC: return Key::DELETE;
         case KEY_DOWN: return Key::ARROW_DOWN;
@@ -224,6 +230,7 @@ int Terminal::get_key(std::shared_ptr<Window> window)
         case KEY_PPAGE: return Key::PAGE_UP;
         case KEY_RIGHT: return Key::ARROW_RIGHT;
         case KEY_UP: return Key::ARROW_UP;
+        case 0xA3: return Key::POUND;
 #ifdef INVICTUS_TARGET_WINDOWS
         case KEY_A1: return Key::KP7;
         case KEY_A2: return Key::KP8;
@@ -242,7 +249,7 @@ int Terminal::get_key(std::shared_ptr<Window> window)
         case PADSLASH: return '/';
         case PADSTAR: return '*';
 #endif
-        default: return Key::UNKNOWN;
+        default: return Key::UNKNOWN_KEY;
     }
 }
 
@@ -275,6 +282,12 @@ std::string get_string(std::shared_ptr<Window> window)
     wgetnstr(win, buffer, 255);
     return buffer;
 }
+
+// Retrieves the last escape-key sequence processed by get_key().
+std::string Terminal::last_escape_sequence() const { return escape_key_string_; }
+
+// The raw, unprocessed value of the last key processed by get_key().
+int Terminal::last_key_raw() const { return key_raw_; }
 
 // Moves the cursor to the given coordinates; -1 for either coordinate retains its current position on that axis.
 void Terminal::move_cursor(int x, int y, std::shared_ptr<Window> window)
