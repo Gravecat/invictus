@@ -5,13 +5,15 @@
 #include "core/game-manager.hpp"
 #include "core/guru.hpp"
 #include "terminal/terminal.hpp"
+#include "ui/ui.hpp"
 
 
 namespace invictus
 {
 
 // Constructor, sets default values.
-GameManager::GameManager() : cleanup_done_(false), game_state_(GameState::INITIALIZING) { }
+GameManager::GameManager() : cleanup_done_(false), game_state_(GameState::INITIALIZING), ui_(std::make_shared<UI>())
+{ core()->guru()->log("Game manager ready!"); }
 
 // Destructor, calls cleanup code.
 GameManager::~GameManager() { cleanup(); }
@@ -22,6 +24,11 @@ void GameManager::cleanup()
     if (cleanup_done_) return;
     cleanup_done_ = true;
     if (core()->guru()) core()->guru()->log("Cleaning up the game state.");
+    if (ui_)
+    {
+        ui_->cleanup();
+        ui_ = nullptr;
+    }
 }
 
 // Brøther, may I have some lööps?
@@ -51,5 +58,8 @@ GameState GameManager::game_state() const { return game_state_; }
 
 // Sets the game state.
 void GameManager::set_game_state(GameState new_state) { game_state_ = new_state; }
+
+// Returns a pointer to the user interface manager.
+const std::shared_ptr<UI> GameManager::ui() const { return ui_; }
 
 }   // namespace invictus
