@@ -34,7 +34,7 @@ void Bars::render_bar(int x, int y, unsigned int width, const std::string &name,
     std::string msg_left = msg.substr(0, bar_width);
     std::string msg_right = msg.substr(bar_width);
     terminal->print(msg_left, x, y, bar_colour, PRINT_FLAG_REVERSE | PRINT_FLAG_BOLD, core()->game()->ui()->stat_bars());
-    terminal->print(msg_right, x + msg_left.size(), y, bar_colour, PRINT_FLAG_REVERSE, core()->game()->ui()->stat_bars());
+    terminal->print(msg_right, x + msg_left.size(), y, Colour::WHITE_BOLD, 0, core()->game()->ui()->stat_bars());
 }
 
 // Renders the player's health and mana bars.
@@ -48,10 +48,10 @@ void Bars::render_health_mana_bars()
     const int sp_bar_width = (window_w - hp_bar_width) / 2;
     const int mp_bar_width = window_w - hp_bar_width - sp_bar_width;
 
-    render_bar(0, 0, hp_bar_width, "HP", 72, 100, Colour::RED, true, true);
-    render_bar(hp_bar_width, 0, sp_bar_width, "SP", 35, 100, Colour::GREEN);
-    render_bar(hp_bar_width + sp_bar_width, 0, mp_bar_width, "MP", 80, 100, Colour::BLUE);
-    render_bar(0, 1, window_w, "Experience", 720, 1000, Colour::MAGENTA);
+    render_bar(0, 0, hp_bar_width, "HP", 72, 100, Colour::RED_WHITE, true, true);
+    render_bar(hp_bar_width, 0, sp_bar_width, "SP", 35, 100, Colour::GREEN_WHITE);
+    render_bar(hp_bar_width + sp_bar_width, 0, mp_bar_width, "MP", 80, 100, Colour::BLUE_WHITE);
+    render_bar(0, 1, window_w, "Experience", 720, 1000, Colour::MAGENTA_WHITE);
 }
 
 }   // namespace invictus

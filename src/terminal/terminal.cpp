@@ -40,6 +40,12 @@ Terminal::Terminal() : cleanup_done_(false), cursor_state_(1), has_colour_(false
         init_pair(6, COLOR_MAGENTA, COLOR_BLACK);
         init_pair(7, COLOR_CYAN, COLOR_BLACK);
         init_pair(8, COLOR_WHITE, COLOR_BLACK);
+        init_pair(9, COLOR_RED, COLOR_WHITE);
+        init_pair(10, COLOR_GREEN, COLOR_WHITE);
+        init_pair(11, COLOR_YELLOW, COLOR_WHITE);
+        init_pair(12, COLOR_BLUE, COLOR_WHITE);
+        init_pair(13, COLOR_MAGENTA, COLOR_WHITE);
+        init_pair(14, COLOR_CYAN, COLOR_WHITE);
     }
 
 #ifdef INVICTUS_TARGET_WINDOWS
@@ -134,6 +140,12 @@ unsigned long Terminal::colour_pair_code(Colour col, uint32_t flags)
         case Colour::CYAN_BOLD: return COLOR_PAIR(7) | bold;
         case Colour::WHITE: return COLOR_PAIR(8);
         case Colour::WHITE_BOLD: return COLOR_PAIR(8) | bold;
+        case Colour::RED_WHITE: return COLOR_PAIR(9);
+        case Colour::GREEN_WHITE: return COLOR_PAIR(10);
+        case Colour::YELLOW_WHITE: return COLOR_PAIR(11);
+        case Colour::BLUE_WHITE: return COLOR_PAIR(12);
+        case Colour::MAGENTA_WHITE: return COLOR_PAIR(13);
+        case Colour::CYAN_WHITE: return COLOR_PAIR(14);
         default: return 0;
     }
 }
