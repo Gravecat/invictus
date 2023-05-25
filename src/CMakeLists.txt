@@ -74,6 +74,7 @@ set(INVICTUS_CPPS
   terminal/terminal.cpp
   terminal/window.cpp
   ui/ui.cpp
+  util/bresenham.cpp
   util/filex.cpp
   util/strx.cpp
   util/winx.cpp
