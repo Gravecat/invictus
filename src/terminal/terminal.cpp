@@ -300,7 +300,7 @@ void Terminal::print(std::string str, int x, int y, Colour col, unsigned int fla
         // If no colour codes are present, this is fairly easy.
         const unsigned long ansi_code = colour_pair_code(col);
         if (has_colour_) wattron(win, ansi_code | colour_flags);
-        mvwprintw(win, y, x, str.c_str());
+        mvwprintw(win, y, x, "%s", str.c_str());
         if (has_colour_) wattroff(win, ansi_code | colour_flags);
         return;
     }
@@ -353,7 +353,7 @@ void Terminal::print(std::string str, int x, int y, Colour col, unsigned int fla
         if (has_colour_) wattron(win, ansi_code | colour_flags);
         const unsigned int first_word_size = first_word.size();
         StrX::find_and_replace(first_word, "%", "%%");
-        mvwprintw(win, y, x, first_word.c_str());
+        mvwprintw(win, y, x, "%s", first_word.c_str());
         if (has_colour_) wattroff(win, ansi_code | colour_flags);
         x += first_word_size;
     }
