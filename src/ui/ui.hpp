@@ -23,6 +23,7 @@ public:
             UI();               // Constructor, sets up UI elements.
             ~UI();              // Destructor, calls cleanup function.
     void    cleanup();          // Cleans up any sub-elements.
+    void    dungeon_mode_ui(bool enable);   // Enables or disables the dungeon-mode UI.
     void    redraw_dungeon();   // Marks the dungeon view as needing to be redrawn.
     void    redraw_message_log();   // Marks the message log window as needing to be redrawn.
     void    redraw_nearby();    // Marks the nearby window as needing to be redrawn.

@@ -38,6 +38,14 @@ void UI::cleanup()
     if (nearby_window_) nearby_window_ = nullptr;
 }
 
+// Enables or disables the dungeon-mode UI.
+void UI::dungeon_mode_ui(bool enable)
+{
+    if (dungeon_view_) dungeon_view_->set_visible(enable);
+    if (message_log_window_) message_log_window_->set_visible(enable);
+    if (nearby_window_) nearby_window_->set_visible(enable);
+}
+
 // Gets a pointer to the dungeon view window.
 const std::shared_ptr<Window> UI::dungeon_view() const { return dungeon_view_; }
 
@@ -46,6 +54,8 @@ void UI::generate_dungeon_view()
 {
     auto terminal = core()->terminal();
     dungeon_view_ = std::make_shared<Window>(terminal->get_cols() - NEARBY_BAR_WIDTH, terminal->get_rows() - MESSAGE_LOG_HEIGHT - 2, 0, 0);
+    if (core()->game() && core()->game()->game_state() == GameState::DUNGEON) dungeon_view_->set_visible(true);
+    else dungeon_view_->set_visible(false);
 }
 
 // Generates the message log window.
@@ -53,6 +63,8 @@ void UI::generate_message_log()
 {
     auto terminal = core()->terminal();
     message_log_window_ = std::make_shared<Window>(terminal->get_cols() - NEARBY_BAR_WIDTH + 1, MESSAGE_LOG_HEIGHT, 0, terminal->get_rows() - MESSAGE_LOG_HEIGHT);
+    if (core()->game() && core()->game()->game_state() == GameState::DUNGEON) message_log_window_->set_visible(true);
+    else message_log_window_->set_visible(false);
 }
 
 // Generates the nearby sidebar window.
@@ -60,6 +72,8 @@ void UI::generate_nearby_window()
 {
     auto terminal = core()->terminal();
     nearby_window_ = std::make_shared<Window>(NEARBY_BAR_WIDTH, terminal->get_rows(), terminal->get_cols() - NEARBY_BAR_WIDTH, 0);
+    if (core()->game() && core()->game()->game_state() == GameState::DUNGEON) nearby_window_->set_visible(true);
+    else nearby_window_->set_visible(false);
 }
 
 // Gets a pointer to the message log window.

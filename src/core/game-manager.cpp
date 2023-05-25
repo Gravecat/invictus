@@ -80,6 +80,7 @@ void GameManager::game_loop()
         core()->guru()->log("Setting up new game...");
         new_game();
         game_state_ = GameState::DUNGEON;
+        ui_->dungeon_mode_ui(true);
     }
 
     core()->guru()->log("Starting main game lööp, brøther.");
