@@ -22,7 +22,8 @@ public:
     static constexpr int    GURU_CRITICAL = 3;  // Critical system failure.
 
             Guru(std::string log_filename = "");                // Opens the output log for messages.
-            ~Guru();                                            // Closes the Guru log file.
+            ~Guru();                                            // Destructor, calls cleanup code.
+    void    cleanup();                                          // Closes the system log gracefully.
     void    console_ready(bool is_ready = true);                // Tells Guru that we're ready to render Guru error messages on-screen.
     void    halt(std::string error, int a = 0, int b = 0);      // Stops the game and displays an error messge.
     void    halt(std::exception &e);                            // As above, but with an exception instead of a string.
@@ -41,11 +42,10 @@ private:
     static const char       FILENAME_LOG[];                     // The default name of the log file. Another filename can be specified with open_syslog().
     static constexpr int    HALT_FLASH_SPEED =          1000;   // The time in milliseconds that the halt screen's border flashes.
 
-    void    close_log();    // Closes the log. Only for internal use.
-
     int                 cascade_count_;     // Keeps track of rapidly-occurring, non-fatal error messages.
     bool                cascade_failure_;   // Is a cascade failure in progress?
     time_t              cascade_timer_;     // Timer to check the speed of non-halting Guru warnings, to prevent cascade locks.
+    bool                cleanup_done_;      // Has the cleanup routine already run once?
     bool                console_ready_;     // Have we fully initialized the console yet?
     bool                dead_already_;      // Have we already died? Is this crash within the Guru subsystem?
     std::ofstream       syslog_;            // The system log file.

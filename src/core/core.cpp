@@ -35,7 +35,7 @@ int main(int argc, char** argv)
     // Game manager setup and main game loop goes here.
     invictus::core()->guru()->halt("Test error!", 61050, 10248);
 
-    invictus::invictus_core = nullptr;  // Trigger destructor cleanup code.
+    invictus::core()->cleanup();    // Trigger cleanup code.
     return EXIT_SUCCESS;
 }
 
@@ -43,24 +43,31 @@ namespace invictus
 {
 
 // Constructor, sets some default values.
-Core::Core() : guru_meditation_(nullptr), terminal_(nullptr) { }
+Core::Core() : cleanup_done_(false), guru_meditation_(nullptr), terminal_(nullptr) { }
 
-// Destructor, cleans up memory used and subsystems.
-Core::~Core()
-{
-    cleanup();
-}
+// Destructor, calls cleanup code.
+Core::~Core() { cleanup(); }
 
 // Attempts to gracefully clean up memory and subsystems.
 void Core::cleanup()
 {
+    if (cleanup_done_) return;
+    cleanup_done_ = true;
     if (guru_meditation_)
     {
         guru_meditation_->log("Attempting to shut down cleanly.");
         guru_meditation_->log("Cleaning up Curses terminal.");
     }
-    terminal_ = nullptr;        // Run destructor cleanup code on Terminal.
-    guru_meditation_ = nullptr; // The Guru system goes last.
+    if (terminal_)  // Run destructor cleanup code on Terminal.
+    {
+        terminal_->cleanup();
+        terminal_ = nullptr;
+    }
+    if (guru_meditation_)   // The Guru Meditation system goes last.
+    {
+        guru_meditation_->cleanup();
+        guru_meditation_ = nullptr;
+    }
 }
 
 // Returns a pointer to the Guru Meditation object.

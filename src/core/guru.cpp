@@ -23,7 +23,8 @@ constexpr char  Guru::FILENAME_LOG[] = "log.txt";   // The default name of the l
 void guru_intercept_signal(int sig) { core()->guru()->intercept_signal(sig); }
 
 // Opens the output log for messages.
-Guru::Guru(std::string log_filename) : cascade_count_(0), cascade_failure_(false), cascade_timer_(std::time(0)), console_ready_(false), dead_already_(false)
+Guru::Guru(std::string log_filename) : cascade_count_(0), cascade_failure_(false), cascade_timer_(std::time(0)), cleanup_done_(false), console_ready_(false),
+    dead_already_(false)
 {
     if (!log_filename.size()) log_filename = Guru::FILENAME_LOG;
     FileX::delete_file(log_filename);
@@ -32,15 +33,14 @@ Guru::Guru(std::string log_filename) : cascade_count_(0), cascade_failure_(false
     this->log("Guru error-handling system is online.");
 }
 
-// Closes the Guru log file.
-Guru::~Guru()
-{
-    close_log();
-}
+// Destructor, calls cleanup code.
+Guru::~Guru() { cleanup(); }
 
-// Closes the log. Only for internal use.
-void Guru::close_log()
+// Closes the system log gracefully.
+void Guru::cleanup()
 {
+    if (cleanup_done_) return;
+    cleanup_done_ = true;
     this->log("Guru Meditation system shutting down.");
     this->log("The rest is silence.");
     syslog_.close();
@@ -65,6 +65,7 @@ void Guru::halt(std::string error, int a, int b)
     {
         std::cout << error << std::endl;
         std::cout << meditation_str << std::endl;
+        core()->cleanup();
         exit(EXIT_FAILURE);
     }
 
@@ -92,8 +93,6 @@ void Guru::halt(std::string error, int a, int b)
         {
             case Key::CLOSE:
                 core()->cleanup();
-                terminal->cleanup();
-                close_log();
                 exit(EXIT_FAILURE);
             case Key::RESIZE: needs_redraw = true; break;
         }

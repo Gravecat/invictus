@@ -49,7 +49,7 @@ Terminal::Terminal() : cursor_state_(1), has_colour_(false), initialized_(false)
     initialized_ = true;
 }
 
-// Cleans up Curses, resets the terminal to its former state.
+// Destructor, calls cleanup code.
 Terminal::~Terminal() { cleanup(); }
 
 // Draws a box around the edge of a Window.
@@ -70,16 +70,17 @@ void Terminal::box(std::shared_ptr<Window> window, Colour colour, unsigned int f
     if (colour != Colour::NONE) wattroff(win, colour_pair_code(colour) | colour_flags);
 }
 
-// Attempts to gracefully clean up Curses.
+// Cleans up Curses, resets the terminal to its former state.
 void Terminal::cleanup()
 {
-    if (!initialized_) return;
+    if (!initialized_ || cleanup_done_) return;
+    cleanup_done_ = true;
+    initialized_ = false;
     echo();                 // Re-enables keyboard input being printed to the screen (normal console behaviour)
     keypad(stdscr, false);  // Disables the numeric keypad (it's off by default)
     curs_set(1);            // Re-enables the blinking cursor
     nocbreak();             // Re-enables line buffering.
     endwin();               // Cleans up Curses internally.
-    initialized_ = false;
 }
 
 // Clears the current line.

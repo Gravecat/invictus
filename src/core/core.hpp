@@ -19,13 +19,14 @@ class Core
 {
 public:
             Core();     // Constructor, sets some default values.
-            ~Core();    // Destructor, cleans up memory used and subsystems.
+            ~Core();    // Destructor, calls cleanup code.
     void    cleanup();          // Attempts to gracefully clean up memory and subsystems.
     const std::shared_ptr<Guru>         guru() const;   // Returns a pointer to the Guru Meditation object.
     void    init(std::vector<std::string> parameters);  // Sets up the core game classes and data, and the terminal subsystem.
     const std::shared_ptr<Terminal>     terminal() const;   // Returns a pointer to the terminal emulator object.
 
 private:
+    bool                        cleanup_done_;      // Has the cleanup routine already run once?
     std::shared_ptr<Guru>       guru_meditation_;   // The Guru Meditation error-handling system.
     std::shared_ptr<Terminal>   terminal_;  // The Terminal class, which handles low-level interaction with terminal emulation libraries.
 };

@@ -23,9 +23,9 @@ class Terminal
 {
 public:
                 Terminal();     // Sets up the Curses terminal.
-                ~Terminal();    // Cleans up Curses, resets the terminal to its former state.
+                ~Terminal();    // Destructor, calls cleanup code.
     void        box(std::shared_ptr<Window> window = nullptr, Colour colour = Colour::NONE, unsigned int flags = 0);    // Draws a box around the edge of a Window.
-    void        cleanup();      // Attempts to gracefully clean up Curses.
+    void        cleanup();      // Cleans up Curses, resets the terminal to its former state.
     void        clear_line(std::shared_ptr<Window> window = nullptr);   // Clears the current line.
     void        cls(std::shared_ptr<Window> window = nullptr);          // Clears the screen.
     void        flip();     // Updates the screen.
@@ -49,6 +49,7 @@ public:
 private:
     unsigned long   colour_pair_code(Colour col);   // Returns a colour pair code.
 
+    bool    cleanup_done_;  // Has the cleanup routine already run once?
     int     cursor_state_;  // The current state of the cursor.
     bool    has_colour_;    // The terminal has colour support.
     bool    initialized_;   // Has Curses been initialized?
