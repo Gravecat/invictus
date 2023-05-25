@@ -26,7 +26,8 @@ Area::Area(int width, int height) : cleanup_done_(false), needs_fov_recalc_(true
 {
     if (width < 0 || height < 0) core()->guru()->halt("Invalid Area size", width, height);
     tiles_ = new Tile[width * height]();
-    visible_ = new uint8_t[width * height];
+    visible_ = new bool[width * height];
+    std::fill_n(visible_, width * height, false);
 }
 
 // Destructor, cleans up memory.
@@ -102,15 +103,12 @@ float Area::grid_distance(int x, int y, int x2, int y2) const
 uint16_t Area::height() const { return size_y_; }
 
 // Checks if a given Tile is within the player's field of view.
-uint8_t Area::is_in_fov(int x, int y, bool previous_fov)
+uint8_t Area::is_in_fov(int x, int y)
 {
     if (x < 0 || y < 0 || x >= width() || y >= height()) core()->guru()->halt("Invalid map tile requested!", x, y);
     auto player = core()->game()->player();
     if (player->is_at(x, y)) return true;
-    int result = visible_[x + (y * size_x_)];
-    if (previous_fov && result >= 1) return result;
-    else if (!previous_fov && result == 2) return result;
-    else return 0;
+    return visible_[x + (y * size_x_)];
 }
 
 // Checks if a given Tile is blocking light.
@@ -134,8 +132,7 @@ void Area::recalc_fov()
 {
     if (!needs_fov_recalc_) return;
 
-    for (unsigned int i = 0; i < size_x_ * size_y_; i++)
-        if (visible_[i] > 0) visible_[i]--;
+    std::fill_n(visible_, size_x_ * size_y_, false);
     auto game = core()->game();
     auto player = game->player();
     Shadowcast::calc_fov(this, player->x(), player->y(), player->fov_radius());
@@ -184,7 +181,7 @@ void Area::render()
             bool is_explored = the_tile->tag(TileTag::Explored);
             if (!is_visible && !is_explored) continue;
 
-            terminal->put(the_tile->ascii(), ox, oy, the_tile->colour(), 0, dungeon_view);
+            terminal->put(the_tile->ascii(), ox, oy, (is_visible ? the_tile->colour() : Colour::BLUE), 0, dungeon_view);
         }
     }
 
@@ -211,7 +208,8 @@ void Area::set_tile(int x, int y, TileID tile_id)
 void Area::set_visible(int x, int y)
 {
     if (x < 0 || y < 0 || x >= width() || y >= height()) core()->guru()->halt("Invalid map tile requested!", x, y);
-    visible_[x + (y * size_x_)] = 2;
+    visible_[x + (y * size_x_)] = true;
+    tile(x, y)->set_tag(TileTag::Explored);
 }
 
 // Gets a specified Tile.

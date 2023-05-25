@@ -33,7 +33,7 @@ public:
     float       fov_distance(int x, int y, int x2, int y2);     // Checks the distance between two points, returns -1 if something opaque is in the way.
     float       grid_distance(int x, int y, int x2, int y2) const;  // Calculates the distance between two points, regardless of line of sight.
     uint16_t    height() const;     // Read-only access to the Area's height.
-    uint8_t     is_in_fov(int x, int y, bool previous_fov = false); // Checks if a given Tile is within the player's field of view.
+    uint8_t     is_in_fov(int x, int y);    // Checks if a given Tile is within the player's field of view.
     bool        is_opaque(int x, int y);    // Checks if a given Tile is blocking light.
     void        need_fov_recalc();  // Marks the Area as needing a FoV recalc.
     int         offset_x() const;   // Retrieves the view offset on the X axis.
@@ -54,7 +54,7 @@ private:
     int         offset_x_, offset_y_;   // Screen rendering offsets.
     uint16_t    size_x_, size_y_;   // The X/Y dimensions of this Area.
     Tile*       tiles_;     // An array of Tiles that make up this Area.
-    uint8_t*    visible_;   // Which tiles are currently visible by the player.
+    bool*       visible_;   // Which tiles are currently visible by the player.
 };
 
 }       // namespace invictus
