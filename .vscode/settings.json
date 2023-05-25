@@ -65,6 +65,7 @@
         "cfenv": "cpp",
         "cinttypes": "cpp",
         "iostream": "cpp",
-        "sstream": "cpp"
+        "sstream": "cpp",
+        "set": "cpp"
     }
 }
