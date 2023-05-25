@@ -5,7 +5,6 @@
 #define FACTORY_FACTORY_TILE_HPP_
 
 #include <cstdint>
-#include <memory>
 
 
 namespace invictus
@@ -20,7 +19,7 @@ enum class TileID : uint16_t { VOID_TILE = 0, FLOOR_STONE, WALL_STONE, STAIRS_DO
 class FactoryTile
 {
 public:
-    static void generate(std::shared_ptr<Tile> tile, TileID id);    // Generates a preset Tile.
+    static void generate(Tile* tile, TileID id);    // Generates a preset Tile.
 };
 
 }       // namespace invictus

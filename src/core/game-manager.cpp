@@ -1,9 +1,11 @@
 // core/game-manager.cpp -- The GameManager class manages the currently-running game state, as well as handling save/load functions.
 // Copyright © 2023 Raine "Gravecat" Simmons. Licensed under the GNU Affero General Public License v3 or any later version.
 
+#include "area/area.hpp"
 #include "core/core.hpp"
 #include "core/game-manager.hpp"
 #include "core/guru.hpp"
+#include "entity/player.hpp"
 #include "terminal/terminal.hpp"
 #include "ui/ui.hpp"
 
@@ -12,11 +14,15 @@ namespace invictus
 {
 
 // Constructor, sets default values.
-GameManager::GameManager() : cleanup_done_(false), game_state_(GameState::INITIALIZING), ui_(std::make_shared<UI>())
+GameManager::GameManager() : area_(nullptr), cleanup_done_(false), game_state_(GameState::INITIALIZING), player_(std::make_shared<Player>()),
+    ui_(std::make_shared<UI>())
 { core()->guru()->log("Game manager ready!"); }
 
 // Destructor, calls cleanup code.
 GameManager::~GameManager() { cleanup(); }
+
+// Returns a pointer to the currently-loaded Area, if any.
+const std::shared_ptr<Area> GameManager::area() const { return area_; }
 
 // Cleans up anything that needs cleaning up.
 void GameManager::cleanup()
@@ -29,6 +35,12 @@ void GameManager::cleanup()
         ui_->cleanup();
         ui_ = nullptr;
     }
+    if (area_)
+    {
+        area_->cleanup();
+        area_ = nullptr;
+    }
+    if (player_) player_ = nullptr;
 }
 
 // Brøther, may I have some lööps?
@@ -55,6 +67,9 @@ void GameManager::game_loop()
 
 // Retrieves the current state of the game.
 GameState GameManager::game_state() const { return game_state_; }
+
+// Returns a pointer to the player character object.
+const std::shared_ptr<Player> GameManager::player() const { return player_; }
 
 // Sets the game state.
 void GameManager::set_game_state(GameState new_state) { game_state_ = new_state; }

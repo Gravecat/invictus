@@ -12,7 +12,7 @@ namespace invictus
 {
 
 // Generates a preset Tile.
-void FactoryTile::generate(std::shared_ptr<Tile> tile, TileID id)
+void FactoryTile::generate(Tile* tile, TileID id)
 {
     if (!tile) core()->guru()->halt("Attempt to generate nullptr tile!");
     tile->tags_.clear();

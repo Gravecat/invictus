@@ -10,7 +10,9 @@
 namespace invictus
 {
 
-class UI;   // defined in ui/ui.hpp
+class Area;     // defined in area/area.hpp
+class Player;   // defined in entity/player.hpp
+class UI;       // defined in ui/ui.hpp
 
 
 enum class GameState : uint8_t { INITIALIZING, QUIT };
@@ -24,12 +26,17 @@ public:
     void        game_loop();        // Brøther, may I have some lööps?
     GameState   game_state() const; // Retrieves the current state of the game.
     void        set_game_state(GameState new_state);    // Sets the game state.
-    const std::shared_ptr<UI>   ui() const; // Returns a pointer to the user interface manager.
+
+    const std::shared_ptr<Area>     area() const;   // Returns a pointer to the currently-loaded Area, if any.
+    const std::shared_ptr<Player>   player() const; // Returns a pointer to the player character object.
+    const std::shared_ptr<UI>       ui() const;     // Returns a pointer to the user interface manager.
 
 private:
-    bool        cleanup_done_;  // Has the cleanup routine already run once?
-    GameState   game_state_;    // The current game state.
-    std::shared_ptr<UI> ui_;    // The user interface manager.
+    std::shared_ptr<Area>   area_;  // The currently-loaded Area of the game world.
+    bool        cleanup_done_;      // Has the cleanup routine already run once?
+    GameState   game_state_;        // The current game state.
+    std::shared_ptr<Player> player_;    // The player character object.
+    std::shared_ptr<UI> ui_;        // The user interface manager.
 };
 
 }       // namespace invictus

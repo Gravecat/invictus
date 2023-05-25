@@ -1,0 +1,170 @@
+// area/area.cpp -- The Area class, which defines an area in the game world that the player can move around in.
+// Copyright © 2023 Raine "Gravecat" Simmons. Licensed under the GNU Affero General Public License v3 or any later version.
+
+#include <algorithm>
+#include <cmath>
+
+#include "area/area.hpp"
+#include "area/tile.hpp"
+#include "core/core.hpp"
+#include "core/game-manager.hpp"
+#include "core/guru.hpp"
+#include "entity/player.hpp"
+#include "factory/factory-tile.hpp"
+#include "util/bresenham.hpp"
+
+
+namespace invictus
+{
+
+// Constructor, creates a new empty Area.
+Area::Area(int width, int height) : cleanup_done_(false), needs_fov_recalc_(true), offset_x_(0), offset_y_(0), size_x_(width), size_y_(height)
+{
+    if (width < 0 || height < 0) core()->guru()->halt("Invalid Area size", width, height);
+    tiles_ = new Tile[width * height]();
+    visible_ = new uint8_t[width * height];
+}
+
+// Destructor, cleans up memory.
+Area::~Area() { cleanup(); }
+
+// Checks if the a Mobile can walk onto a specified tile.
+bool Area::can_walk(int x, int y)
+{
+    if (x < 0 || y < 0 || x >= size_x_ || y >= size_y_) return false;
+    if (tile(x, y)->tag(TileTag::BlocksMovement)) return false;
+    //for (auto actor : *actors())
+        //if (actor->blocks_tile(x, y)) return false;
+    return true;
+}
+
+// Cleans up memory used.
+void Area::cleanup()
+{
+    if (cleanup_done_) return;
+    cleanup_done_ = true;
+    if (tiles_)
+    {
+        delete[] tiles_;
+        tiles_ = nullptr;
+    }
+    if (visible_)
+    {
+        delete[] visible_;
+        visible_ = nullptr;
+    }
+}
+
+// Returns the vector of Entities within this Area.
+std::vector<std::shared_ptr<Entity>>* Area::entities() { return &entities_; }
+
+// Finds an Entity's index on the list of Entities.
+uint32_t Area::entity_index(std::shared_ptr<Entity> entity)
+{ return std::distance(entities()->begin(), std::find(entities()->begin(), entities()->end(), entity)); }
+
+// Finds a tile with the specified tag.
+std::pair<int, int> Area::find_tile_tag(TileTag tag)
+{
+    for (int x = 0; x < size_x_; x++)
+        for (int y = 0; y < size_y_; y++)
+            if (tiles_[x + (y * size_x_)].tag(tag)) return {x, y};
+    return {0, 0};
+}
+
+// Checks the distance between two points, returns -1 if something opaque is in the way.
+float Area::fov_distance(int x, int y, int x2, int y2)
+{
+    const int x1 = x, y1 = y;
+    auto bresenham = std::make_unique<BresenhamLine>(x, y, x2, y2);
+    do
+    {
+        if (tile(x, y)->tag(TileTag::BlocksLight) && (x != x2 || y != y2)) return -1;
+        std::pair<int, int> result = bresenham->step();
+        x = result.first;
+        y = result.second;
+    } while(x != x2 || y != y2);
+
+    return grid_distance(x1, y1, x2, y2);
+}
+
+// Calculates the distance between two points, regardless of line of sight.
+float Area::grid_distance(int x, int y, int x2, int y2) const
+{
+    int xm = x2 - x, ym = y2 - y;
+    return sqrtf((xm * xm) + (ym * ym));
+}
+
+// Read-only access to the Area's height.
+uint16_t Area::height() const { return size_y_; }
+
+// Checks if a given Tile is within the player's field of view.
+uint8_t Area::is_in_fov(int x, int y, bool previous_fov)
+{
+    if (x < 0 || y < 0 || x >= width() || y >= height()) core()->guru()->halt("Invalid map tile requested!", x, y);
+    auto player = core()->game()->player();
+    if (player->is_at(x, y)) return true;
+    int result = visible_[x + (y * size_x_)];
+    if (previous_fov && result >= 1) return result;
+    else if (!previous_fov && result == 2) return result;
+    else return 0;
+}
+
+// Checks if a given Tile is blocking light.
+bool Area::is_opaque(int x, int y)
+{
+    if (tile(x, y)->tag(TileTag::BlocksLight)) return true;
+    return false;
+}
+
+// Marks the Area as needing a FoV recalc.
+void Area::need_fov_recalc() { needs_fov_recalc_ = true; }
+
+// Retrieves the view offset on the X axis.
+int Area::offset_x() const { return offset_x_; }
+
+// Retrieves the view offset on the Y axis.
+int Area::offset_y() const { return offset_y_; }
+
+// Recalculates the player's field of view.
+void Area::recalc_fov() { } // TBC
+
+// Renders this Area on the screen.
+void Area::render() { } // TBC
+
+// Sets a Tile to something else.
+void Area::set_tile(int x, int y, TileID tile_id)
+{
+    if (x < 0 || y < 0 || x >= width() || y >= height()) core()->guru()->halt("Invalid map tile requested!", x, y);
+    FactoryTile::generate(&tiles_[x + (y * size_x_)], tile_id);
+}
+
+// Sets a specified Tile as visible.
+void Area::set_visible(int x, int y)
+{
+    if (x < 0 || y < 0 || x >= width() || y >= height()) core()->guru()->halt("Invalid map tile requested!", x, y);
+    visible_[x + (y * size_x_)] = 2;
+}
+
+// Gets a specified Tile.
+Tile* Area::tile(int x, int y)
+{
+    if (x < 0 || y < 0 || x >= size_x_ || y >= size_y_) core()->guru()->halt("Invalid map tile requested!", x, y);
+    return &tiles_[x + (y * size_x_)];
+}
+
+// Erases this entire Area.
+void Area::void_area()
+{
+    for (int i = 0; i < size_x_ * size_y_; i++)
+    {
+        FactoryTile::generate(&tiles_[i], TileID::VOID_TILE);
+        visible_[i] = 0;
+    }
+    entities_.clear();
+    entities_.push_back(core()->game()->player());
+}
+
+// Read-only access to the Area's width.
+uint16_t Area::width() const { return size_x_; }
+
+}   // namespace invictus
