@@ -7,13 +7,20 @@
 [![total lines](https://img.shields.io/tokei/lines/github/gravecat/invictus?color=blue&style=plastic)](https://github.com/Gravecat/invictus)
 [![code size](https://img.shields.io/github/languages/code-size/gravecat/invictus?color=blueviolet&style=plastic)](https://github.com/Gravecat/invictus)
 
-Morior Invictus is an open-source, traditional roguelike game currently in the very, *very* early stages of development. [See here](building.md) for build instructions, and if you're interested in contributing to the project, please also see the [code of conduct](CODE_OF_CONDUCT.md) and [contributing guidelines](CONTRIBUTING.md).
+Morior Invictus is an open-source, traditional roguelike game currently in the very, *very* early stages of development. [See here](building.md) for build
+instructions, and if you're interested in contributing to the project, please also see the [code of conduct](CODE_OF_CONDUCT.md) and
+[contributing guidelines](CONTRIBUTING.md).
 
 
 # COPYRIGHT & LICENSE
 
-Morior Invictus is copyright © 2023 [Raine "Gravecat" Simmons](https://github.com/Gravecat). The game is free and open-source, licensed under the [GNU Affero General Public License v3 or any later version](https://www.gnu.org/licenses/agpl-3.0.en.html).
+Morior Invictus is copyright © 2023 [Raine "Gravecat" Simmons](https://github.com/Gravecat). The game is free and open-source, licensed under the
+[GNU Affero General Public License v3 or any later version](https://www.gnu.org/licenses/agpl-3.0.en.html).
 
 [PDCurses](https://github.com/wmcbrine/PDCurses) maintained by William McBrine.
 
-GCC runtime library DLLs and any embedded GCC library code is copyright © Free Software Foundation, Inc., distrubuted under the GCC Runtime Library Exception, version 3.1 of the GNU General Public License version 3.
+Shadowcasting algorithm based on code from [RogueBasin](https://www.roguebasin.com/index.php/C%2B%2B_shadowcasting_implementation), based on Björn Bergström's
+shadowcasting method.
+
+GCC runtime library DLLs and any embedded GCC library code is copyright © Free Software Foundation, Inc., distrubuted under the GCC Runtime Library Exception,
+version 3.1 of the GNU General Public License version 3.
