@@ -14,7 +14,10 @@ class Player : public Mobile
 {
 public:
                 Player();   // Constructor.
+    void        close_a_door(); // Attempts to close a nearby door.
     uint16_t    fov_radius() const; // Calculates the player's field-of-view radius.
+    void        get_direction(int *dx, int *dy) const;      // Gets a direction from the player.
+    void        open_a_door();  // Attempts to open a nearby door.
     EntityType  type() const { return EntityType::PLAYER; } // Self-identifier function.
 
 private:

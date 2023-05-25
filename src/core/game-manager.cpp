@@ -62,6 +62,8 @@ void GameManager::dungeon_input(int key)
         case 'y': case Key::KP7: dx = -1; dy = -1; break;   // Move northwest
         case 'u': case Key::KP9: dx = 1; dy = -1; break;    // Move northeast
         case ',': case Key::KP5: pass_time(Timing::TIME_DO_NOTHING); break; // Do nothing.
+        case 'o': player_->open_a_door(); break;            // Attempts to open something.
+        case 'c': player_->close_a_door(); break;           // Attempts to close something.
     }
 
     if (dx || dy)

@@ -7,6 +7,7 @@
 #include "core/game-manager.hpp"
 #include "core/guru.hpp"
 #include "entity/mobile.hpp"
+#include "util/strx.hpp"
 #include "world/timing.hpp"
 
 
@@ -36,6 +37,49 @@ float Mobile::banked_ticks() const { return banked_ticks_; }
 
 // Erase all banked ticks on this Mobile.
 void Mobile::clear_banked_ticks() { banked_ticks_ = 0; }
+
+// Attempts to close a door.
+void Mobile::close_door(int dx, int dy)
+{
+    auto area = core()->game()->area();
+    bool success = true;
+    const bool is_player = (type() == EntityType::PLAYER);
+    for (auto mobile : *area->entities())
+    {
+        if (mobile->is_at(dx, dy))
+        {
+            success = false;
+            break;
+        }
+    }
+
+    auto the_tile = area->tile(dx, dy);
+    std::string door_name = the_tile->name();
+    StrX::find_and_replace(door_name, " (open)", "");
+    if (!success)
+    {
+        if (is_player) core()->message("{y}You can't close it, something seems to be blocking the " + door_name + ".");
+        return;
+    }
+
+    if (is_player)
+    {
+        core()->game()->pass_time(Timing::TIME_CLOSE_DOOR);
+        core()->message("You close the " + door_name + ".");
+    }
+    else
+    {
+        spend_banked_ticks(Timing::TIME_CLOSE_DOOR);
+        if (area->is_in_fov(dx, dy)) core()->message("{b}You see a " + door_name + " close.");
+    }
+    
+    the_tile->set_ascii('+');
+    the_tile->set_tag(TileTag::Openable);
+    the_tile->set_tag(TileTag::BlocksLight);
+    the_tile->clear_tag(TileTag::Closeable);
+    the_tile->clear_tag(TileTag::Open);
+    area->need_fov_recalc();
+}
 
 // Checks if this Mobile is dead.
 bool Mobile::is_dead() const { return false; }

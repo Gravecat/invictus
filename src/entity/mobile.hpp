@@ -17,6 +17,7 @@ public:
     void            add_banked_ticks(float amount); // Adds or removes banked ticks to this Mobile.
     float           banked_ticks() const;   // Retrieves the amount of ticks banked by this Mobile.
     void            clear_banked_ticks();   // Erase all banked ticks on this Mobile.
+    void            close_door(int dx, int dy); // Attempts to close a door.
     bool            is_dead() const;        // Checks if this Mobile is dead.
     virtual bool    move_or_attack(std::shared_ptr<Mobile> self, int dx, int dy);   // Moves in a given direction, or attacks something in the destination tile.
     float           movement_speed() const; // Returns the amount of ticks needed for this Mobile to move one tile.
