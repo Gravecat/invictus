@@ -60,6 +60,7 @@ endif(TARGET_WINDOWS)
 # Source files.
 set(INVICTUS_CPPS
   core/core.cpp
+  core/game-manager.cpp
   core/guru.cpp
   core/prefs.cpp
   dev/acs-display.cpp

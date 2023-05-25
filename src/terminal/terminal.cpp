@@ -5,6 +5,7 @@
 #include <panel.h>
 
 #include "core/core.hpp"
+#include "core/game-manager.hpp"
 #include "core/guru.hpp"
 #include "core/prefs.hpp"
 #include "terminal/terminal.hpp"
@@ -75,6 +76,7 @@ void Terminal::box(std::shared_ptr<Window> window, Colour colour, unsigned int f
 void Terminal::cleanup()
 {
     if (!initialized_ || cleanup_done_) return;
+    if (core()->guru()) core()->guru()->log("Cleaning up Curses terminal.");
     cleanup_done_ = true;
     initialized_ = false;
     echo();                 // Re-enables keyboard input being printed to the screen (normal console behaviour)
@@ -207,7 +209,9 @@ int Terminal::get_key(std::shared_ptr<Window> window)
             return Key::RESIZE;
         }
         case 1: case 2: return key_raw_;
-        case 3: return Key::CLOSE;
+        case 3: case 0x130:
+            if (core()->game()) core()->game()->set_game_state(GameState::QUIT);
+            return Key::CLOSE;
         case KEY_BACKSPACE: return Key::BACKSPACE;
         case KEY_DC: return Key::DELETE;
         case KEY_DOWN: return Key::ARROW_DOWN;
@@ -234,7 +238,6 @@ int Terminal::get_key(std::shared_ptr<Window> window)
         case KEY_UP: return Key::ARROW_UP;
         case 0xA3: return Key::POUND;
         case 0xAC: return Key::NOT;
-        case 0x130: return Key::CLOSE;
 #ifdef INVICTUS_TARGET_WINDOWS
         case KEY_A1: return Key::KP7;
         case KEY_A2: return Key::KP8;

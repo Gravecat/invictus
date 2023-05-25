@@ -6,6 +6,7 @@
 #include <iostream>
 
 #include "core/core.hpp"
+#include "core/game-manager.hpp"
 #include "core/guru.hpp"
 #include "core/prefs.hpp"
 #include "dev/acs-display.hpp"
@@ -41,32 +42,35 @@ int main(int argc, char** argv)
     }
     if (!invictus::invictus_core) return EXIT_FAILURE;  // This should never happen, but just in case...
 
-    // Check for command-line options.
-    bool normal_start = true;
-    if (parameters.size() >= 2)
+    try
     {
-        for (auto param : parameters)
+        // Check for command-line options.
+        bool normal_start = true;
+        if (parameters.size() >= 2)
         {
-            if (!param.compare("-keycode-check"))
+            for (auto param : parameters)
             {
-                invictus::DevKeycodeCheck::begin();
-                normal_start = false;
-            }
-            if (!param.compare("-acs-display"))
-            {
-                invictus::DevACSDisplay::display_test();
-                normal_start = false;
+                if (!param.compare("-keycode-check"))
+                {
+                    invictus::DevKeycodeCheck::begin();
+                    normal_start = false;
+                }
+                if (!param.compare("-acs-display"))
+                {
+                    invictus::DevACSDisplay::display_test();
+                    normal_start = false;
+                }
             }
         }
-    }
+        parameters.clear();
 
-    if (normal_start)
-    {
-        // Game manager setup and main game loop goes here.
-        invictus::core()->guru()->halt("Test error!", 61050, 10248);
+        // Start the main game loop, unless we're running an abnormal start.
+        if (normal_start) invictus::core()->game()->game_loop();
     }
+    catch (std::exception &e) { invictus::core()->guru()->halt(e); }
 
-    invictus::core()->cleanup();    // Trigger cleanup code.
+    // Trigger cleanup code.
+    invictus::core()->cleanup();
     return EXIT_SUCCESS;
 }
 
@@ -74,7 +78,7 @@ namespace invictus
 {
 
 // Constructor, sets some default values.
-Core::Core() : cleanup_done_(false), guru_meditation_(nullptr), prefs_(nullptr), terminal_(nullptr) { }
+Core::Core() : cleanup_done_(false), game_manager_(nullptr), guru_meditation_(nullptr), prefs_(nullptr), terminal_(nullptr) { }
 
 // Destructor, calls cleanup code.
 Core::~Core() { cleanup(); }
@@ -84,12 +88,13 @@ void Core::cleanup()
 {
     if (cleanup_done_) return;
     cleanup_done_ = true;
-    if (guru_meditation_)
+    if (guru_meditation_) guru_meditation_->log("Attempting to shut down cleanly.");
+    if (game_manager_)  // Clean up the high-level game state.
     {
-        guru_meditation_->log("Attempting to shut down cleanly.");
-        guru_meditation_->log("Cleaning up Curses terminal.");
+        game_manager_->cleanup();
+        game_manager_ = nullptr;
     }
-    if (terminal_)  // Run destructor cleanup code on Terminal.
+    if (terminal_)  // Run cleanup code on Terminal.
     {
         terminal_->cleanup();
         terminal_ = nullptr;
@@ -101,6 +106,9 @@ void Core::cleanup()
     }
     prefs_ = nullptr;   // There should be no destructor/cleanup code to worry about here.
 }
+
+// Returns a pointer to the GameManager object.
+const std::shared_ptr<GameManager> Core::game() const { return game_manager_; }
 
 // Returns a pointer to the Guru Meditation object.
 const std::shared_ptr<Guru> Core::guru() const
@@ -123,6 +131,9 @@ void Core::init(std::vector<std::string>)
     prefs_ = std::make_shared<Prefs>("userdata/prefs.txt");
     prefs_->load();
     prefs_->save();
+
+    // Set up the game manager.
+    game_manager_ = std::make_shared<GameManager>();
 
     // Sets up the terminal emulator (Curses)
     terminal_ = std::make_shared<Terminal>();
