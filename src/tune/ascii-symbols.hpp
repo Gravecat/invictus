@@ -23,6 +23,7 @@ constexpr char  ASCII_WALL =        '#';    // Walls.
 constexpr char  ASCII_TOMB =        '%';    // Tombs, coffins, etc.
 
 // & (38, ampersand)
+constexpr char  ASCII_STACK =       '&';    // A stack of multiple items.
 
 // ' (39, single quote)
 constexpr char  ASCII_DOOR_OPEN =   '\'';   // Open doors.

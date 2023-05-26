@@ -13,6 +13,7 @@
 #include "entity/player.hpp"
 #include "terminal/terminal.hpp"
 #include "terminal/window.hpp"
+#include "tune/ascii-symbols.hpp"
 #include "tune/message-log.hpp"
 #include "ui/bars.hpp"
 #include "ui/nearby.hpp"
@@ -43,7 +44,7 @@ void Nearby::render()
 
     for (auto entity : *area->entities())
     {
-        if (!entity->is_in_fov()) continue;
+        if (!entity->is_in_fov() || entity->is_at(player->x(), player->y())) continue;
         auto entity_type = entity->type();
         if (entity_type != EntityType::ITEM && entity_type != EntityType::MOBILE) continue;
         bool is_item = false;
@@ -70,7 +71,7 @@ void Nearby::render()
                         item_stack_listed = true;
                         auto stack = std::make_shared<Item>();
                         stack->set_name("multiple items");
-                        stack->set_ascii('&');
+                        stack->set_ascii(ASCII_STACK);
                         stack->set_colour(Colour::MAGENTA);
                         items.push_back(stack);
                     }
