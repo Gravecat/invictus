@@ -4,13 +4,14 @@
 #include "area/tile.hpp"
 #include "codex/codex-tile.hpp"
 #include "terminal/terminal-shared-defs.hpp"
+#include "tune/ascii-symbols.hpp"
 
 
 namespace invictus
 {
 
 // Constructor.
-Tile::Tile() : ascii_('.'), colour_(Colour::WHITE), id_(TileID::VOID_TILE), name_("tile") { }
+Tile::Tile() : ascii_(ASCII_NOTHING), colour_(Colour::WHITE), id_(TileID::VOID_TILE), name_("tile") { }
 
 // Get the ASCII character for this Tile.
 char Tile::ascii() const { return ascii_; }
