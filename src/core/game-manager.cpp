@@ -86,17 +86,15 @@ void GameManager::game_loop()
     }
 
     core()->guru()->log("Starting main game lööp, brøther.");
-    while (game_state_ != GameState::QUIT)
+    while (true)
     {
         ui_->render();
 
         int key = terminal->get_key();
-        if (key == Key::CLOSE) break;
-        else if (key == Key::RESIZE) ui_->window_resized();
+        if (key == Key::RESIZE) ui_->window_resized();
 
         switch(game_state_)
         {
-            case GameState::QUIT: return;
             case GameState::DUNGEON: dungeon_input(key); break;
             case GameState::INITIALIZING: case GameState::NEW_GAME:
                 guru->halt("Invalid game state!", static_cast<int>(game_state_));

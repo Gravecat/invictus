@@ -84,7 +84,7 @@ void Player::get_direction(int *dx, int *dy) const
     *dx = *dy = 0;
     int key = 0;
     core()->message("{C}Which direction? (Direction key to choose, cancel key to abort.)");
-    while (key != Key::CLOSE)
+    while (true)
     {
         core()->game()->ui()->redraw_message_log();
         core()->game()->ui()->render();

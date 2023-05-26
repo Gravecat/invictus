@@ -226,8 +226,8 @@ int Terminal::get_key(std::shared_ptr<Window> window)
         }
         case 1: case 2: return key_raw_;
         case 3: case 0x130:
-            if (core()->game()) core()->game()->set_game_state(GameState::QUIT);
-            return Key::CLOSE;
+            core()->cleanup();
+            exit(EXIT_SUCCESS);
         case KEY_BACKSPACE: return Key::BACKSPACE;
         case KEY_DC: return Key::DELETE;
         case KEY_DOWN: return Key::ARROW_DOWN;

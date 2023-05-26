@@ -35,10 +35,6 @@ void DevKeycodeCheck::begin()
             case 10: key_str = "{G}Enter{g}, {G}LF{g}, or {G}Ctrl-J"; break;
             case 13: key_str = "{G}CR {g}or {G}Ctrl-M"; break;
             case 27: key_str = "{G}Escape"; break;
-            case Key::CLOSE:
-                if (key_raw == 3) key_str = "{G}Ctrl-C";
-                else if (key_raw == 0x130) key_str = "{G}Alt-F4";
-                break;
             case Key::ARROW_UP: key_str = "{G}Arrow Up"; break;
             case Key::ARROW_DOWN: key_str = "{G}Arrow Down"; break;
             case Key::ARROW_LEFT: key_str = "{G}Arrow Left"; break;
@@ -70,7 +66,7 @@ void DevKeycodeCheck::begin()
         terminal->cls();
         terminal->print(message, 1, 1);
         terminal->flip();
-    } while (key != Key::CLOSE);
+    } while (true);
 
     terminal->print("{W}Please press any key to exit.", 1, 3);
     terminal->get_key();

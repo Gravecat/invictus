@@ -69,8 +69,7 @@ int Menu::render()
 
         ui->render(true);
         key = terminal->get_key();
-        if (key == Key::CLOSE) exit(0);
-        else if (key == Key::RESIZE)
+        if (key == Key::RESIZE)
         {
             redraw = true;
             ui->window_resized();

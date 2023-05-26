@@ -74,7 +74,6 @@ void Guru::halt(std::string error, int a, int b)
     
     auto terminal = core()->terminal();
     auto guru_window = std::make_shared<Window>(43, 9, 0, 0, true);
-    int key;
 
     while (true)
     {
@@ -88,14 +87,7 @@ void Guru::halt(std::string error, int a, int b)
             terminal->flip();
             needs_redraw = false;
         }
-        key = terminal->get_key();
-        switch (key)
-        {
-            case Key::CLOSE:
-                core()->cleanup();
-                exit(EXIT_FAILURE);
-            case Key::RESIZE: needs_redraw = true; break;
-        }
+        if (terminal->get_key() == Key::RESIZE) needs_redraw = true;
     }
 }
 
