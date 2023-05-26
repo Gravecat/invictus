@@ -9,14 +9,13 @@
 #include "core/guru.hpp"
 #include "terminal/terminal.hpp"
 #include "terminal/window.hpp"
+#include "tune/error-handling.hpp"
 #include "util/filex.hpp"
 #include "util/strx.hpp"
 
 
 namespace invictus
 {
-
-constexpr char  Guru::FILENAME_LOG[] = "log.txt";   // The default name of the log file. Another filename can be specified with open_syslog().
 
 
 // This has to be a non-class function because C.
@@ -26,9 +25,10 @@ void guru_intercept_signal(int sig) { core()->guru()->intercept_signal(sig); }
 Guru::Guru(std::string log_filename) : cascade_count_(0), cascade_failure_(false), cascade_timer_(std::time(0)), cleanup_done_(false), console_ready_(false),
     dead_already_(false)
 {
-    if (!log_filename.size()) log_filename = Guru::FILENAME_LOG;
+    if (!log_filename.size()) exit(EXIT_FAILURE);
     FileX::delete_file(log_filename);
     syslog_.open(log_filename.c_str());
+    if (!syslog_.is_open()) exit(EXIT_FAILURE);
     this->log("Welcome to Morior Invictus!");
     this->log("Guru error-handling system is online.");
 }
@@ -52,11 +52,11 @@ void Guru::console_ready(bool is_ready) { console_ready_ = is_ready; }
 // Guru meditation error.
 void Guru::halt(std::string error, int a, int b)
 {
-    this->log("Software Failure, Halting Execution", Guru::GURU_CRITICAL);
-    this->log(error, Guru::GURU_CRITICAL);
+    this->log("Software Failure, Halting Execution", GURU_CRITICAL);
+    this->log(error, GURU_CRITICAL);
     if (dead_already_)
     {
-        log("Detected cleanup in process, attempting to die peacefully.", Guru::GURU_WARN);
+        log("Detected cleanup in process, attempting to die peacefully.", GURU_WARN);
         exit(EXIT_FAILURE);
     }
     else dead_already_ = true;
@@ -158,10 +158,10 @@ void Guru::log(std::string msg, int type)
     std::string txt_tag;
     switch(type)
     {
-        case Guru::GURU_INFO: break;
-        case Guru::GURU_WARN: txt_tag = "[WARN] "; break;
-        case Guru::GURU_ERROR: txt_tag = "[ERROR] "; break;
-        case Guru::GURU_CRITICAL: txt_tag = "[CRITICAL] "; break;
+        case GURU_INFO: break;
+        case GURU_WARN: txt_tag = "[WARN] "; break;
+        case GURU_ERROR: txt_tag = "[ERROR] "; break;
+        case GURU_CRITICAL: txt_tag = "[CRITICAL] "; break;
     }
 
     char* buffer = new char[32];
@@ -182,10 +182,10 @@ void Guru::nonfatal(std::string error, int type)
     std::string colour;
     switch(type)
     {
-        case Guru::GURU_WARN: cascade_weight = Guru::CASCADE_WEIGHT_WARNING; colour = "{Y}[WARNING] "; break;
-        case Guru::GURU_ERROR: cascade_weight = Guru::CASCADE_WEIGHT_ERROR; colour = "{R}[ERROR] "; break;
-        case Guru::GURU_CRITICAL: cascade_weight = Guru::CASCADE_WEIGHT_CRITICAL; colour = "{R}[CRITICAL] "; break;
-        default: nonfatal("Nonfatal error reported with incorrect severity specified.", Guru::GURU_WARN); break;
+        case GURU_WARN: cascade_weight = ERROR_CASCADE_WEIGHT_WARNING; colour = "{Y}[WARNING] "; break;
+        case GURU_ERROR: cascade_weight = ERROR_CASCADE_WEIGHT_ERROR; colour = "{R}[ERROR] "; break;
+        case GURU_CRITICAL: cascade_weight = ERROR_CASCADE_WEIGHT_CRITICAL; colour = "{R}[CRITICAL] "; break;
+        default: nonfatal("Nonfatal error reported with incorrect severity specified.", GURU_WARN); break;
     }
 
     this->log(error, type);
@@ -193,10 +193,10 @@ void Guru::nonfatal(std::string error, int type)
     if (cascade_weight)
     {
         time_t elapsed_seconds = std::time(0) - cascade_timer_;
-        if (elapsed_seconds <= Guru::CASCADE_TIMEOUT)
+        if (elapsed_seconds <= ERROR_CASCADE_TIMEOUT)
         {
             cascade_count_ += cascade_weight;
-            if (cascade_count_ > Guru::CASCADE_THRESHOLD)
+            if (cascade_count_ > ERROR_CASCADE_THRESHOLD)
             {
                 cascade_failure_ = true;
                 halt("Cascade failure detected!");
