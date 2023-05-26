@@ -6,6 +6,7 @@
 #include "core/core.hpp"
 #include "core/game-manager.hpp"
 #include "core/guru.hpp"
+#include "entity/item.hpp"
 #include "entity/mobile.hpp"
 #include "tune/ascii-symbols.hpp"
 #include "tune/timing.hpp"
@@ -72,7 +73,11 @@ void Mobile::close_door(int dx, int dy)
     else
     {
         spend_banked_ticks(Timing::TIME_CLOSE_DOOR);
-        if (area->is_in_fov(dx, dy)) core()->message("{U}You see a " + door_name + " close.");
+        if (area->is_in_fov(dx, dy))
+        {
+            if (is_in_fov()) core()->message("{u}You see " + name(NAME_FLAG_A) + " {u}close a " + door_name + "{u}.");
+            else core()->message("{u}You see a " + door_name + " close.");
+        }
     }
     
     the_tile->set_ascii(ASCII_DOOR_CLOSED);
@@ -81,6 +86,20 @@ void Mobile::close_door(int dx, int dy)
     the_tile->clear_tag(TileTag::Closeable);
     the_tile->clear_tag(TileTag::Open);
     area->need_fov_recalc();
+}
+
+// Drops a carried item.
+void Mobile::drop_item(uint32_t id)
+{
+    if (id >= inv()->size()) core()->guru()->halt("Invalid item ID for drop", id, inv()->size());
+    std::shared_ptr<Entity> item = inv()->at(id);
+    core()->game()->area()->entities()->push_back(item);
+    inv()->erase(inv()->begin() + id);
+    item->set_pos(x(), y());
+
+    if (type() == EntityType::PLAYER) core()->message("You drop {c}" + item->name(NAME_FLAG_THE) + " {w}on the ground.");
+    else if (is_in_fov()) core()->message("{u}" + name(NAME_FLAG_THE | NAME_FLAG_CAPITALIZE_FIRST) + " {u}drops " + item->name(NAME_FLAG_A) +
+        " {u}on the ground.");
 }
 
 // Checks if this Mobile is dead.
@@ -111,7 +130,11 @@ bool Mobile::move_or_attack(std::shared_ptr<Mobile> self, int dx, int dy)
         if (openable)
         {
             if (is_player) core()->message("You open the " + the_tile->name() + ".");
-            else if (area->is_in_fov(xdx, ydy)) core()->message("{U}You see a " + the_tile->name() + " open.");
+            else if (area->is_in_fov(xdx, ydy))
+            {
+                if (is_in_fov()) core()->message("{u}You see " + name(NAME_FLAG_THE) + " {u}open a " + the_tile->name() + "{u}.");
+                else core()->message("{u}You see a " + the_tile->name() + " {u}open.");
+            }
             auto tile = area->tile(xdx, ydy);
             tile->set_ascii(ASCII_DOOR_OPEN);
             tile->clear_tag(TileTag::Openable);

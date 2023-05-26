@@ -7,6 +7,7 @@
 #include "area/tile.hpp"
 #include "core/core.hpp"
 #include "core/game-manager.hpp"
+#include "core/guru.hpp"
 #include "entity/item.hpp"
 #include "entity/player.hpp"
 #include "tune/ascii-symbols.hpp"
@@ -123,6 +124,56 @@ void Player::get_item()
     }
 }
 
+// Interacts with an item.
+void Player::item_interaction(uint32_t id, ItemLocation loc)
+{
+    std::shared_ptr<Entity> entity = nullptr;
+    std::shared_ptr<Item> item = nullptr;
+
+    switch(loc)
+    {
+        case ItemLocation::INVENTORY:
+            if (inv()->size() <= id) core()->guru()->halt("Invalid item interaction ID", id, inv()->size());
+            entity = inv()->at(id);
+            break;
+        case ItemLocation::EQUIPMENT:
+            // not yet supported
+            break;
+        case ItemLocation::GROUND:
+        {
+            auto area = core()->game()->area();
+            if (area->entities()->size() <= id) core()->guru()->halt("Invalid item interaction ID", id, area->entities()->size());
+            entity = area->entities()->at(id);
+            break;
+        }
+    }
+    if (!entity) core()->guru()->halt("Null item interaction pointer", id);
+    else if (entity->type() != EntityType::ITEM) core()->guru()->halt("Invalid item interaction target", id);
+    item = std::dynamic_pointer_cast<Item>(entity);
+    
+    auto item_menu = std::make_shared<Menu>();
+    item_menu->set_title(item->name());
+    item_menu->add_item("Do Nothing");
+    std::vector<ItemInteraction> interactions;
+    interactions.push_back(ItemInteraction::DO_NOTHING);
+
+    switch(loc)
+    {
+        case ItemLocation::INVENTORY:
+            item_menu->add_item("Drop");
+            interactions.push_back(ItemInteraction::DROP);
+            break;
+        default: break;
+    }
+
+    int choice = item_menu->render();
+    if (choice >= 0 && choice < static_cast<int>(interactions.size())) switch(interactions.at(choice))
+    {
+        case ItemInteraction::DO_NOTHING: return;
+        case ItemInteraction::DROP: drop_item(id); break;
+    }
+}
+
 // Attempts to open a nearby door.
 void Player::open_a_door()
 {
@@ -164,7 +215,7 @@ void Player::open_a_door()
 }
 
 // Interact with carried items.
-void Player::take_inventory()
+void Player::take_inventory(bool equipment)
 {
     if (!inv()->size())
     {
@@ -173,11 +224,11 @@ void Player::take_inventory()
     }
 
     auto inv_menu = std::make_shared<Menu>();
-    
     inv_menu->set_title("Inventory");
     for (auto item : *inv())
-        inv_menu->add_item(item->name(), item->ascii(), item->colour());
-    inv_menu->render();
+        inv_menu->add_item(item->name(), item->ascii(), item->colour(), true);
+    int result = inv_menu->render();
+    if (result >= 0) item_interaction(result, equipment ? ItemLocation::EQUIPMENT : ItemLocation::INVENTORY);
 }
 
 }   // namespace invictus

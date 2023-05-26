@@ -10,6 +10,10 @@
 namespace invictus
 {
 
+// Used with certain functions when interacting with items.
+enum class ItemLocation : uint8_t { GROUND, INVENTORY, EQUIPMENT };
+
+
 class Mobile : public Entity
 {
 public:
@@ -18,6 +22,7 @@ public:
     float           banked_ticks() const;   // Retrieves the amount of ticks banked by this Mobile.
     void            clear_banked_ticks();   // Erase all banked ticks on this Mobile.
     void            close_door(int dx, int dy); // Attempts to close a door.
+    void            drop_item(uint32_t id); // Drops a carried item.
     bool            is_dead() const;        // Checks if this Mobile is dead.
     virtual bool    move_or_attack(std::shared_ptr<Mobile> self, int dx, int dy);   // Moves in a given direction, or attacks something in the destination tile.
     float           movement_speed() const; // Returns the amount of ticks needed for this Mobile to move one tile.
