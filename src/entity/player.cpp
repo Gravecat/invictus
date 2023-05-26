@@ -7,6 +7,7 @@
 #include "area/tile.hpp"
 #include "core/core.hpp"
 #include "core/game-manager.hpp"
+#include "entity/item.hpp"
 #include "entity/player.hpp"
 #include "tune/ascii-symbols.hpp"
 #include "terminal/terminal.hpp"
@@ -103,6 +104,25 @@ void Player::get_direction(int *dx, int *dy) const
     core()->message("{C}Selection cancelled.");
 }
 
+// Picks something up off the ground.
+void Player::get_item()
+{
+    auto area = core()->game()->area();
+    std::vector<uint32_t> items_nearby;
+    for (unsigned int i = 0; i < area->entities()->size(); i++)
+    {
+        auto entity = area->entities()->at(i);
+        if (entity->type() != EntityType::ITEM) continue;
+        if (entity->is_at(x(), y())) items_nearby.push_back(i);
+    }
+    if (!items_nearby.size()) core()->message("{y}There isn't anything you can pick up here.");
+    if (items_nearby.size() == 1)
+    {
+        take_item(items_nearby.at(0));
+        return;
+    }
+}
+
 // Attempts to open a nearby door.
 void Player::open_a_door()
 {
@@ -146,11 +166,17 @@ void Player::open_a_door()
 // Interact with carried items.
 void Player::take_inventory()
 {
+    if (!inv()->size())
+    {
+        core()->message("{y}You are carrying nothing.");
+        return;
+    }
+
     auto inv_menu = std::make_shared<Menu>();
+    
     inv_menu->set_title("Inventory");
-    inv_menu->add_item("iron dirk", '-', Colour::WHITE, true);
-    inv_menu->add_item("greataxe", '/', Colour::WHITE_BOLD, true);
-    inv_menu->add_item("kite shield", ')', Colour::YELLOW, true);
+    for (auto item : *inv())
+        inv_menu->add_item(item->name(), item->ascii(), item->colour());
     inv_menu->render();
 }
 

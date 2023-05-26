@@ -63,6 +63,7 @@ void GameManager::dungeon_input(int key)
         case 'o': player_->open_a_door(); break;            // Attempts to open something.
         case 'c': player_->close_a_door(); break;           // Attempts to close something.
         case 'i': player_->take_inventory(); break;         // Interact with carried items.
+        case 'g': player_->get_item(); break;               // Picks something up.
     }
 
     if (dx || dy)

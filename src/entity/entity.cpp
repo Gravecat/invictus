@@ -48,6 +48,16 @@ float Entity::get_prop_f(EntityProp prop) const
     else return result->second;
 }
 
+// Returns the inventory pointer.
+std::vector<std::shared_ptr<Item>>* Entity::inv() { return &inventory_; }
+
+// Adds an Entity to this Entity's inventory.
+void Entity::inventory_add(std::shared_ptr<Entity> entity)
+{
+    if (entity->type() != EntityType::ITEM) core()->guru()->halt("Attempt to add non-Item Entity to Entity inventory.");
+    inventory_.push_back(std::dynamic_pointer_cast<Item>(entity));
+}
+
 // Checks if this Entity claims to be occupying a specified tile.
 bool Entity::is_at(int ax, int ay) const
 {

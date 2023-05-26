@@ -22,6 +22,7 @@ public:
     virtual bool    move_or_attack(std::shared_ptr<Mobile> self, int dx, int dy);   // Moves in a given direction, or attacks something in the destination tile.
     float           movement_speed() const; // Returns the amount of ticks needed for this Mobile to move one tile.
     void            spend_banked_ticks(float amount);   // The exact opposite of add_banked_ticks().
+    void            take_item(uint32_t id); // Picks up a specified item.
     void            tick(std::shared_ptr<Entity> self) override;    // Processes AI for this Mobile each turn.
     void            tick10(std::shared_ptr<Entity> self) override;  // Process slower state-change events that happen less often, such as buffs/debuffs ticking.
     EntityType      type() const { return EntityType::MOBILE; } // Self-identifier function.

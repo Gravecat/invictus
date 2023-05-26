@@ -169,6 +169,21 @@ void Mobile::spend_banked_ticks(float amount)
     else banked_ticks_ -= amount;
 }
 
+// Picks up a specified item.
+void Mobile::take_item(uint32_t id)
+{
+    auto area = core()->game()->area();
+    auto entities = area->entities();
+    if (entities->size() <= id) core()->guru()->halt("Attempt to pick up invalid item ID.", id);
+    std::shared_ptr<Entity> entity = entities->at(id);
+    if (entity->type() != EntityType::ITEM) core()->guru()->halt("Attempt to pick up non-item entity.", id);
+
+    inventory_add(entity);
+    entities->erase(entities->begin() + id);
+    if (type() == EntityType::PLAYER) core()->message("You pick up {c}" + entity->name() + "{w}.");
+    else if (is_in_fov()) core()->message("{u}" + name() + " {u}picks up " + entity->name() + "{u}.");
+}
+
 // Processes AI for this Mobile each turn.
 void Mobile::tick(std::shared_ptr<Entity> self)
 {

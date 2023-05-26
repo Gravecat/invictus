@@ -17,6 +17,7 @@ public:
     void        close_a_door(); // Attempts to close a nearby door.
     uint16_t    fov_radius() const; // Calculates the player's field-of-view radius.
     void        get_direction(int *dx, int *dy) const;      // Gets a direction from the player.
+    void        get_item();         // Picks something up off the ground.
     void        open_a_door();      // Attempts to open a nearby door.
     void        take_inventory();   // Interact with carried items.
     EntityType  type() const { return EntityType::PLAYER; } // Self-identifier function.
