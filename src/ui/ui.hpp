@@ -17,8 +17,6 @@ class Window;       // defined in terminal/window.hpp
 class UI
 {
 public:
-    static constexpr int    NEARBY_BAR_WIDTH =      22; // The horizontal width of the 'nearby' bar.
-
             UI();               // Constructor, sets up UI elements.
             ~UI();              // Destructor, calls cleanup function.
     void    cleanup();          // Cleans up any sub-elements.

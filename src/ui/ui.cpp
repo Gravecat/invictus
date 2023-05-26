@@ -8,6 +8,7 @@
 #include "terminal/terminal.hpp"
 #include "terminal/window.hpp"
 #include "tune/message-log.hpp"
+#include "tune/nearby-bar.hpp"
 #include "ui/bars.hpp"
 #include "ui/msglog.hpp"
 #include "ui/nearby.hpp"
