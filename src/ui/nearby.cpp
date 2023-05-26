@@ -13,6 +13,7 @@
 #include "entity/player.hpp"
 #include "terminal/terminal.hpp"
 #include "terminal/window.hpp"
+#include "tune/message-log.hpp"
 #include "ui/bars.hpp"
 #include "ui/nearby.hpp"
 #include "ui/ui.hpp"
@@ -33,7 +34,7 @@ void Nearby::render()
     const int window_w = nearby_window->get_width(), window_h = nearby_window->get_height();
     const int window_midcol = window_w / 2;
     terminal->box(nearby_window, Colour::WHITE);
-    terminal->put(Glyph::RTEE, 0, window_h - UI::MESSAGE_LOG_HEIGHT, Colour::WHITE, 0, nearby_window);
+    terminal->put(Glyph::RTEE, 0, window_h - MESSAGE_LOG_HEIGHT, Colour::WHITE, 0, nearby_window);
     terminal->put(Glyph::BTEE, 0, window_h - 1, Colour::WHITE, 0, nearby_window);
 
     std::vector<std::string> nearby_lines;

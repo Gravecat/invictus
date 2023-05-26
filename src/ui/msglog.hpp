@@ -19,9 +19,6 @@ class Timer;    // defined in util/timer.hpp
 class MessageLog
 {
 public:
-    static constexpr int    AWAKEN_CHANCE_ALWAYS_SHOW_BUT_NEVER_WAKE = 255;
-    static constexpr int    OUTPUT_BUFFER_MAX = 200;    // The maximum number of lines stored in the output buffer.
-
             MessageLog();       // Constructor, sets up the message log window.
     void    amend(const std::string &str);  // Amends the last message, adding additional text.
     void    blank_line();       // Prints a blank line.

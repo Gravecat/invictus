@@ -5,6 +5,7 @@
 #include "core/game-manager.hpp"
 #include "terminal/terminal.hpp"
 #include "terminal/window.hpp"
+#include "tune/message-log.hpp"
 #include "ui/msglog.hpp"
 #include "ui/ui.hpp"
 #include "util/random.hpp"
@@ -19,8 +20,8 @@ namespace invictus
 MessageLog::MessageLog() : buffer_pos_(0), timer_(std::make_shared<Timer>())
 {
     // Empty the log to begin with, so new messages show at the bottom.
-    output_raw_.resize(UI::MESSAGE_LOG_HEIGHT - 2);
-    output_raw_fade_.resize(UI::MESSAGE_LOG_HEIGHT - 2);
+    output_raw_.resize(MESSAGE_LOG_HEIGHT - 2);
+    output_raw_fade_.resize(MESSAGE_LOG_HEIGHT - 2);
 }
 
 // Amends the last message, adding additional text.
@@ -42,7 +43,7 @@ void MessageLog::blank_line() { message(""); }
 void MessageLog::message(std::string msg, unsigned char awaken_chance)
 {
     // Check to see if this is a new message, and to mark other messages as old.
-    if (timer_->elapsed() >= 100)
+    if (timer_->elapsed() >= MESSAGE_LOG_FADE_TIMER)
     {
         timer_->reset();
         for (unsigned int i = 0; i < output_raw_fade_.size(); i++)
@@ -76,7 +77,7 @@ void MessageLog::message(std::string msg, unsigned char awaken_chance)
 void MessageLog::process_output_buffer()
 {
     // Trim the output buffer if necessary.
-    while (output_raw_.size() > OUTPUT_BUFFER_MAX)
+    while (output_raw_.size() > MESSAGE_LOG_OUTPUT_BUFFER_MAX)
     {
         output_raw_.erase(output_raw_.begin());
         output_raw_fade_.erase(output_raw_fade_.begin());
@@ -118,7 +119,7 @@ void MessageLog::purge_buffer()
 void MessageLog::reset_buffer_pos()
 {
     buffer_pos_ = 0;
-    const unsigned int height = UI::MESSAGE_LOG_HEIGHT - 2;
+    const unsigned int height = MESSAGE_LOG_HEIGHT - 2;
     if (output_prc_.size() > height) buffer_pos_ = output_prc_.size() - height;
 }
 
@@ -133,7 +134,7 @@ void MessageLog::render()
     if (output_prc_.size())
     {
         unsigned int end = output_prc_.size();
-        if (end - buffer_pos_ > UI::MESSAGE_LOG_HEIGHT - 2) end = buffer_pos_ + UI::MESSAGE_LOG_HEIGHT - 2;
+        if (end - buffer_pos_ > MESSAGE_LOG_HEIGHT - 2) end = buffer_pos_ + MESSAGE_LOG_HEIGHT - 2;
         for (unsigned int i = buffer_pos_; i < end; i++)
             terminal->print(output_prc_.at(i), 1, i - buffer_pos_ + 1, Colour::WHITE, output_prc_fade_.at(i) ? PRINT_FLAG_DARK : PRINT_FLAG_BOLD, msg_window);
     }

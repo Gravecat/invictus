@@ -12,4 +12,6 @@ relative ease in the future, if needed.
 
 * **fov-lighting.hpp** -- Tune values for field-of-view, line-of-sight and static/dynamic lighting.
 
+* **message-log.hpp** -- Tune values specific to the scrolling message log at the bottom of the screen.
+
 * **timing.hpp** - `constexpr` values for the time it takes to perform various actions in-game, or other fixed timing values.

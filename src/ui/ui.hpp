@@ -18,7 +18,6 @@ class UI
 {
 public:
     static constexpr int    NEARBY_BAR_WIDTH =      22; // The horizontal width of the 'nearby' bar.
-    static constexpr int    MESSAGE_LOG_HEIGHT =    10; // The height of the message log window.
 
             UI();               // Constructor, sets up UI elements.
             ~UI();              // Destructor, calls cleanup function.

@@ -7,6 +7,7 @@
 #include "core/guru.hpp"
 #include "terminal/terminal.hpp"
 #include "terminal/window.hpp"
+#include "tune/message-log.hpp"
 #include "ui/bars.hpp"
 #include "ui/msglog.hpp"
 #include "ui/nearby.hpp"
