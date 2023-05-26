@@ -22,12 +22,15 @@ public:
                         // Find and replace one string with another.
     static std::string  comma_list(std::vector<std::string> vec, unsigned int flags);   // Converts a vector to a comma-separated list.
     static bool         find_and_replace(std::string &input, const std::string &to_find, const std::string &to_replace);
-    static std::string  ftos(double num);                       // Converts a float or double to a string.
+    static std::string  ftos(double num);           // Converts a float or double to a string.
+    static std::string  intostr_pretty(int num);    // Returns a 'pretty' version of a number in string format, such as "12,345".
+    static bool         is_vowel(char ch);          // Checks if a character is a vowel.
     static std::string  itoh(uint32_t num, uint8_t min_len);    // Converts an integer into a hex string.
+    static std::string  number_to_word(unsigned long long number);  // Converts small numbers into words.
     static std::string  pad_string(const std::string &str, unsigned int min_len);   // Pads a string to a given length.
-    static bool         str_to_bool(std::string str);           // Converts a string to a bool.
-    static std::string  str_tolower(std::string str);           // Converts a string to lower-case.
-    static std::string  str_toupper(std::string str);           // Converts a string to upper-case.
+    static bool         str_to_bool(std::string str);   // Converts a string to a bool.
+    static std::string  str_tolower(std::string str);   // Converts a string to lower-case.
+    static std::string  str_toupper(std::string str);   // Converts a string to upper-case.
     static std::vector<std::string> string_explode(std::string str, const std::string &separator);  // String split/explode function.
     // Similar to string_explode(), but takes colour and high/low-ASCII tags into account, and wraps to a given line length.
     static std::vector<std::string> string_explode_colour(const std::string &str, unsigned int line_len);

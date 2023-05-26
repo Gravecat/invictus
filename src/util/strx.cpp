@@ -73,6 +73,43 @@ std::string StrX::ftos(double num)
     return ss.str();
 }
 
+// Returns a 'pretty' version of a number in string format, such as "12,345".
+std::string StrX::intostr_pretty(int num)
+{
+    bool negative = false;
+    if (num < 0)
+    {
+        negative = true;
+        num = 0 - num;
+    }
+    std::string str = std::to_string(num), output;
+
+    // If the number is 3 or less characters long, there's no need for any processing.
+    if (str.length() <= 3) return((negative ? "-" : "") + str);
+
+    do
+    {
+        // Cut the string up, and insert commas where appropriate.
+        output = str.substr(str.length() - 3, 3) + "," + output;
+    str = str.substr(0, str.length() - 3);
+    } while (str.length() > 3);
+
+    // Combine the results.
+    std::string result = str + "," + output;
+
+    // Remove the trailing comma.
+    result = result.substr(0, result.length() - 1);
+
+    return((negative ? "-" : "") + result);
+}
+
+// Checks if a character is a vowel.
+bool StrX::is_vowel(char ch)
+{
+    if (ch >= 'A' && ch <= 'Z') ch += 32;
+    return (ch == 'a' || ch == 'e' || ch == 'i' || ch == 'o' || ch == 'u');
+}
+
 // Converts an integer into a hex string.
 std::string StrX::itoh(uint32_t num, uint8_t min_len)
 {
@@ -81,6 +118,25 @@ std::string StrX::itoh(uint32_t num, uint8_t min_len)
     std::string hex = ss.str();
     while (min_len && hex.size() < min_len) hex = "0" + hex;
     return hex;
+}
+
+// Converts small numbers into words.
+// Thanks to Josh Homann on StackOverflow for this one: https://stackoverflow.com/questions/40252753/c-converting-number-to-words
+std::string StrX::number_to_word(unsigned long long number)
+{
+    static const std::vector<std::string> ones { "", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine" };
+    static const std::vector<std::string> teens { "ten", "eleven", "twelve", "thirteen", "fourteen", "fifteen","sixteen", "seventeen", "eighteen", "nineteen" };
+    static const std::vector<std::string> tens { "", "", "twenty", "thirty", "forty", "fifty", "sixty", "seventy", "eighty", "ninety" };
+
+    if (number < 10) return ones[number];
+    else if (number < 20) return teens[number - 10];
+    else if (number < 100) return tens[number / 10] + ((number % 10 != 0) ? "-" + number_to_word(number % 10) : "");
+    else if (number < 1000) return number_to_word(number / 100) + " hundred" + ((number % 100 != 0) ? " and " + number_to_word(number % 100) : "");
+    else if (number < 1000000) return number_to_word(number / 1000) + " thousand" + ((number % 1000 != 0) ? " " + number_to_word(number % 1000) : "");
+    else if (number < 1000000000UL) return number_to_word(number / 1000000) + " million" + ((number % 1000000 != 0) ? " " + number_to_word(number % 1000000) : "");
+    else if (number < 1000000000000ULL) return number_to_word(number / 1000000000UL) + " billion" + ((number % 1000000000UL != 0) ? " " +
+        number_to_word(number % 1000000000UL) : "");
+    else return intostr_pretty(number);
 }
 
 // Pads a string to a given length.

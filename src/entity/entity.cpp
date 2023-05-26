@@ -12,6 +12,7 @@
 #include "terminal/terminal.hpp"
 #include "terminal/window.hpp"
 #include "tune/ascii-symbols.hpp"
+#include "util/strx.hpp"
 
 
 namespace invictus
@@ -22,6 +23,13 @@ Entity::Entity() : ascii_(ASCII_UNKNOWN), colour_(Colour::WHITE), name_("entity"
 
 // Gets the ASCII character representing this Entity.
 char Entity::ascii() const { return ascii_; }
+
+// Clears an EntityTag from this Entity.
+void Entity::clear_tag(EntityTag the_tag)
+{
+    if (!(tags_.count(the_tag) > 0)) return;
+    tags_.erase(the_tag);
+}
 
 // Gets the colour of this Entity.
 Colour Entity::colour() const { return colour_; }
@@ -76,7 +84,40 @@ bool Entity::is_in_fov() const { return core()->game()->area()->is_in_fov(x_, y_
 int Entity::light_power() const { return get_prop(EntityProp::LIGHT_POWER); }
 
 // Retrieves this Entity's name.
-std::string Entity::name() const { return name_; }
+std::string Entity::name(int flags) const
+{
+    const bool the = ((flags & NAME_FLAG_THE) == NAME_FLAG_THE);
+    const bool capitalize_first = ((flags & NAME_FLAG_CAPITALIZE_FIRST) == NAME_FLAG_CAPITALIZE_FIRST);
+    const bool possessive = ((flags & NAME_FLAG_POSSESSIVE) == NAME_FLAG_POSSESSIVE);
+    bool plural = ((flags & NAME_FLAG_PLURAL) == NAME_FLAG_PLURAL);
+    const bool stack = ((flags & NAME_FLAG_STACK) == NAME_FLAG_STACK);
+    const bool a = ((flags & NAME_FLAG_A) == NAME_FLAG_A);
+    std::string ret = name_;
+    if (!name_.size()) return "";
+
+    const Item* item = ((type() == EntityType::ITEM) ? dynamic_cast<const Item*>(this) : nullptr);
+
+    if (the && !tag(EntityTag::ProperNoun)) ret = "the " + name_;
+    else if (a && !tag(EntityTag::ProperNoun) && !tag(EntityTag::NoA))
+    {
+        if (type() == EntityType::ITEM && item->stack() > 1)
+        {
+            ret = StrX::number_to_word(item->stack()) + " " + name_;
+            plural = true;
+        }
+        if (StrX::is_vowel(name_[0])) ret = "an " + name_;
+        else ret = "a " + name_;
+    }
+    if (capitalize_first && ret[0] >= 'a' && ret[0] <= 'z') ret[0] -= 32;
+    if (possessive)
+    {
+        if (ret.back() == 's') ret += "'";
+        else ret += "'s";
+    }
+    else if (plural && ret.back() != 's') ret += "s";
+    if (type() == EntityType::ITEM && stack && item->stack() > 1) ret += " [" + std::to_string(item->stack()) + "]";
+    return ret;
+}
 
 // Sets this Entity's ASCII character.
 void Entity::set_ascii(char new_ascii) { ascii_ = new_ascii; }
@@ -126,6 +167,16 @@ void Entity::set_prop_f(EntityProp prop, float value)
     }
     else if (result == entity_properties_f_.end()) entity_properties_f_.erase(result->first);
 }
+
+// Sets an EntityTag on this Entity.
+void Entity::set_tag(EntityTag the_tag)
+{
+    if (tags_.count(the_tag) > 0) return;
+    tags_.insert(the_tag);
+}
+
+// Checks if an EntityTag is on this Entity.
+bool Entity::tag(EntityTag the_tag) const { return (tags_.count(the_tag) > 0); }
 
 // Updates the state of this Entity or takes an AI action.
 void Entity::tick(std::shared_ptr<Entity>)

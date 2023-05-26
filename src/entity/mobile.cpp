@@ -180,8 +180,8 @@ void Mobile::take_item(uint32_t id)
 
     inventory_add(entity);
     entities->erase(entities->begin() + id);
-    if (type() == EntityType::PLAYER) core()->message("You pick up {c}" + entity->name() + "{w}.");
-    else if (is_in_fov()) core()->message("{u}" + name() + " {u}picks up " + entity->name() + "{u}.");
+    if (type() == EntityType::PLAYER) core()->message("You pick up {c}" + entity->name(NAME_FLAG_A) + "{w}.");
+    else if (is_in_fov()) core()->message("{u}" + name() + " {u}picks up " + entity->name(NAME_FLAG_A) + "{u}.");
 }
 
 // Processes AI for this Mobile each turn.
