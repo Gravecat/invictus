@@ -61,6 +61,8 @@ private:
     std::map<EntityProp, int32_t>   entity_properties_i_;   // Various properties that can be on this Entity (ints).
     std::string name_;      // The name of this Entity.
     uint16_t    x_, y_;     // Position on the map.
+
+friend class CodexItem;
 };
 
 }       // namespace invictus
