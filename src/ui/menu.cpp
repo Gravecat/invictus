@@ -17,6 +17,9 @@ namespace invictus
 Menu::Menu(int fx, int fy) : allow_highlight_(true), fixed_x_(fx), fixed_y_(fy), offset_(0), pos_x_(0), pos_y_(0), return_after_render_(false), selected_(0),
     size_x_(0), size_y_(0), title_x_(0), window_(nullptr) { }
 
+// Destructor, calls UI redraw.
+Menu::~Menu() { if (core() && core()->game() && core()->game()->ui()) core()->game()->ui()->full_redraw(); }
+
 // Adds an item to this Menu.
 void Menu::add_item(const std::string &txt, int ch, Colour col , bool arrow)
 {
@@ -89,25 +92,13 @@ int Menu::render()
                 while (selected_ > 0 && colour_.at(selected_) == Colour::BLACK_BOLD) selected_--;
             redraw = true;
         }
-        else if (key == Key::ENTER || key == Key::CR)
-        {
-            ui->full_redraw();
-            return selected_;
-        }
-        else if (key == ' ' || key == 'q' || key == 'Q' || key == Key::ESCAPE)
-        {
-            ui->full_redraw();
-            return -1;
-        }
+        else if (key == Key::ENTER || key == Key::CR) return selected_;
+        else if (key == ' ' || key == 'q' || key == 'Q' || key == Key::ESCAPE) return -1;
 
         if (selected_ > offset_ + 19) offset_++;
         else if (selected_ < offset_) offset_--;
 
-        if (return_after_render_)
-        {
-            ui->full_redraw();
-            return selected_;
-        }
+        if (return_after_render_) return selected_;
     }
     return -1;
 }

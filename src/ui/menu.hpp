@@ -21,6 +21,7 @@ class Menu
 {
 public:
                     Menu(int fx = -1, int fy = -1);     // Constructor.
+                    ~Menu();                            // Destructor, calls UI redraw.
     void            add_item(const std::string &txt, int ch = '\0', Colour col = Colour::WHITE, bool arrow = false);    // Adds an item to this Menu.
     void            add_item(const std::string &txt, bool arrow);   // Another option to specify an arrow without all the other stuff.
     unsigned int    get_size();                         // Checks how many items are in this Menu already.
