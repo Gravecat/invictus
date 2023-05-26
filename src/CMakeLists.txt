@@ -70,6 +70,7 @@ set(INVICTUS_CPPS
   dev/acs-display.cpp
   dev/keycode-check.cpp
   entity/entity.cpp
+  entity/item.cpp
   entity/mobile.cpp
   entity/player.cpp
   factory/factory-tile.cpp

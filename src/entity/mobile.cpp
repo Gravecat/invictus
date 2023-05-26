@@ -17,6 +17,7 @@ namespace invictus
 // Constructor.
 Mobile::Mobile() : Entity(), banked_ticks_(0), last_dir_(0)
 {
+    set_name("mobile");
     set_prop_f(EntityProp::SPEED, Timing::TIME_BASE_MOVEMENT);
 }
 
