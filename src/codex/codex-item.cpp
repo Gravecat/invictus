@@ -3,6 +3,7 @@
 
 #include "codex/codex-item.hpp"
 #include "entity/item.hpp"
+#include "misc/ascii-symbols.hpp"
 #include "terminal/terminal-shared-defs.hpp"
 
 
@@ -19,7 +20,7 @@ std::shared_ptr<Item> CodexItem::generate(ItemID id)
 
         case ItemID::TEST_ITEM:
             new_item->name_ = "interesting rock";
-            new_item->ascii_ = '*';
+            new_item->ascii_ = ASCII_STONE;
             new_item->colour_ = Colour::GREEN;
             break;
     }

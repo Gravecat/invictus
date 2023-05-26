@@ -9,6 +9,7 @@
 #include "core/guru.hpp"
 #include "entity/entity.hpp"
 #include "entity/item.hpp"
+#include "misc/ascii-symbols.hpp"
 #include "terminal/terminal.hpp"
 #include "terminal/window.hpp"
 
@@ -17,7 +18,7 @@ namespace invictus
 {
 
 // Constructor, creates a new Entity with default values.
-Entity::Entity() : ascii_('?'), colour_(Colour::WHITE), name_("entity"), x_(0), y_(0) { }
+Entity::Entity() : ascii_(ASCII_UNKNOWN), colour_(Colour::WHITE), name_("entity"), x_(0), y_(0) { }
 
 // Gets the ASCII character representing this Entity.
 char Entity::ascii() const { return ascii_; }

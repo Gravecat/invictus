@@ -8,6 +8,7 @@
 #include "core/core.hpp"
 #include "core/game-manager.hpp"
 #include "entity/player.hpp"
+#include "misc/ascii-symbols.hpp"
 #include "terminal/terminal.hpp"
 #include "ui/ui.hpp"
 
@@ -18,7 +19,7 @@ namespace invictus
 // Constructor.
 Player::Player() : Mobile()
 {
-    set_ascii('@');
+    set_ascii(ASCII_PLAYER);
     set_colour(Colour::WHITE_BOLD);
     set_light_power(4);
     set_name("player");

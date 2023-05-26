@@ -7,6 +7,7 @@
 #include "core/game-manager.hpp"
 #include "core/guru.hpp"
 #include "entity/mobile.hpp"
+#include "misc/ascii-symbols.hpp"
 #include "misc/timing.hpp"
 #include "util/strx.hpp"
 
@@ -74,7 +75,7 @@ void Mobile::close_door(int dx, int dy)
         if (area->is_in_fov(dx, dy)) core()->message("{U}You see a " + door_name + " close.");
     }
     
-    the_tile->set_ascii('+');
+    the_tile->set_ascii(ASCII_DOOR_CLOSED);
     the_tile->set_tag(TileTag::Openable);
     the_tile->set_tag(TileTag::BlocksLight);
     the_tile->clear_tag(TileTag::Closeable);
@@ -112,7 +113,7 @@ bool Mobile::move_or_attack(std::shared_ptr<Mobile> self, int dx, int dy)
             if (is_player) core()->message("You open the " + the_tile->name() + ".");
             else if (area->is_in_fov(xdx, ydy)) core()->message("{U}You see a " + the_tile->name() + " open.");
             auto tile = area->tile(xdx, ydy);
-            tile->set_ascii('\'');
+            tile->set_ascii(ASCII_DOOR_OPEN);
             tile->clear_tag(TileTag::Openable);
             tile->clear_tag(TileTag::BlocksLight);
             tile->set_tag(TileTag::Closeable);
