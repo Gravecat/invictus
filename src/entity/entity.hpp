@@ -34,6 +34,8 @@ public:
     virtual             ~Entity() { }   // Virtual destructor.
     char                ascii() const;  // Gets the ASCII character representing this Entity.
     Colour              colour() const; // Gets the colour of this Entity.
+    virtual float       distance_from(int tile_x, int tile_y) const;            // Gets this Entity's distance from a specified tile.
+    virtual float       distance_from(std::shared_ptr<Entity> entity) const;    // As above, but measuring distance to an Entity.
     virtual bool        is_at(int ax, int ay) const;    // Checks if this Entity claims to be occupying a specified tile.
     virtual bool        is_in_fov() const;              // Can this Entity be seen by the player?
     int                 light_power() const;    // Returns the power of this Entity's light source, if any.

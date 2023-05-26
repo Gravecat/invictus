@@ -1,6 +1,7 @@
 // gui/nearby.cpp -- The sidebar, showing NPCs and items nearby.
 // Copyright © 2020, 2023 Raine "Gravecat" Simmons. Licensed under the GNU Affero General Public License v3 or any later version.
 
+#include <algorithm>
 #include <string>
 #include <vector>
 
@@ -8,9 +9,11 @@
 #include "area/tile.hpp"
 #include "core/core.hpp"
 #include "core/game-manager.hpp"
+#include "entity/item.hpp"
 #include "entity/player.hpp"
 #include "terminal/terminal.hpp"
 #include "terminal/window.hpp"
+#include "ui/bars.hpp"
 #include "ui/nearby.hpp"
 #include "ui/ui.hpp"
 #include "util/strx.hpp"
@@ -26,6 +29,7 @@ void Nearby::render()
     auto player = core()->game()->player();
     auto ui = core()->game()->ui();
     auto nearby_window = ui->nearby_window();
+    auto area = core()->game()->area();
     const int window_w = nearby_window->get_width(), window_h = nearby_window->get_height();
     const int window_midcol = window_w / 2;
     terminal->box(nearby_window, Colour::WHITE);
@@ -33,12 +37,78 @@ void Nearby::render()
     terminal->put(Glyph::BTEE, 0, window_h - 1, Colour::WHITE, 0, nearby_window);
 
     std::vector<std::string> nearby_lines;
-    //bool item_stack_listed = false;
-    int current_y = 1;
+    bool item_stack_listed = false;
+    std::vector<std::shared_ptr<Entity>> mobiles, items;
 
+    for (auto entity : *area->entities())
+    {
+        if (!entity->is_in_fov()) continue;
+        auto entity_type = entity->type();
+        if (entity_type != EntityType::ITEM && entity_type != EntityType::MOBILE) continue;
+        bool is_item = false;
+        if (entity_type == EntityType::MOBILE && std::dynamic_pointer_cast<Mobile>(entity)->is_dead()) is_item = true;
+        else if (entity_type == EntityType::ITEM) is_item = true;
+        if (is_item)
+        {
+            bool already_on_list = false;
+            bool is_stack = area->is_item_stack(entity->x(), entity->y());
+            for (auto item : items)
+            {
+                if (item->name() == entity->name() && !is_stack)
+                {
+                    already_on_list = true;
+                    break;
+                }
+            }
+            if (!already_on_list)
+            {
+                if (is_stack)
+                {
+                    if (!item_stack_listed)
+                    {
+                        item_stack_listed = true;
+                        auto stack = std::make_shared<Item>();
+                        stack->set_name("multiple items");
+                        stack->set_ascii('&');
+                        stack->set_colour(Colour::MAGENTA);
+                        items.push_back(stack);
+                    }
+                }
+                else items.push_back(entity);
+            }
+        }
+        else mobiles.push_back(entity);
+    }
+
+    auto sort_entities = [](const std::shared_ptr<Entity> &lhs, const std::shared_ptr<Entity> &rhs) -> bool
+    {
+        return lhs->distance_from(core()->game()->player()) < rhs->distance_from(core()->game()->player());
+    };
+
+    if (mobiles.size()) std::sort(mobiles.begin(), mobiles.end(), sort_entities);
+    if (items.size()) std::sort(items.begin(), items.end(), sort_entities);
+
+    int current_y = 1;
     terminal->print(" Hostiles Nearby ", window_midcol - 8, 1, Colour::WHITE, PRINT_FLAG_REVERSE, nearby_window);
     current_y++;
     if (current_y >= window_h - 1) return;
+    if (mobiles.size())
+    {
+        for (auto mob : mobiles)
+        {
+            terminal->put(mob->ascii(), 2, current_y, mob->colour(), 0, nearby_window);
+
+            auto mob_ptr = std::dynamic_pointer_cast<Mobile>(mob);
+            std::string mob_name = mob->name();
+            if (static_cast<int>(mob_name.size()) > window_w - 6) mob_name = mob_name.substr(0, window_w - 6);
+            Colour bar_col = Colour::RED_WHITE;
+            //if (!mob_ptr->is_awake()) bar_col = Colour::YELLOW_WHITE;
+            // todo: replace 75,100 below with HP and max HP
+            Bars::render_bar(4, current_y, window_w - 6, mob_name, 75, 100, bar_col, false, true, nearby_window);
+            if (++current_y >= window_h - 1) return;
+        }
+    }
+    else
     {
         terminal->print("(nothing visible)", window_midcol - 8, current_y, Colour::BLACK_BOLD, 0, nearby_window);
         current_y++;
@@ -49,6 +119,21 @@ void Nearby::render()
     terminal->print(" Items Nearby ", window_midcol - 7, current_y, Colour::WHITE, PRINT_FLAG_REVERSE, nearby_window);
     current_y++;
     if (current_y >= window_h - 1) return;
+    if (items.size())
+    {
+        for (auto item : items)
+        {
+            terminal->put(item->ascii(), 2, current_y, item->colour(), 0, nearby_window);
+            std::vector<std::string> name_str = StrX::string_explode_colour("{w}" + item->name(), 16);
+            for (auto l : name_str)
+            {
+                if (current_y >= window_h - 1) return;
+                terminal->print(l, 4, current_y, Colour::WHITE, 0, nearby_window);
+                current_y++;
+            }
+        }
+    }
+    else
     {
         terminal->print("(nothing visible)", window_midcol - 8, current_y, Colour::BLACK_BOLD, 0, nearby_window);
         current_y++;
@@ -57,7 +142,6 @@ void Nearby::render()
 
     std::vector<Tile*> tiles;
     int visible_x = ui->dungeon_view()->get_width(), visible_y = ui->dungeon_view()->get_height();
-    auto area = core()->game()->area();
     for (int x = 0; x < area->width(); x++)
     {
         int ox = x - area->offset_x();

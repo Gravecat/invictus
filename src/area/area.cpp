@@ -118,6 +118,22 @@ uint8_t Area::is_in_fov(int x, int y)
     return visible_[x + (y * size_x_)];
 }
 
+// Returns true if at least two items (corpses are counted as items) occupy this grid square.
+bool Area::is_item_stack(int x, int y)
+{
+    bool something_here = false;
+    for (auto entity : entities_)
+    {
+        if (!entity->is_at(x, y)) continue;
+        if (entity->type() == EntityType::ITEM || (entity->type() == EntityType::MOBILE && std::dynamic_pointer_cast<Mobile>(entity)->is_dead()))
+        {
+            if (something_here) return true;
+            else something_here = true;
+        }
+    }
+    return false;
+}
+
 // Checks if a given Tile is blocking light.
 bool Area::is_opaque(int x, int y)
 {

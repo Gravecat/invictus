@@ -24,6 +24,12 @@ char Entity::ascii() const { return ascii_; }
 // Gets the colour of this Entity.
 Colour Entity::colour() const { return colour_; }
 
+// Gets this Entity's distance from a specified tile.
+float Entity::distance_from(int tile_x, int tile_y) const { return core()->game()->area()->grid_distance(x_, y_, tile_x, tile_y); }
+
+// As above, but measuring distance to an Entity.
+float Entity::distance_from(std::shared_ptr<Entity> entity) const { return core()->game()->area()->grid_distance(x_, y_, entity->x(), entity->y()); }
+
 // Retrieves an entity property (int), or returns 0 if it is not present.
 int32_t Entity::get_prop(EntityProp prop) const
 {

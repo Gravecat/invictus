@@ -16,7 +16,8 @@ namespace invictus
 {
 
 // Renders a health/mana/etc. bar.
-void Bars::render_bar(int x, int y, unsigned int width, const std::string &name, float value, float value_max, Colour bar_colour, bool numbers, bool round_up)
+void Bars::render_bar(int x, int y, unsigned int width, const std::string &name, float value, float value_max, Colour bar_colour, bool numbers, bool round_up,
+    std::shared_ptr<Window> win)
 {
     auto terminal = core()->terminal();
 
@@ -33,8 +34,8 @@ void Bars::render_bar(int x, int y, unsigned int width, const std::string &name,
     }
     std::string msg_left = msg.substr(0, bar_width);
     std::string msg_right = msg.substr(bar_width);
-    terminal->print(msg_left, x, y, bar_colour, PRINT_FLAG_REVERSE | PRINT_FLAG_BOLD, core()->game()->ui()->stat_bars());
-    terminal->print(msg_right, x + msg_left.size(), y, Colour::WHITE_BOLD, 0, core()->game()->ui()->stat_bars());
+    terminal->print(msg_left, x, y, bar_colour, PRINT_FLAG_REVERSE | PRINT_FLAG_BOLD, win);
+    terminal->print(msg_right, x + msg_left.size(), y, Colour::WHITE_BOLD, 0, win);
 }
 
 // Renders the player's health and mana bars.
@@ -42,16 +43,17 @@ void Bars::render_health_mana_bars()
 {
     auto terminal = core()->terminal();
     auto ui = core()->game()->ui();
-    int window_w = ui->stat_bars()->get_width();
+    auto window = ui->stat_bars();
+    int window_w = window->get_width();
 
     const int hp_bar_width = window_w / 2;
     const int sp_bar_width = (window_w - hp_bar_width) / 2;
     const int mp_bar_width = window_w - hp_bar_width - sp_bar_width;
 
-    render_bar(0, 0, hp_bar_width, "HP", 72, 100, Colour::RED_WHITE, true, true);
-    render_bar(hp_bar_width, 0, sp_bar_width, "SP", 35, 100, Colour::GREEN_WHITE);
-    render_bar(hp_bar_width + sp_bar_width, 0, mp_bar_width, "MP", 80, 100, Colour::BLUE_WHITE);
-    render_bar(0, 1, window_w, "Experience", 720, 1000, Colour::MAGENTA_WHITE);
+    render_bar(0, 0, hp_bar_width, "HP", 72, 100, Colour::RED_WHITE, true, true, window);
+    render_bar(hp_bar_width, 0, sp_bar_width, "SP", 35, 100, Colour::GREEN_WHITE, true, false, window);
+    render_bar(hp_bar_width + sp_bar_width, 0, mp_bar_width, "MP", 80, 100, Colour::BLUE_WHITE, true, false, window);
+    render_bar(0, 1, window_w, "Experience", 720, 1000, Colour::MAGENTA_WHITE, true, false, window);
 }
 
 }   // namespace invictus

@@ -33,8 +33,9 @@ public:
     float       fov_distance(int x, int y, int x2, int y2);     // Checks the distance between two points, returns -1 if something opaque is in the way.
     float       grid_distance(int x, int y, int x2, int y2) const;  // Calculates the distance between two points, regardless of line of sight.
     uint16_t    height() const;     // Read-only access to the Area's height.
-    uint8_t     is_in_fov(int x, int y);    // Checks if a given Tile is within the player's field of view.
-    bool        is_opaque(int x, int y);    // Checks if a given Tile is blocking light.
+    uint8_t     is_in_fov(int x, int y);        // Checks if a given Tile is within the player's field of view.
+    bool        is_item_stack(int x, int y);    // Returns true if at least two items (corpses are counted as items) occupy this grid square.
+    bool        is_opaque(int x, int y);        // Checks if a given Tile is blocking light.
     void        need_fov_recalc();  // Marks the Area as needing a FoV recalc.
     int         offset_x() const;   // Retrieves the view offset on the X axis.
     int         offset_y() const;   // Retrieves the view offset on the Y axis.
