@@ -2,7 +2,7 @@
 // Copyright © 2023 Raine "Gravecat" Simmons. Licensed under the GNU Affero General Public License v3 or any later version.
 
 #include "area/tile.hpp"
-#include "factory/factory-tile.hpp"
+#include "codex/codex-tile.hpp"
 #include "terminal/terminal-shared-defs.hpp"
 
 

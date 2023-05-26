@@ -12,8 +12,6 @@
 #include "ui/ui.hpp"
 #include "world/timing.hpp"
 
-#include "factory/factory-tile.hpp" // temp
-
 
 namespace invictus
 {

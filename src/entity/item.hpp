@@ -13,7 +13,7 @@ namespace invictus
 {
 
 // Types of Items in the game.
-enum class ItemType : uint8_t { NONE, ARMOUR, POTION, SCROLL, SHIELD, WEAPON, AMMO };
+enum class ItemType : uint8_t { NONE, ARMOUR, POTION, SCROLL, SHIELD, WEAPON, AMMO, JUNK };
 
 // More specialized sub-types of Items.
 enum class ItemSub : uint8_t { NONE,

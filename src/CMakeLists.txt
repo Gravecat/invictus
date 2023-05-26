@@ -63,6 +63,7 @@ set(INVICTUS_CPPS
   area/gen-dungeon.cpp
   area/shadowcast.cpp
   area/tile.cpp
+  codex/codex-tile.cpp
   core/core.cpp
   core/game-manager.cpp
   core/guru.cpp
@@ -73,7 +74,6 @@ set(INVICTUS_CPPS
   entity/item.cpp
   entity/mobile.cpp
   entity/player.cpp
-  factory/factory-tile.cpp
   terminal/escape-code-index.cpp
   terminal/terminal.cpp
   terminal/window.cpp

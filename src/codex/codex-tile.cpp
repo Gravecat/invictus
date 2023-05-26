@@ -1,10 +1,10 @@
-// factory/factory-tile.cpp -- Factory class, generating preset types of Tiles that make up the game world's structure.
+// codex/codex-tile.cpp -- Factory class, generating preset types of Tiles that make up the game world's structure.
 // Copyright © 2023 Raine "Gravecat" Simmons. Licensed under the GNU Affero General Public License v3 or any later version.
 
 #include "area/tile.hpp"
+#include "codex/codex-tile.hpp"
 #include "core/core.hpp"
 #include "core/guru.hpp"
-#include "factory/factory-tile.hpp"
 #include "terminal/terminal-shared-defs.hpp"
 
 
@@ -12,7 +12,7 @@ namespace invictus
 {
 
 // Generates a preset Tile.
-void FactoryTile::generate(Tile* tile, TileID id)
+void CodexTile::generate(Tile* tile, TileID id)
 {
     if (!tile) core()->guru()->halt("Attempt to generate nullptr tile!");
     tile->tags_.clear();

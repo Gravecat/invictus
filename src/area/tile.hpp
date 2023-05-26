@@ -59,7 +59,7 @@ private:
     std::string name_;      // The name of this Tile.
     std::set<TileTag>   tags_;  // Any and all TileTags on this Tile.
 
-friend class FactoryTile;
+friend class CodexTile;
 };
 
 }       // namespace invictus

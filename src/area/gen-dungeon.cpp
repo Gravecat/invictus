@@ -8,9 +8,9 @@
 #include "area/area.hpp"
 #include "area/gen-dungeon.hpp"
 #include "area/tile.hpp"
+#include "codex/codex-tile.hpp"
 #include "core/core.hpp"
 #include "core/guru.hpp"
-#include "factory/factory-tile.hpp"
 #include "util/random.hpp"
 
 
@@ -669,7 +669,7 @@ int Room::neighbours(int x, int y, TileID type, bool diagonals)
 void Room::set_tile(int x, int y, TileID type)
 {
     if (x < 0 || y < 0 || x >= width_ || y >= height_) throw std::runtime_error("Invalid map tile requested!");
-    FactoryTile::generate(&tiles_[x + (y * width_)], type);
+    CodexTile::generate(&tiles_[x + (y * width_)], type);
 }
 
 // Shunts the room left by one column.
@@ -706,7 +706,7 @@ bool Room::top_row_blank()
 void Room::void_room()
 {
     for (int i = 0; i < width_ * height_; i++)
-        FactoryTile::generate(&tiles_[i], TileID::VOID_TILE);
+        CodexTile::generate(&tiles_[i], TileID::VOID_TILE);
 }
 
 }   // namespace invictus

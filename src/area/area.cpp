@@ -7,11 +7,11 @@
 #include "area/area.hpp"
 #include "area/shadowcast.hpp"
 #include "area/tile.hpp"
+#include "codex/codex-tile.hpp"
 #include "core/core.hpp"
 #include "core/game-manager.hpp"
 #include "core/guru.hpp"
 #include "entity/player.hpp"
-#include "factory/factory-tile.hpp"
 #include "terminal/terminal.hpp"
 #include "terminal/window.hpp"
 #include "ui/ui.hpp"
@@ -216,7 +216,7 @@ void Area::render()
 void Area::set_tile(int x, int y, TileID tile_id)
 {
     if (x < 0 || y < 0 || x >= width() || y >= height()) core()->guru()->halt("Invalid map tile requested!", x, y);
-    FactoryTile::generate(&tiles_[x + (y * size_x_)], tile_id);
+    CodexTile::generate(&tiles_[x + (y * size_x_)], tile_id);
 }
 
 // Sets a specified Tile as visible.
@@ -245,7 +245,7 @@ char Area::tile_memory(int x, int y)
 void Area::void_area()
 {
     for (int i = 0; i < size_x_ * size_y_; i++)
-        FactoryTile::generate(&tiles_[i], TileID::VOID_TILE);
+        CodexTile::generate(&tiles_[i], TileID::VOID_TILE);
     entities_.clear();
     entities_.push_back(core()->game()->player());
     std::fill_n(visible_, size_x_ * size_y_, false);
