@@ -113,31 +113,36 @@ void UI::redraw_stat_bars() { stat_bars_need_redraw_ = true; }
 // Renders the UI elements, if needed.
 void UI::render()
 {
+    bool flip = false;
     if (dungeon_needs_redraw_)
     {
         core()->terminal()->cls(dungeon_view_);
         core()->game()->area()->render();
         dungeon_needs_redraw_ = false;
+        flip = true;
     }
     if (message_log_needs_redraw_)
     {
         core()->terminal()->cls(message_log_window_);
         message_log_->render();
         message_log_needs_redraw_ = false;
+        flip = true;
     }
     if (nearby_needs_redraw_)
     {
         core()->terminal()->cls(nearby_window_);
         Nearby::render();
         nearby_needs_redraw_ = false;
+        flip = true;
     }
     if (stat_bars_need_redraw_)
     {
         core()->terminal()->cls(stat_bars_);
         Bars::render_health_mana_bars();
         stat_bars_need_redraw_ = false;
+        flip = true;
     }
-    core()->terminal()->flip();
+    if (flip) core()->terminal()->flip();
 }
 
 // Gets a pointer to the stat bars window.

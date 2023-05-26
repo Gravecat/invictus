@@ -19,9 +19,9 @@ public:
                 ~Window();
     uint16_t    get_height() const; // Read-only access to the Window's height.
     uint16_t    get_width() const;  // Read-only access to the Window's width.
+    void        move(int new_x, int new_y); // Moves this Window's underlying panel to new coordinates.
     void        redraw_border(Colour col = Colour::NONE, uint32_t flags = 0);   // Re-renders the border around this Window, if any.
     void        set_visible(bool vis);      // Set this Window's panel as visible or invisible.
-    void        move(int new_x, int new_y); // Moves this Window's underlying panel to new coordinates.
     WINDOW*     win() const;    // Returns a pointer to the WINDOW struct.
 
 private:

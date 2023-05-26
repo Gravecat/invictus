@@ -155,7 +155,7 @@ void Terminal::flip()
 {
     if (get_cols() < 80 || get_rows() < 24) resize_term(24, 80);
     update_panels();
-    refresh();
+    doupdate();
 }
 
 // Flushes the input buffer.
