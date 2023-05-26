@@ -10,4 +10,6 @@ relative ease in the future, if needed.
 
 * **error-handling.hpp** -- Tune values for adjusting error-handling in the Guru Meditation subsystem.
 
+* **fov-lighting.hpp** -- Tune values for field-of-view, line-of-sight and static/dynamic lighting.
+
 * **timing.hpp** - `constexpr` values for the time it takes to perform various actions in-game, or other fixed timing values.

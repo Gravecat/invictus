@@ -10,6 +10,7 @@
 #include "entity/player.hpp"
 #include "tune/ascii-symbols.hpp"
 #include "terminal/terminal.hpp"
+#include "tune/fov-lighting.hpp"
 #include "ui/ui.hpp"
 
 
@@ -69,10 +70,10 @@ void Player::close_a_door()
 uint16_t Player::fov_radius() const
 {
     const int lp = light_power();
-    if (lp >= FOV_LIGHT_HIGH) return lp + FOV_BONUS_HIGH;
-    else if (lp >= FOV_LIGHT_MEDIUM) return lp + FOV_BONUS_MEDIUM;
-    else if (!lp) return FOV_MINIMUM;
-    else return std::max<int>(lp + FOV_BONUS_LOW, FOV_MINIMUM);
+    if (lp >= PLAYER_FOV_LIGHT_HIGH) return lp + PLAYER_FOV_BONUS_HIGH;
+    else if (lp >= PLAYER_FOV_LIGHT_MEDIUM) return lp + PLAYER_FOV_BONUS_MEDIUM;
+    else if (!lp) return PLAYER_FOV_MINIMUM;
+    else return std::max<int>(lp + PLAYER_FOV_BONUS_LOW, PLAYER_FOV_MINIMUM);
 }
 
 // Gets a direction from the player.

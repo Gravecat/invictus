@@ -19,15 +19,6 @@ public:
     void        get_direction(int *dx, int *dy) const;      // Gets a direction from the player.
     void        open_a_door();  // Attempts to open a nearby door.
     EntityType  type() const { return EntityType::PLAYER; } // Self-identifier function.
-
-private:
-    static constexpr int    FOV_BONUS_HIGH =    10; // When using a high light source, the field of view is set to the light source's power, plus this value.
-    static constexpr int    FOV_BONUS_LOW =     1;  // When using a low light source, the field of view is set to the light source's power, plus this value.
-    static constexpr int    FOV_BONUS_MEDIUM =  5;  // When using a medium light source, the field of view is set to the light source's power, plus this value.
-    static constexpr int    FOV_LIGHT_HIGH =    8;  // A light source counts as high (for FOV_BONUS_HIGH) when this level or above.
-    static constexpr int    FOV_LIGHT_MEDIUM =  4;  // A light source counts as medium (for FOV_BONUS_MEDIUM) when this level or above;
-                                                    // below, it'll count for FOV_BONUS_LOW.
-    static constexpr int    FOV_MINIMUM =       3;  // The field of view when the player has no light source.
 };
 
 }       // namespace invictus
