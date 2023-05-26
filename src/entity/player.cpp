@@ -11,6 +11,7 @@
 #include "tune/ascii-symbols.hpp"
 #include "terminal/terminal.hpp"
 #include "tune/fov-lighting.hpp"
+#include "ui/menu.hpp"
 #include "ui/ui.hpp"
 
 
@@ -140,6 +141,17 @@ void Player::open_a_door()
     }
     move_or_attack(core()->game()->player(), dx, dy);
     core()->game()->ui()->redraw_dungeon();
+}
+
+// Interact with carried items.
+void Player::take_inventory()
+{
+    auto inv_menu = std::make_shared<Menu>();
+    inv_menu->set_title("Inventory");
+    inv_menu->add_item("iron dirk", '-', Colour::WHITE, true);
+    inv_menu->add_item("greataxe", '/', Colour::WHITE_BOLD, true);
+    inv_menu->add_item("kite shield", ')', Colour::YELLOW, true);
+    inv_menu->render();
 }
 
 }   // namespace invictus

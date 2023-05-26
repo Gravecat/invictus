@@ -24,6 +24,7 @@ public:
     static bool         find_and_replace(std::string &input, const std::string &to_find, const std::string &to_replace);
     static std::string  ftos(double num);                       // Converts a float or double to a string.
     static std::string  itoh(uint32_t num, uint8_t min_len);    // Converts an integer into a hex string.
+    static std::string  pad_string(const std::string &str, unsigned int min_len);   // Pads a string to a given length.
     static bool         str_to_bool(std::string str);           // Converts a string to a bool.
     static std::string  str_tolower(std::string str);           // Converts a string to lower-case.
     static std::string  str_toupper(std::string str);           // Converts a string to upper-case.

@@ -83,6 +83,14 @@ std::string StrX::itoh(uint32_t num, uint8_t min_len)
     return hex;
 }
 
+// Pads a string to a given length.
+std::string StrX::pad_string(const std::string &str, unsigned int min_len)
+{
+    std::string output = str;
+    if (output.size() < min_len) output += std::string(min_len - str.size(), ' ');
+    return output;
+}
+
 // Converts a string to a bool.
 bool StrX::str_to_bool(std::string str)
 {

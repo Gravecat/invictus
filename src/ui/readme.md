@@ -5,6 +5,8 @@ along with menus, popup boxes, and other UI-like things.
 
 * **bars.cpp** - Code to render health, mana, stamina and experience bars.
 
+* **menu.cpp** - Fairly generic code to build and render scrollable menus of items.
+
 * **msglog.cpp** - The message log window at the bottom of the screen, displaying important messages for the player.
 
 * **nearby.cpp** - The sidebar at the right-hand side of the screen, showing what the visible symbols in the dungeon view mean.

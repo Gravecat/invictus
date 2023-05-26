@@ -21,11 +21,12 @@ public:
             ~UI();              // Destructor, calls cleanup function.
     void    cleanup();          // Cleans up any sub-elements.
     void    dungeon_mode_ui(bool enable);   // Enables or disables the dungeon-mode UI.
+    void    full_redraw();      // Everything wants redrawing.
     void    redraw_dungeon();   // Marks the dungeon view as needing to be redrawn.
     void    redraw_message_log();   // Marks the message log window as needing to be redrawn.
     void    redraw_nearby();    // Marks the nearby window as needing to be redrawn.
     void    redraw_stat_bars(); // Marks the stat bars as needing to be redrawn.
-    void    render();           // Renders the UI elements, if needed.
+    void    render(bool force_flip = false);    // Renders the UI elements, if needed.
     void    window_resized();   // The terminal window has been resized.
 
     const std::shared_ptr<Window>       dungeon_view() const;       // Gets a pointer to the dungeon view window.

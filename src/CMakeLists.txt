@@ -79,6 +79,7 @@ set(INVICTUS_CPPS
   terminal/terminal.cpp
   terminal/window.cpp
   ui/bars.cpp
+  ui/menu.cpp
   ui/msglog.cpp
   ui/nearby.cpp
   ui/ui.cpp

@@ -55,6 +55,9 @@ void UI::dungeon_mode_ui(bool enable)
 // Gets a pointer to the dungeon view window.
 const std::shared_ptr<Window> UI::dungeon_view() const { return dungeon_view_; }
 
+// Everything wants redrawing.
+void UI::full_redraw() { dungeon_needs_redraw_ = message_log_needs_redraw_ = nearby_needs_redraw_ = stat_bars_need_redraw_ = true; }
+
 // Generates the dungeon view window.
 void UI::generate_dungeon_view()
 {
@@ -113,9 +116,9 @@ void UI::redraw_nearby() { nearby_needs_redraw_ = true; }
 void UI::redraw_stat_bars() { stat_bars_need_redraw_ = true; }
 
 // Renders the UI elements, if needed.
-void UI::render()
+void UI::render(bool force_flip)
 {
-    bool flip = false;
+    bool flip = force_flip;
     if (dungeon_needs_redraw_)
     {
         core()->terminal()->cls(dungeon_view_);
@@ -157,7 +160,7 @@ void UI::window_resized()
     generate_message_log();
     generate_nearby_window();
     generate_stat_bars();
-    dungeon_needs_redraw_ = message_log_needs_redraw_ = nearby_needs_redraw_ = stat_bars_need_redraw_ = true;
+    full_redraw();
 }
 
 }   // namespace invictus
