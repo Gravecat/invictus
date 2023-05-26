@@ -7,8 +7,8 @@
 #include "core/game-manager.hpp"
 #include "core/guru.hpp"
 #include "entity/mobile.hpp"
+#include "misc/timing.hpp"
 #include "util/strx.hpp"
-#include "world/timing.hpp"
 
 
 namespace invictus

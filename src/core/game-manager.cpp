@@ -8,9 +8,9 @@
 #include "core/game-manager.hpp"
 #include "core/guru.hpp"
 #include "entity/player.hpp"
+#include "misc/timing.hpp"
 #include "terminal/terminal.hpp"
 #include "ui/ui.hpp"
-#include "world/timing.hpp"
 
 
 namespace invictus
