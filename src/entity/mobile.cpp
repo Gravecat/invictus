@@ -164,6 +164,7 @@ void Mobile::spend_banked_ticks(float amount)
 // Processes AI for this Mobile each turn.
 void Mobile::tick(std::shared_ptr<Entity> self)
 {
+    Entity::tick(self);
     if (is_dead()) return;
 
     if (type() == EntityType::PLAYER) return;
@@ -176,8 +177,9 @@ void Mobile::tick(std::shared_ptr<Entity> self)
 }
 
 // Process slower state-change events that happen less often, such as buffs/debuffs ticking.
-void Mobile::tick10(std::shared_ptr<Entity>)
+void Mobile::tick10(std::shared_ptr<Entity> self)
 {
+    Entity::tick10(self);
     if (is_dead()) return;
 }
 

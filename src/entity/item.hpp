@@ -41,8 +41,6 @@ public:
     void        set_stack(uint16_t size);   // Sets the stack size for this Item.
     float       speed() const;          // Retrieves the speed of this Item, if any.
     uint16_t    stack() const;          // Retrieves the size of this Item stack, if any.
-    void        tick(std::shared_ptr<Entity> self) override;    // Updates the state of this Entity or takes an AI action.
-    void        tick10(std::shared_ptr<Entity> self) override;  // As above, but for slower events such as buffs/debuffs ticking.
     EntityType  type() const override { return EntityType::ITEM; }  // Identifier.
 
 private:

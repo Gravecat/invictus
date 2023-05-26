@@ -8,6 +8,7 @@
 #include "core/game-manager.hpp"
 #include "core/guru.hpp"
 #include "entity/entity.hpp"
+#include "entity/item.hpp"
 #include "terminal/terminal.hpp"
 #include "terminal/window.hpp"
 
@@ -110,6 +111,20 @@ void Entity::set_prop_f(EntityProp prop, float value)
         else result->second = value;
     }
     else if (result == entity_properties_f_.end()) entity_properties_f_.erase(result->first);
+}
+
+// Updates the state of this Entity or takes an AI action.
+void Entity::tick(std::shared_ptr<Entity>)
+{
+    for (auto entity : inventory_)
+        entity->tick(entity);
+}
+
+// As above, but for slower events such as buffs/debuffs ticking.
+void Entity::tick10(std::shared_ptr<Entity>)
+{
+    for (auto entity : inventory_)
+        entity->tick10(entity);
 }
 
 // Read-only access to the Entity's X coordinate.

@@ -52,10 +52,4 @@ float Item::speed() const { return get_prop_f(EntityProp::SPEED); }
 // Retrieves the size of this Item stack, if any.
 uint16_t Item::stack() const { return stack_; }
 
-// Updates the state of this Entity or takes an AI action.
-void Item::tick(std::shared_ptr<Entity>) { }
-
-// As above, but for slower events such as buffs/debuffs ticking.
-void Item::tick10(std::shared_ptr<Entity>) { }
-
 }   // namespace invictus

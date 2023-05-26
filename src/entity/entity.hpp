@@ -8,12 +8,14 @@
 #include <map>
 #include <memory>
 #include <string>
+#include <vector>
 
 
 namespace invictus
 {
 
 enum class Colour : uint8_t;    // defined in terminal/terminal-shared-defs.hpp
+class Item;     // defined in entity/item.hpp
 class Window;   // defined in terminal/window.hpp
 
 
@@ -36,6 +38,7 @@ public:
     Colour              colour() const; // Gets the colour of this Entity.
     virtual float       distance_from(int tile_x, int tile_y) const;            // Gets this Entity's distance from a specified tile.
     virtual float       distance_from(std::shared_ptr<Entity> entity) const;    // As above, but measuring distance to an Entity.
+    std::vector<std::shared_ptr<Item>>* inv();          // Returns the inventory pointer.
     virtual bool        is_at(int ax, int ay) const;    // Checks if this Entity claims to be occupying a specified tile.
     virtual bool        is_in_fov() const;              // Can this Entity be seen by the player?
     int                 light_power() const;    // Returns the power of this Entity's light source, if any.
@@ -45,8 +48,8 @@ public:
     void                set_light_power(int new_power); // Sets the power of this Entity's light source.
     void                set_name(const std::string &new_name);  // Sets this Entity's name.
     void                set_pos(int x, int y);  // Sets this Entity's coordinates.
-    virtual void        tick(std::shared_ptr<Entity> self) = 0;     // Updates the state of this Entity or takes an AI action.
-    virtual void        tick10(std::shared_ptr<Entity> self) = 0;   // As above, but for slower events such as buffs/debuffs ticking.
+    virtual void        tick(std::shared_ptr<Entity> self);     // Updates the state of this Entity or takes an AI action.
+    virtual void        tick10(std::shared_ptr<Entity> self);   // As above, but for slower events such as buffs/debuffs ticking.
     virtual EntityType  type() const = 0;   // Pure virtual, to ensure this is an abstract class. Derived classes will report their class type here.
     uint16_t            x() const;      // Read-only access to the Entity's X coordinate.
     uint16_t            y() const;      // Read-only access to the Entity's Y coordinate.
@@ -62,6 +65,7 @@ private:
     Colour      colour_;    // The colour of this Entity.
     std::map<EntityProp, float>     entity_properties_f_;   // Various properties that can be on this Entity (floats).
     std::map<EntityProp, int32_t>   entity_properties_i_;   // Various properties that can be on this Entity (ints).
+    std::vector<std::shared_ptr<Item>>    inventory_;       // The things carried by this Entity.
     std::string name_;      // The name of this Entity.
     uint16_t    x_, y_;     // Position on the map.
 
