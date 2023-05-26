@@ -3,8 +3,8 @@
 
 #include "codex/codex-item.hpp"
 #include "entity/item.hpp"
-#include "misc/ascii-symbols.hpp"
 #include "terminal/terminal-shared-defs.hpp"
+#include "tune/ascii-symbols.hpp"
 
 
 namespace invictus

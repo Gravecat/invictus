@@ -8,7 +8,7 @@
 #include "core/core.hpp"
 #include "core/game-manager.hpp"
 #include "entity/player.hpp"
-#include "misc/ascii-symbols.hpp"
+#include "tune/ascii-symbols.hpp"
 #include "terminal/terminal.hpp"
 #include "ui/ui.hpp"
 

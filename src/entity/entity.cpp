@@ -9,9 +9,9 @@
 #include "core/guru.hpp"
 #include "entity/entity.hpp"
 #include "entity/item.hpp"
-#include "misc/ascii-symbols.hpp"
 #include "terminal/terminal.hpp"
 #include "terminal/window.hpp"
+#include "tune/ascii-symbols.hpp"
 
 
 namespace invictus

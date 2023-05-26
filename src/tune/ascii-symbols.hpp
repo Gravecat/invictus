@@ -1,8 +1,8 @@
-// misc/ascii-symbols.hpp -- Definitions for which ASCII symbols are used for which things in the game, allowing for easily changing them en masse if needed.
+// tune/ascii-symbols.hpp -- Definitions for which ASCII symbols are used for which things in the game, allowing for easily changing them en masse if needed.
 // Copyright © 2023 Raine "Gravecat" Simmons. Licensed under the GNU Affero General Public License v3 or any later version.
 
-#ifndef MISC_ASCII_SYMBOLS_HPP_
-#define MISC_ASCII_SYMBOLS_HPP_
+#ifndef TUNE_ASCII_SYMBOLS_HPP_
+#define TUNE_ASCII_SYMBOLS_HPP_
 
 namespace invictus
 {
@@ -209,4 +209,4 @@ constexpr char  ASCII_PLAYER =      '@';     // The player character.
 // ~ (126, tilde)
 
 }       // namespace invictus
-#endif  // MISC_ASCII_SYMBOLS_HPP_
+#endif  // TUNE_ASCII_SYMBOLS_HPP_

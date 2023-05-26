@@ -1,8 +1,8 @@
-// misc/timing.hpp -- All definitions for timing in the game (i.e. how long actions take to perform).
+// tune/timing.hpp -- All definitions for timing in the game (i.e. how long actions take to perform).
 // Copyright © 2023 Raine "Gravecat" Simmons. Licensed under the GNU Affero General Public License v3 or any later version.
 
-#ifndef MISC_TIMING_HPP_
-#define MISC_TIMING_HPP_
+#ifndef TUNE_TIMING_HPP_
+#define TUNE_TIMING_HPP_
 
 namespace invictus
 {
@@ -19,4 +19,4 @@ public:
 };
 
 }       // namespace invictus
-#endif  // MISC_TIMING_HPP_
+#endif  // TUNE_TIMING_HPP_

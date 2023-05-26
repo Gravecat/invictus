@@ -7,8 +7,8 @@
 #include "core/game-manager.hpp"
 #include "core/guru.hpp"
 #include "entity/mobile.hpp"
-#include "misc/ascii-symbols.hpp"
-#include "misc/timing.hpp"
+#include "tune/ascii-symbols.hpp"
+#include "tune/timing.hpp"
 #include "util/strx.hpp"
 
 

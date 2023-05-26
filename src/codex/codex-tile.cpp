@@ -5,8 +5,8 @@
 #include "codex/codex-tile.hpp"
 #include "core/core.hpp"
 #include "core/guru.hpp"
-#include "misc/ascii-symbols.hpp"
 #include "terminal/terminal-shared-defs.hpp"
+#include "tune/ascii-symbols.hpp"
 
 
 namespace invictus

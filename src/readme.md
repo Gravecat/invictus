@@ -18,9 +18,10 @@ Entity has multiple derived classes, which represent more specialized forms.
 * **factory** - The factory source folder is where the static game data resides -- it contains factory classes, which generate preset classes for tiles, items,
 monsters, etc.
 
-* **misc** - The misc source folder is for those few odd loose files that just... don't fit in anywhere else.
-
 * **terminal** - The terminal source folder contains all middleware code dealing with NCurses/PDCurses, and anything Curses or terminal-related.
+
+* **tune** - The tune source folder contains static definitions that are used frequently in other parts of the code, and can be adjusted to tune aspects of the
+game.
 
 * **ui** - The ui source folder contains code dealing with the UI elements of the game (the dungeon viewport, the message log, the sidebar, other overlapping
 windows), along with menus, popup boxes, and other UI-like things.
