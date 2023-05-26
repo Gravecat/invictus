@@ -6,6 +6,7 @@
 
 #include <cstdint>
 #include <string>
+#include <vector>
 
 
 namespace invictus
@@ -14,8 +15,12 @@ namespace invictus
 class StrX
 {
 public:
+    static constexpr int    CL_FLAG_USE_AND =   1;
+    static constexpr int    CL_FLAG_SQL_MODE =  2;
+
     static std::string  bool_to_str(bool b);    // Converts a bool to a string ("true" or "false").
                         // Find and replace one string with another.
+    static std::string  comma_list(std::vector<std::string> vec, unsigned int flags);   // Converts a vector to a comma-separated list.
     static bool         find_and_replace(std::string &input, const std::string &to_find, const std::string &to_replace);
     static std::string  ftos(double num);                       // Converts a float or double to a string.
     static std::string  itoh(uint32_t num, uint8_t min_len);    // Converts an integer into a hex string.

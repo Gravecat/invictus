@@ -40,6 +40,7 @@ public:
     virtual float       distance_from(std::shared_ptr<Entity> entity) const;    // As above, but measuring distance to an Entity.
     std::vector<std::shared_ptr<Item>>* inv();          // Returns the inventory pointer.
     virtual bool        is_at(int ax, int ay) const;    // Checks if this Entity claims to be occupying a specified tile.
+    virtual bool        is_at(std::shared_ptr<Entity> entity) const;    // As above, but checks against another Entity's position.
     virtual bool        is_in_fov() const;              // Can this Entity be seen by the player?
     int                 light_power() const;    // Returns the power of this Entity's light source, if any.
     std::string         name() const;   // Retrieves this Entity's name.

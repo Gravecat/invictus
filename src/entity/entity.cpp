@@ -55,6 +55,9 @@ bool Entity::is_at(int ax, int ay) const
     return x_ == ax && y_ == ay;
 }
 
+// As above, but checks against another Entity's position.
+bool Entity::is_at(std::shared_ptr<Entity> entity) const { return (x_ == entity->x() && y_ == entity->y()); }
+
 // Can this Entity be seen by the player?
 bool Entity::is_in_fov() const { return core()->game()->area()->is_in_fov(x_, y_); }
 

@@ -127,6 +127,13 @@ bool Mobile::move_or_attack(std::shared_ptr<Mobile> self, int dx, int dy)
 
         if (is_player)
         {
+            std::vector<std::string> floor_items;
+            for (auto entity : *area->entities())
+            {
+                if (entity == self || !entity->is_at(self)) continue;
+                floor_items.push_back(entity->name());
+            }
+            if (floor_items.size()) core()->message("You see {c}" + StrX::comma_list(floor_items, true) + " {w}here.", 0);
             Tile* self_tile = area->tile(xdx, ydy);
             if (self_tile->tag(TileTag::StairsDown)) core()->message("You see a staircase leading downward.");
             else if (self_tile->tag(TileTag::StairsUp)) core()->message("You see a staircase leading upward.");

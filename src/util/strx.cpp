@@ -4,7 +4,6 @@
 #include <algorithm>
 #include <cstdlib>
 #include <sstream>
-#include <vector>
 
 #include "core/core.hpp"
 #include "core/guru.hpp"
@@ -16,6 +15,39 @@ namespace invictus
 
 // Converts a bool to a string ("true" or "false").
 std::string StrX::bool_to_str(bool b) { return (b ? "true" : "false"); }
+
+// Converts a vector to a comma-separated list.
+std::string StrX::comma_list(std::vector<std::string> vec, unsigned int flags)
+{
+    const bool use_and = ((flags & CL_FLAG_USE_AND) == CL_FLAG_USE_AND);
+    const bool sql_mode = ((flags & CL_FLAG_SQL_MODE) == CL_FLAG_SQL_MODE);
+    if (!vec.size())
+    {
+        core()->guru()->nonfatal("Empty vector provided to comma_list!", Guru::GURU_WARN);
+        return "";
+    }
+    if (vec.size() == 1) return vec.at(0);
+    std::string plus = " and ";
+    if (!use_and)
+    {
+        if (sql_mode) plus = ", ";
+        else plus = " or ";
+    }
+    else if (vec.size() == 2) return vec.at(0) + plus + vec.at(1);
+
+    std::string str;
+    for (unsigned int i = 0; i < vec.size(); i++)
+    {
+        str += vec.at(i);
+        if (i < vec.size() - 1)
+        {
+            if (i == vec.size() - 2) str += plus;
+            else str += ", ";
+        }
+    }
+
+    return str;
+}
 
 // Find and replace one string with another.
 bool StrX::find_and_replace(std::string &input, const std::string &to_find, const std::string &to_replace)
