@@ -11,6 +11,7 @@
 #include "codex/codex-tile.hpp"
 #include "core/core.hpp"
 #include "core/guru.hpp"
+#include "tune/area-generation.hpp"
 #include "util/random.hpp"
 
 #include "codex/codex-item.hpp" // temp
@@ -27,7 +28,7 @@ DungeonGenerator::DungeonGenerator(std::shared_ptr<Area> area_to_gen) : active_r
 void DungeonGenerator::decorate_room(unsigned int room_id)
 {
     active_room_ = room_id;
-    if (DEBUG_GENERATION_MESSAGES) core()->guru()->log("Decorating room " + std::to_string(room_id + 1) + " of " + std::to_string(rooms_.size()));
+    if (AREA_GEN_DEBUG_MESSAGES) core()->guru()->log("Decorating room " + std::to_string(room_id + 1) + " of " + std::to_string(rooms_.size()));
 
     decorate_room_druj_tombs(room_id);
 }
@@ -55,7 +56,7 @@ bool DungeonGenerator::decorate_room_druj_tombs(unsigned int room_id)
                     neighbours(check_x, check_y, TileID::LG_WALL, false) >= 3 && neighbours(check_x, check_y, TileID::LG_FLOOR, false) == 1 &&
                     area_->tile(check_x + tomb_offset_x, check_y + tomb_offset_y)->id() == TileID::LG_WALL && area_->tile(check_x + tomb_offset_x + diag_check_x,
                     check_y + tomb_offset_y + diag_check_y)->id() == TileID::LG_WALL && area_->tile(check_x + tomb_offset_x - diag_check_x, check_y +
-                    tomb_offset_y - diag_check_y)->id() == TileID::LG_WALL && Random::rng(WALL_TOMB_CHANCE) == 1)
+                    tomb_offset_y - diag_check_y)->id() == TileID::LG_WALL && Random::rng(TOMB_WALL_TOMB_CHANCE) == 1)
             {
                 area_->set_tile(check_x, check_y, TileID::DRUJ_TOMB);
                 success = true;
@@ -118,10 +119,11 @@ void DungeonGenerator::generate(bool with_actors)
 {
     auto guru = core()->guru();
     int failed_rooms = 0;
-    if (DEBUG_GENERATION_MESSAGES) guru->log("Beginning dungeon generation.");
-    while (failed_rooms < ROOM_GEN_RETRIES)
+    if (AREA_GEN_DEBUG_MESSAGES) guru->log("Beginning dungeon generation.");
+    while (failed_rooms < DUNGEON_ROOM_GEN_RETRIES)
     {
-        auto new_room = std::make_shared<Room>(this, Random::rng(ROOM_SIZE_MIN, ROOM_SIZE_MAX), Random::rng(ROOM_SIZE_MIN, ROOM_SIZE_MAX));
+        auto new_room = std::make_shared<Room>(this, Random::rng(DUNGEON_ROOM_SIZE_MIN, DUNGEON_ROOM_SIZE_MAX),
+            Random::rng(DUNGEON_ROOM_SIZE_MIN, DUNGEON_ROOM_SIZE_MAX));
         new_room->generate(first_room_);
 
         if (first_room_)
@@ -212,10 +214,10 @@ void DungeonGenerator::generate(bool with_actors)
     int percentage_floor = std::round((static_cast<float>(floor_tiles) / static_cast<float>(total_tiles)) * 100.0f);
 
     active_room_ = 0;
-    if (DEBUG_GENERATION_MESSAGES) guru->log("Basic map layout generated (" + std::to_string(percentage_floor) + "% walkable).");
-    if (percentage_floor < MAP_MIN_WALKABLE || percentage_floor > MAP_MAX_WALKABLE)
+    if (AREA_GEN_DEBUG_MESSAGES) guru->log("Basic map layout generated (" + std::to_string(percentage_floor) + "% walkable).");
+    if (percentage_floor < DUNGEON_MIN_WALKABLE || percentage_floor > DUNGEON_MAX_WALKABLE)
     {
-        if (DEBUG_GENERATION_MESSAGES) guru->log("Aborting.");
+        if (AREA_GEN_DEBUG_MESSAGES) guru->log("Aborting.");
         void_map();
         generate(with_actors);
         return;
@@ -258,7 +260,7 @@ void DungeonGenerator::generate(bool with_actors)
         }
         total_doors_changed += doors_changed;
     } while (doors_changed);
-    if (total_doors_changed && DEBUG_GENERATION_MESSAGES) guru->log("Removed unlinked and duplicate door candidates (" + std::to_string(passes) + " passes, " +
+    if (total_doors_changed && AREA_GEN_DEBUG_MESSAGES) guru->log("Removed unlinked and duplicate door candidates (" + std::to_string(passes) + " passes, " +
         std::to_string(total_doors_changed) + " removed)");
 
     // Remove doors that are at an L-shape between two floor tiles.
@@ -274,24 +276,24 @@ void DungeonGenerator::generate(bool with_actors)
             l_doors_removed++;
         }
     }
-    if (l_doors_removed && DEBUG_GENERATION_MESSAGES) guru->log("Removed " + std::to_string(l_doors_removed) + " L-doors.");
+    if (l_doors_removed && AREA_GEN_DEBUG_MESSAGES) guru->log("Removed " + std::to_string(l_doors_removed) + " L-doors.");
 
     // Smooth the corners of the rooms a little.
     int corners_smoothed = 0;
-    if (MAP_CORNER_SMOOTHING)
+    if (DUNGEON_ROOM_CORNER_SMOOTHING)
     {
         for (int x = 0; x < area_->width(); x++)
         {
             for (int y = 0; y < area_->height(); y++)
             {
-                if (area_->tile(x, y)->id() == TileID::LG_FLOOR && neighbours(x, y, TileID::LG_WALL, true) >= 5 && Random::rng(MAP_CORNER_SMOOTHING) == 1)
+                if (area_->tile(x, y)->id() == TileID::LG_FLOOR && neighbours(x, y, TileID::LG_WALL, true) >= 5 && Random::rng(DUNGEON_ROOM_CORNER_SMOOTHING) == 1)
                 {
                     area_->set_tile(x, y, TileID::LG_WALL);
                     corners_smoothed++;
                 }
             }
         }
-        if (corners_smoothed && DEBUG_GENERATION_MESSAGES) guru->log("Smoothed " + std::to_string(corners_smoothed) + " wall corners.");
+        if (corners_smoothed && AREA_GEN_DEBUG_MESSAGES) guru->log("Smoothed " + std::to_string(corners_smoothed) + " wall corners.");
     }
 
     // Cutting out diagonals.
@@ -318,7 +320,7 @@ void DungeonGenerator::generate(bool with_actors)
             }
         }
     } while (diagonal_removed);
-    if (diagonals_removed && DEBUG_GENERATION_MESSAGES) guru->log("Removed " + std::to_string(diagonals_removed) + " diagonal floor tiles.");
+    if (diagonals_removed && AREA_GEN_DEBUG_MESSAGES) guru->log("Removed " + std::to_string(diagonals_removed) + " diagonal floor tiles.");
 
     // Find locations for the up and down stairs.
     auto valid_stairs_position = [this](int x, int y) -> bool {
@@ -361,17 +363,17 @@ void DungeonGenerator::generate(bool with_actors)
         } while (current_room != end_room);
         if (current_room == end_room)
         {
-            if (DEBUG_GENERATION_MESSAGES) guru->log("ABORTING: Could not find viable stair locations!");
+            if (AREA_GEN_DEBUG_MESSAGES) guru->log("ABORTING: Could not find viable stair locations!");
             void_map();
             generate(with_actors);
             return;
         }
     }
-    if (DEBUG_GENERATION_MESSAGES) guru->log("Stairs placed.");
+    if (AREA_GEN_DEBUG_MESSAGES) guru->log("Stairs placed.");
 
     for (unsigned int i = 0; i < rooms_.size(); i++)
         decorate_room(i);
-    if (DEBUG_GENERATION_MESSAGES) guru->log("Decoration complete.");
+    if (AREA_GEN_DEBUG_MESSAGES) guru->log("Decoration complete.");
 
     // Bake the tiles.
     for (int x = 0; x < area_->width(); x++)
@@ -409,7 +411,7 @@ void DungeonGenerator::generate(bool with_actors)
             }
             if (chosen_tile == TileID::VOID_TILE)
             {
-                if (DEBUG_GENERATION_MESSAGES) guru->log("ABORTING: Invalid tile detected during baking process!");
+                if (AREA_GEN_DEBUG_MESSAGES) guru->log("ABORTING: Invalid tile detected during baking process!");
                 void_map();
                 generate(with_actors);
                 return;
@@ -547,7 +549,7 @@ bool Room::flood_check()
             }
         }
     }
-    if (floor_tiles < ROOM_FLOOR_TILES_MIN || start_x < 0 || start_y < 0) return false;
+    if (floor_tiles < DUNGEON_ROOM_FLOOR_TILES_MIN || start_x < 0 || start_y < 0) return false;
 
     std::function<void(int, int)> flood_fill;
     flood_fill = [this, &tiles_found, &flood_fill](int sx, int sy) {
@@ -594,7 +596,7 @@ bool Room::generate(bool first)
     if ((door_candidates & 2) == 2) apply_door_candidate(width_ - 1, 0, -1, 0);
     if ((door_candidates & 4) == 4) apply_door_candidate(0, 0, 0, 1);
     if ((door_candidates & 8) == 8) apply_door_candidate(0, height_ - 1, 0, -1);
-    if (DungeonGenerator::DEBUG_GENERATION_MESSAGES) core()->guru()->log("Room generated (" + std::to_string(tries) + " retries)");
+    if (AREA_GEN_DEBUG_MESSAGES) core()->guru()->log("Room generated (" + std::to_string(tries) + " retries)");
 
     while (top_row_blank()) shunt_up();
     while (left_row_blank()) shunt_left();

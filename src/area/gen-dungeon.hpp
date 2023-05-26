@@ -26,19 +26,6 @@ public:
     void    generate(bool with_actors = false); // Generates the new map!
 
 private:
-    static constexpr bool   DEBUG_GENERATION_MESSAGES = false;  // Enable debug dungeon generation messages in the log.
-    static constexpr int    MAP_CORNER_SMOOTHING =  5;  // The lower this number, the more rooms will have smooth edges rather than being square.
-                                                        // Set to 1 for full smoothing, 0 for none.
-    static constexpr int    MAP_MAX_WALKABLE =      50; // The maximum % of the map that needs to be walkable (i.e. floor) to be considered viable.
-                                                        // Too much of this can be bad, as it leads to cluttered maps.
-    static constexpr int    MAP_MIN_WALKABLE =      20; // The minimum % of the map that needs to be walkable (i.e. floor) to be considered viable.
-                                                        // Too little of this can be bad, as it leads to very small maps.
-    static constexpr int    ROOM_GEN_RETRIES =      10; // How many new rooms are generated after a room was unable to be inserted in the map?
-                                                        // The higher this number, the better quality maps will be generated, but it'll be much slower.
-    static constexpr int    ROOM_SIZE_MAX =         12; // The largest room allowed by the map generator.
-    static constexpr int    ROOM_SIZE_MIN =         6;  // The smallest room allowed by the map generator.
-    static constexpr int    WALL_TOMB_CHANCE =      5;  // 1 in X chance of a viable wall location being dug out into an alcove for a burial tomb.
-
     void    decorate_room(unsigned int room_id);    // Decorates a specified room.
     bool    decorate_room_druj_tombs(unsigned int room_id); // Room decoration: druj burial tombs.
     void    find_wall(int *x, int *y, int dx, int dy, unsigned int room_id);    // Finds the first wall in the room, going in the specified direction (dx/dy).
@@ -64,8 +51,6 @@ public:
     ~Room();    // Cleans up memory used.
 
 private:
-    static constexpr int    ROOM_FLOOR_TILES_MIN =  10; // Generated rooms must have at least this many floor tiles.
-
     int     actual_height() const;  // Returns the actual height of this Room, after it's been shunted into a corner.
     int     actual_width() const;   // Returns the actual width of this Room, after it's been shunted into a corner.
     void    apply_door_candidate(int sx, int sy, int dx, int dy);   // Applies a door candidate tile to a side of a room.

@@ -3,6 +3,8 @@
 The tune source folder is for headers which contain only definitions (usually `constexpr` or `enum`), which are used in many other places. These headers can be
 tweaked to make sweeping changes to large parts of the game code at once.
 
+* **area-generation.hpp** -- `constexpr` values that adjust parameters when procedurally generating areas and dungeons.
+
 * **ascii-symbols.hpp** -- `constexpr char` values to define the ASCII symbols used in the game. This way, they can be changed or swapped out en masse with
 relative ease in the future, if needed.
 
