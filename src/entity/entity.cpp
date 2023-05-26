@@ -3,7 +3,9 @@
 
 #include <cmath>
 
+#include "area/area.hpp"
 #include "core/core.hpp"
+#include "core/game-manager.hpp"
 #include "core/guru.hpp"
 #include "entity/entity.hpp"
 #include "terminal/terminal.hpp"
@@ -45,6 +47,9 @@ bool Entity::is_at(int ax, int ay) const
         Guru::GURU_ERROR);
     return x_ == ax && y_ == ay;
 }
+
+// Can this Entity be seen by the player?
+bool Entity::is_in_fov() const { return core()->game()->area()->is_in_fov(x_, y_); }
 
 // Returns the power of this Entity's light source, if any.
 int Entity::light_power() const { return get_prop(EntityProp::LIGHT_POWER); }

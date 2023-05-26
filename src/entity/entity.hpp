@@ -35,6 +35,7 @@ public:
     char                ascii() const;  // Gets the ASCII character representing this Entity.
     Colour              colour() const; // Gets the colour of this Entity.
     virtual bool        is_at(int ax, int ay) const;    // Checks if this Entity claims to be occupying a specified tile.
+    virtual bool        is_in_fov() const;              // Can this Entity be seen by the player?
     int                 light_power() const;    // Returns the power of this Entity's light source, if any.
     std::string         name() const;   // Retrieves this Entity's name.
     void                set_ascii(char new_ascii);      // Sets this Entity's ASCII character.

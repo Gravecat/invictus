@@ -205,6 +205,13 @@ void Area::render()
     // First pass: Corpses.
 
     // Second pass: Items.
+    for (auto entity : entities_)
+    {
+        if (entity->type() != EntityType::ITEM || !entity->is_in_fov()) continue;
+        const int ox = entity->x() - offset_x(), oy = entity->y() - offset_y();
+        if (ox < 0 || oy < 0 || ox >= visible_x || oy >= visible_y) continue;
+        terminal->put(entity->ascii(), ox, oy, entity->colour(), 0, dungeon_view);
+    }
 
     // Third pass: Mobiles.
 
