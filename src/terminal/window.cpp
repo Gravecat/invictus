@@ -13,8 +13,13 @@
 namespace invictus
 {
 
-Window::Window(uint16_t width, uint16_t height, int new_x, int new_y, bool new_border) : border_ptr_(nullptr)
+Window::Window(int width, int height, int new_x, int new_y, bool new_border) : border_ptr_(nullptr)
 {
+    if (width < 1) width = 1;
+    if (height < 1) height = 1;
+    if (new_x < 0) new_x = 0;
+    if (new_y < 0) new_y = 0;
+
     if (new_border)
     {
         border_ptr_ = std::make_shared<Window>(width, height, new_x, new_y, 0);

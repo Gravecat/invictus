@@ -15,7 +15,7 @@ namespace invictus
 class Window
 {
 public:
-                Window(uint16_t width, uint16_t height, int new_x = 0, int new_y = 0, bool new_border = false);
+                Window(int width, int height, int new_x = 0, int new_y = 0, bool new_border = false);
                 ~Window();
     uint16_t    get_height() const; // Read-only access to the Window's height.
     uint16_t    get_width() const;  // Read-only access to the Window's width.

@@ -153,7 +153,6 @@ unsigned long Terminal::colour_pair_code(Colour col, uint32_t flags)
 // Updates the screen.
 void Terminal::flip()
 {
-    if (get_cols() < 80 || get_rows() < 24) resize_term(24, 80);
     update_panels();
     doupdate();
 }
@@ -220,7 +219,6 @@ int Terminal::get_key(std::shared_ptr<Window> window)
         case KEY_RESIZE:    // Window resized event.
         {
             resize_term(0, 0);
-            if (get_cols() < 80 || get_rows() < 24) resize_term(24, 80);
             curs_set(cursor_state_);
             return Key::RESIZE;
         }
@@ -329,6 +327,11 @@ void Terminal::print(std::string str, int x, int y, Colour col, unsigned int fla
 {
     if (!str.size()) return;
     WINDOW *win = (window ? window->win() : stdscr);
+
+    int window_w, window_h;
+    if (window) { window_w = window->get_width(); window_h = window->get_height(); }
+    else { window_w = get_cols(); window_h = get_rows(); }
+    if (x < 0 || x >= window_w || y < 0 || y >= window_h) return;
     
     unsigned int colour_flags = 0;
     if ((flags & PRINT_FLAG_BOLD) == PRINT_FLAG_BOLD) colour_flags |= A_BOLD;
@@ -402,6 +405,11 @@ void Terminal::print(std::string str, int x, int y, Colour col, unsigned int fla
 // Prints a character at a given coordinate on the screen.
 void Terminal::put(uint32_t letter, int x, int y, Colour col, unsigned int flags, std::shared_ptr<Window> window)
 {
+    int window_w, window_h;
+    if (window) { window_w = window->get_width(); window_h = window->get_height(); }
+    else { window_w = get_cols(); window_h = get_rows(); }
+    if (x < 0 || x >= window_w || y < 0 || y >= window_h) return;
+
     unsigned int colour_flags = 0;
     if ((flags & PRINT_FLAG_BOLD) == PRINT_FLAG_BOLD) colour_flags |= A_BOLD;
     if ((flags & PRINT_FLAG_REVERSE) == PRINT_FLAG_REVERSE) colour_flags |= A_REVERSE;
