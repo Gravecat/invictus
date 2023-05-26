@@ -10,7 +10,7 @@
 namespace invictus
 {
 
-enum class ItemInteraction : uint8_t { DO_NOTHING, DROP };
+enum class ItemInteraction : uint8_t { DO_NOTHING, DROP, TAKE };
 
 class Player : public Mobile
 {
@@ -20,6 +20,7 @@ public:
     uint16_t    fov_radius() const; // Calculates the player's field-of-view radius.
     void        get_direction(int *dx, int *dy) const;      // Gets a direction from the player.
     void        get_item();         // Picks something up off the ground.
+    void        ground_items();     // Interact with items on the ground.
     void        item_interaction(uint32_t id, ItemLocation loc);    // Interacts with an item.
     void        open_a_door();      // Attempts to open a nearby door.
     void        take_inventory(bool equipment = false);     // Interact with carried items.

@@ -122,6 +122,31 @@ void Player::get_item()
         take_item(items_nearby.at(0));
         return;
     }
+    else ground_items();
+}
+
+// Interact with items on the ground.
+void Player::ground_items()
+{
+    auto area = core()->game()->area();
+    std::vector<uint32_t> items_nearby;
+    for (unsigned int i = 0; i < area->entities()->size(); i++)
+    {
+        auto entity = area->entities()->at(i);
+        if (entity->type() != EntityType::ITEM) continue;
+        if (entity->is_at(x(), y())) items_nearby.push_back(i);
+    }
+    if (!items_nearby.size()) core()->message("{y}There's nothing to interact with here.");
+
+    auto items_menu = std::make_unique<Menu>();
+    items_menu->set_title("Nearby Items");
+    for (auto id : items_nearby)
+    {
+        auto entity = area->entities()->at(id);
+        items_menu->add_item(entity->name(), entity->ascii(), entity->colour(), true);
+    }
+    int result = items_menu->render();
+    if (result >= 0 && result < static_cast<int>(items_nearby.size())) item_interaction(items_nearby.at(result), ItemLocation::GROUND);
 }
 
 // Interacts with an item.
@@ -151,7 +176,7 @@ void Player::item_interaction(uint32_t id, ItemLocation loc)
     else if (entity->type() != EntityType::ITEM) core()->guru()->halt("Invalid item interaction target", id);
     item = std::dynamic_pointer_cast<Item>(entity);
     
-    auto item_menu = std::make_shared<Menu>();
+    auto item_menu = std::make_unique<Menu>();
     item_menu->set_title(item->name());
     item_menu->add_item("Do Nothing");
     std::vector<ItemInteraction> interactions;
@@ -163,6 +188,10 @@ void Player::item_interaction(uint32_t id, ItemLocation loc)
             item_menu->add_item("Drop");
             interactions.push_back(ItemInteraction::DROP);
             break;
+        case ItemLocation::GROUND:
+            item_menu->add_item("Take");
+            interactions.push_back(ItemInteraction::TAKE);
+            break;
         default: break;
     }
 
@@ -171,6 +200,7 @@ void Player::item_interaction(uint32_t id, ItemLocation loc)
     {
         case ItemInteraction::DO_NOTHING: return;
         case ItemInteraction::DROP: drop_item(id); break;
+        case ItemInteraction::TAKE: take_item(id); break;
     }
 }
 
@@ -223,7 +253,7 @@ void Player::take_inventory(bool equipment)
         return;
     }
 
-    auto inv_menu = std::make_shared<Menu>();
+    auto inv_menu = std::make_unique<Menu>();
     inv_menu->set_title("Inventory");
     for (auto item : *inv())
         inv_menu->add_item(item->name(), item->ascii(), item->colour(), true);
