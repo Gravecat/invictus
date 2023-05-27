@@ -166,6 +166,9 @@ void Menu::reposition()
 // Sets the Menu option highlighting on or off.
 void Menu::set_highlight(bool highlight) { allow_highlight_ = highlight; }
 
+// Returns after rendering the menu, without caring about the user's input.
+void Menu::set_return_after_render(bool rar) { return_after_render_ = true; }
+
 // Sets the currently-selected item.
 void Menu::set_selected(unsigned int pos)
 {

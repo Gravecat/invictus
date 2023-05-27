@@ -66,8 +66,11 @@ std::vector<std::shared_ptr<Item>>* Entity::inv() { return &inventory_; }
 void Entity::inventory_add(std::shared_ptr<Entity> entity)
 {
     if (entity->type() != EntityType::ITEM) core()->guru()->halt("Attempt to add non-Item Entity to Entity inventory.");
-    inventory_.push_back(std::dynamic_pointer_cast<Item>(entity));
+    inventory_add(std::dynamic_pointer_cast<Item>(entity));
 }
+
+// As above, but for an Entity in Item form.
+void Entity::inventory_add(std::shared_ptr<Item> item) { inventory_.push_back(item); }
 
 // Checks if this Entity claims to be occupying a specified tile.
 bool Entity::is_at(int ax, int ay) const
@@ -84,7 +87,7 @@ bool Entity::is_at(std::shared_ptr<Entity> entity) const { return (x_ == entity-
 bool Entity::is_in_fov() const { return core()->game()->area()->is_in_fov(x_, y_); }
 
 // Returns the power of this Entity's light source, if any.
-int Entity::light_power() const { return get_prop(EntityProp::LIGHT_POWER); }
+int32_t Entity::light_power() const { return get_prop(EntityProp::LIGHT_POWER); }
 
 // Retrieves this Entity's name.
 std::string Entity::name(int flags) const
@@ -170,6 +173,14 @@ void Entity::set_prop_f(EntityProp prop, float value)
     }
     else if (result == entity_properties_f_.end()) entity_properties_f_.erase(result->first);
 }
+
+// Sets multiple entity properties (int) at once.
+void Entity::set_props(std::initializer_list<std::pair<EntityProp, int32_t>> prop_pairs)
+{ for (auto &prop : prop_pairs) set_prop(prop.first, prop.second); }
+
+// Sets multiple entity properties (float) at once.
+void Entity::set_props_f(std::initializer_list<std::pair<EntityProp, float>> prop_pairs)
+{ for (auto &prop : prop_pairs) set_prop(prop.first, prop.second); }
 
 // Sets an EntityTag on this Entity.
 void Entity::set_tag(EntityTag the_tag)

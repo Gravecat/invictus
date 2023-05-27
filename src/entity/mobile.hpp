@@ -10,6 +10,9 @@
 namespace invictus
 {
 
+// Slots that can be used to equip items. _END is important, so we know how large to make the equipment vector.
+enum class EquipSlot : uint8_t { HAND_MAIN, HAND_OFF, BODY, HEAD, HANDS, FEET, _END };
+
 // Used with certain functions when interacting with items.
 enum class ItemLocation : uint8_t { GROUND, INVENTORY, EQUIPMENT };
 
@@ -23,6 +26,9 @@ public:
     virtual void    clear_banked_ticks();   // Erase all banked ticks on this Mobile.
     void            close_door(int dx, int dy); // Attempts to close a door.
     void            drop_item(uint32_t id); // Drops a carried item.
+    std::vector<std::shared_ptr<Item>>* equ();  // Retrieves a pointer to the equipment vector.
+    void            equip_item(uint32_t id);    // Equips a specified Item.
+    std::shared_ptr<Item>   equipment(EquipSlot slot);  // Retrieves equipment from a given slot.
     bool            is_dead() const;        // Checks if this Mobile is dead.
     virtual bool    move_or_attack(std::shared_ptr<Mobile> self, int dx, int dy);   // Moves in a given direction, or attacks something in the destination tile.
     float           movement_speed() const; // Returns the amount of ticks needed for this Mobile to move one tile.
@@ -31,9 +37,15 @@ public:
     void            tick10(std::shared_ptr<Entity> self) override;  // Process slower state-change events that happen less often, such as buffs/debuffs ticking.
     void            timed_action(float time_taken); // This Mobile has made an action which takes time. Handles both Mobile and Player differences internally.
     EntityType      type() const { return EntityType::MOBILE; } // Self-identifier function.
+    void            unequip_item(EquipSlot slot);   // Unequips a specified Item.
 
     float   banked_ticks_;  // The amount of time this Mobile has 'banked'; it can 'spend' this time to move or attack.
     uint8_t last_dir_;      // The last direction this Mobile moved in.
+
+protected:
+    std::vector<std::shared_ptr<Item>>  equipment_; // Items equipped by this Mobile.
+
+    static std::shared_ptr<Item>    blank_item_;    // A blank item, shared amongst all Mobiles to use in their empty equipment slots.
 };
 
 }       // namespace invictus

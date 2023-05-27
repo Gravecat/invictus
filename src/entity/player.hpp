@@ -10,7 +10,7 @@
 namespace invictus
 {
 
-enum class ItemInteraction : uint8_t { DO_NOTHING, DROP, TAKE };
+enum class ItemInteraction : uint8_t { DO_NOTHING, DROP, TAKE, EQUIP, UNEQUIP };
 
 class Player : public Mobile
 {

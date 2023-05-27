@@ -4,6 +4,7 @@
 #include "area/area.hpp"
 #include "area/gen-dungeon.hpp"
 #include "area/tile.hpp"
+#include "codex/codex-item.hpp"
 #include "core/core.hpp"
 #include "core/game-manager.hpp"
 #include "core/guru.hpp"
@@ -61,11 +62,12 @@ void GameManager::dungeon_input(int key)
         case 'u': case Key::KP9: dx = 1; dy = -1; break;    // Move northeast
 
         case ',': case Key::KP5: pass_time(TIME_DO_NOTHING); break; // Do nothing.
-        case '.': player_->ground_items(); break;   // Interact with items on the ground.
-        case 'c': player_->close_a_door(); break;   // Attempts to close something.
-        case 'g': player_->get_item(); break;       // Picks something up.
-        case 'i': player_->take_inventory(); break; // Interact with carried items.
-        case 'o': player_->open_a_door(); break;    // Attempts to open something.
+        case '.': player_->ground_items(); break;       // Interact with items on the ground.
+        case 'c': player_->close_a_door(); break;       // Attempts to close something.
+        case 'e': player_->take_inventory(true); break; // Interact with equipped items.
+        case 'g': player_->get_item(); break;           // Picks something up.
+        case 'i': player_->take_inventory(); break;     // Interact with carried items.
+        case 'o': player_->open_a_door(); break;        // Attempts to open something.
     }
 
     if (dx || dy)
@@ -118,6 +120,7 @@ void GameManager::new_game()
     generator->generate();
     auto stair_coords = area_->find_tile_tag(TileTag::StairsUp);
     player_->set_pos(stair_coords.first, stair_coords.second);
+    player_->inventory_add(CodexItem::generate(ItemID::LEATHER_ARMOUR));
     game_state_ = GameState::DUNGEON;
     ui_->dungeon_mode_ui(true);
 }

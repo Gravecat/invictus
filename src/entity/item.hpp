@@ -4,8 +4,6 @@
 #ifndef ENTITY_ITEM_HPP_
 #define ENTITY_ITEM_HPP_
 
-#include <cstdint>
-
 #include "entity/entity.hpp"
 
 
@@ -30,16 +28,12 @@ class Item : public Entity
 public:
                 Item();                 // Constructor, sets default values.
     void        adjust_stack(int mod);  // Adds or removes from this Item stack.
-    uint32_t    bleed() const;          // Retrieves the bleed chance % of this Item, if any.
+    int32_t     armour() const;         // Retrieves the defensive armour value of this Item, if any.
     bool        blocks_tile(uint16_t tile_x, uint16_t tile_y) const;    // Checks if this Item blocks a specified tile.
-    uint32_t    crit() const;           // Retrieves the critical chance % of this Item, if any.
     ItemSub     item_subtype() const;   // Returns the sub-type of this Item.
     ItemType    item_type() const;      // Returns the type of this Item.
-    uint32_t    poison() const;         // Retrieves the poison chance % of this Item, if any.
-    uint32_t    power() const;          // Retrieves the power level of this Item, if any.
-    uint32_t    range() const;          // Retrieves the range of this Item, if any.
+    int32_t     max_dex() const;        // Retrieves the maximum dexterity modifier of this Item, if any.
     void        set_stack(uint16_t size);   // Sets the stack size for this Item.
-    float       speed() const;          // Retrieves the speed of this Item, if any.
     uint16_t    stack() const;          // Retrieves the size of this Item stack, if any.
     EntityType  type() const override { return EntityType::ITEM; }  // Identifier.
 
@@ -47,6 +41,8 @@ private:
     ItemSub     item_subtype_;  // The item's sub-type.
     ItemType    item_type_;     // The specific type of Item.
     uint16_t    stack_;         // The size of this Item's stack, if any.
+
+friend class CodexItem;
 };
 
 }       // namespace invictus

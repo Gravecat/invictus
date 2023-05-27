@@ -19,14 +19,11 @@ void Item::adjust_stack(int mod)
     else stack_ += mod;
 }
 
-// Retrieves the bleed chance % of this Item, if any.
-uint32_t Item::bleed() const { return get_prop(EntityProp::BLEED); }
+// Retrieves the defensive armour value of this Item, if any.
+int32_t Item::armour() const { return get_prop(EntityProp::ARMOUR); }
 
 // Checks if this Item blocks a specified tile.
 bool Item::blocks_tile(uint16_t, uint16_t) const { return false; }
-
-// Retrieves the critical chance % of this Item, if any.
-uint32_t Item::crit() const { return get_prop(EntityProp::CRIT); }
 
 // Returns the sub-type of this Item.
 ItemSub Item::item_subtype() const { return item_subtype_; }
@@ -34,20 +31,11 @@ ItemSub Item::item_subtype() const { return item_subtype_; }
 // Returns the type of this Item.
 ItemType Item::item_type() const { return item_type_; }
 
-// Retrieves the poison chance % of this Item, if any.
-uint32_t Item::poison() const { return get_prop(EntityProp::POISON); }
-
-// Retrieves the power level of this Item, if any.
-uint32_t Item::power() const { return get_prop(EntityProp::POWER); }
-
-// Retrieves the range of this Item, if any.
-uint32_t Item::range() const { return get_prop(EntityProp::RANGE); }
+// Retrieves the maximum dexterity modifier of this Item, if any.
+int32_t Item::max_dex() const { return get_prop(EntityProp::MAX_DEX); }
 
 // Sets the stack size for this Item.
 void Item::set_stack(uint16_t size) { stack_ = size; }
-
-// Retrieves the speed of this Item, if any.
-float Item::speed() const { return get_prop_f(EntityProp::SPEED); }
 
 // Retrieves the size of this Item stack, if any.
 uint16_t Item::stack() const { return stack_; }

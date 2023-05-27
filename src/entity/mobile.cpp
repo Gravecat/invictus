@@ -16,11 +16,19 @@
 namespace invictus
 {
 
+// A blank item, shared amongst all Mobiles to use in their empty equipment slots.
+std::shared_ptr<Item> Mobile::blank_item_ = std::make_shared<Item>();
+
+
 // Constructor.
 Mobile::Mobile() : Entity(), banked_ticks_(0), last_dir_(0)
 {
     set_name("mobile");
     set_prop_f(EntityProp::SPEED, TIME_BASE_MOVEMENT);
+
+    // Populates the equipment vector with blank items.
+    for (unsigned int i = 0; i < static_cast<unsigned int>(EquipSlot::_END); i++)
+        equipment_.push_back(blank_item_);
 }
 
 // Adds or removes banked ticks to this Mobile.
@@ -92,6 +100,118 @@ void Mobile::drop_item(uint32_t id)
     else if (is_in_fov()) core()->message("{u}" + name(NAME_FLAG_THE | NAME_FLAG_CAPITALIZE_FIRST) + " {u}drops " + item->name(NAME_FLAG_A) +
         " {u}on the ground.");
     timed_action(TIME_DROP_ITEM);
+}
+
+// Retrieves a pointer to the equipment vector.
+std::vector<std::shared_ptr<Item>>* Mobile::equ() { return &equipment_; }
+
+// Equips a specified Item.
+void Mobile::equip_item(uint32_t id)
+{
+    if (id >= inv()->size()) core()->guru()->halt("Invalid inventory slot", id, inv()->size());
+    EquipSlot target_slot = EquipSlot::_END;
+    float time_taken = 0;
+    auto item = inv()->at(id);
+    std::string target_slot_name;
+
+    if (item->item_type() == ItemType::WEAPON)
+    {
+        auto main_item = equipment(EquipSlot::HAND_MAIN);
+        auto off_item = equipment(EquipSlot::HAND_OFF);
+
+        bool unequips_main = false, unequips_off = false;
+        bool main_used = (main_item->item_type() == ItemType::NONE);
+        bool off_used = ((off_item->item_type() == ItemType::NONE) || main_item->tag(EntityTag::TwoHanded));
+        time_taken = TIME_EQUIP_WEAPON;
+
+        if (item->tag(EntityTag::TwoHanded))
+        {
+            if (main_used) unequips_main = true;
+            if (off_used) unequips_off = true;
+            target_slot = EquipSlot::HAND_MAIN;
+        }
+        else
+        {
+            if (main_used)
+            {
+                if (off_used)
+                {
+                    unequips_main = true;
+                    target_slot = EquipSlot::HAND_MAIN;
+                }
+                else target_slot = EquipSlot::HAND_OFF;
+            }
+            else target_slot = EquipSlot::HAND_MAIN;
+        }
+        
+        if (unequips_main) unequip_item(EquipSlot::HAND_MAIN);
+        if (unequips_off) unequip_item(EquipSlot::HAND_OFF);
+    }
+    else if (item->item_type() == ItemType::ARMOUR)
+    {
+        switch(item->item_subtype())
+        {
+            case ItemSub::BODY: target_slot = EquipSlot::BODY; time_taken = TIME_EQUIP_ARMOUR_BODY; break;
+            case ItemSub::HEAD: target_slot = EquipSlot::HEAD; time_taken = TIME_EQUIP_ARMOUR_HEAD; break;
+            case ItemSub::HANDS: target_slot = EquipSlot::HANDS; time_taken = TIME_EQUIP_ARMOUR_HANDS; break;
+            case ItemSub::FEET: target_slot = EquipSlot::FEET; time_taken = TIME_EQUIP_ARMOUR_FEET; break;
+            default: core()->guru()->halt("Unable to determine armour slot: " + item->name()); return;
+        }
+    }
+    else if (item->item_type() == ItemType::SHIELD)
+    {
+        auto main_item = equipment(EquipSlot::HAND_MAIN);
+        auto off_item = equipment(EquipSlot::HAND_OFF);
+        if (main_item->tag(EntityTag::TwoHanded)) unequip_item(EquipSlot::HAND_MAIN);
+        if (off_item->item_type() != ItemType::NONE) unequip_item(EquipSlot::HAND_OFF);
+        target_slot = EquipSlot::HAND_OFF;
+        time_taken = TIME_EQUIP_SHIELD;
+    }
+    else core()->guru()->halt("Unable to equip: " + item->name());
+
+    if (target_slot == EquipSlot::_END) core()->guru()->halt("Unable to determine equipment slot: " + item->name());
+
+    switch(target_slot)
+    {
+        case EquipSlot::HAND_MAIN:
+            if (item->tag(EntityTag::TwoHanded) || (item->tag(EntityTag::HandAndAHalf) && equipment(EquipSlot::HAND_OFF)->item_type() == ItemType::NONE))
+                target_slot_name = "in both hands";
+            else target_slot_name = "in your main hand";
+            break;
+        case EquipSlot::HAND_OFF: target_slot_name = "in your off hand"; break;
+        case EquipSlot::BODY: target_slot_name = "on your body"; break;
+        case EquipSlot::HEAD: target_slot_name = "on your head"; break;
+        case EquipSlot::HANDS: target_slot_name = "on your hands"; break;
+        case EquipSlot::FEET: target_slot_name = "on your feet"; break;
+        case EquipSlot::_END: break;    // To keep the compiler happy.
+    }
+
+    equ()->at(static_cast<unsigned int>(target_slot)) = item;
+    inv()->erase(inv()->begin() + id);
+    if (type() == EntityType::PLAYER)
+    {
+        if (item->item_type() == ItemType::WEAPON) core()->message("You wield {c}" + item->name(NAME_FLAG_THE) + " {w}" + target_slot_name + ".");
+        else if (item->item_type() == ItemType::SHIELD) core()->message("You hold {c}" + item->name(NAME_FLAG_THE) + " {w}" + target_slot_name + ".");
+        else core()->message("You wear {c}" + item->name(NAME_FLAG_THE) + " " + target_slot_name + ".");
+    }
+    else if (is_in_fov())
+    {
+        if (item->item_type() == ItemType::WEAPON) core()->message("{u}" + name(NAME_FLAG_THE | NAME_FLAG_CAPITALIZE_FIRST) + " wields " +
+            item->name(NAME_FLAG_A) + "{u}.");
+        else if (item->item_type() == ItemType::SHIELD) core()->message("{u}" + name(NAME_FLAG_THE | NAME_FLAG_CAPITALIZE_FIRST) + " holds " +
+            item->name(NAME_FLAG_A) + "{u}.");
+        else core()->message("{u}" + name(NAME_FLAG_THE | NAME_FLAG_CAPITALIZE_FIRST) + " wears " + item->name(NAME_FLAG_A) + "{u}.");
+    }
+
+    timed_action(time_taken);
+}
+
+// Retrieves equipment from a given slot.
+std::shared_ptr<Item> Mobile::equipment(EquipSlot slot)
+{
+    const uint32_t slot_id = static_cast<uint32_t>(slot);
+    if (slot >= EquipSlot::_END) core()->guru()->halt("Invalid equipment slot", slot_id);
+    return equ()->at(slot_id);
 }
 
 // Checks if this Mobile is dead.
@@ -214,6 +334,37 @@ void Mobile::timed_action(float time_taken)
 {
     if (type() == EntityType::PLAYER) core()->game()->pass_time(time_taken);
     else banked_ticks_ -= time_taken;
+}
+
+// Unequips a specified Item.
+void Mobile::unequip_item(EquipSlot slot)
+{
+    const unsigned int slot_id = static_cast<unsigned int>(slot);
+    if (slot >= EquipSlot::_END) core()->guru()->halt("Invalid equipment slot!", slot_id);
+    auto item = equ()->at(slot_id);
+    if (item->item_type() == ItemType::NONE) core()->guru()->halt("Attempt to unequip null item!", slot_id);
+
+    float time_taken = 0;
+    switch(slot)
+    {
+        case EquipSlot::HAND_MAIN: case EquipSlot::HAND_OFF:
+            if (item->item_type() == ItemType::WEAPON) time_taken = TIME_UNEQUIP_WEAPON;
+            else if (item->item_type() == ItemType::SHIELD) time_taken = TIME_UNEQUIP_SHIELD;
+            else core()->guru()->halt("Unable to determine item type", static_cast<uint32_t>(item->item_type()));
+            break;
+        case EquipSlot::BODY: time_taken = TIME_UNEQUIP_ARMOUR_BODY; break;
+        case EquipSlot::HANDS: time_taken = TIME_UNEQUIP_ARMOUR_HANDS; break;
+        case EquipSlot::HEAD: time_taken = TIME_UNEQUIP_ARMOUR_HEAD; break;
+        case EquipSlot::FEET: time_taken = TIME_UNEQUIP_ARMOUR_FEET; break;
+        case EquipSlot::_END: break;    // Will never happen, but this keeps the compiler happy.
+    }
+    inventory_add(item);
+    equipment_.at(slot_id) = blank_item_;
+
+    if (type() == EntityType::PLAYER) core()->message("You remove {c}" + item->name(NAME_FLAG_THE) + "{w}.");
+    else if (is_in_fov()) core()->message("{u}" + name(NAME_FLAG_THE | NAME_FLAG_CAPITALIZE_FIRST) + " {u}removes " + item->name(NAME_FLAG_A) + "{u}.");
+
+    timed_action(time_taken);
 }
 
 }   // namespace invictus

@@ -167,11 +167,12 @@ void Player::item_interaction(uint32_t id, ItemLocation loc)
     switch(loc)
     {
         case ItemLocation::INVENTORY:
-            if (inv()->size() <= id) core()->guru()->halt("Invalid item interaction ID", id, inv()->size());
+            if (id >= inv()->size()) core()->guru()->halt("Invalid item interaction ID", id, inv()->size());
             entity = inv()->at(id);
             break;
         case ItemLocation::EQUIPMENT:
-            // not yet supported
+            if (id >= static_cast<unsigned int>(EquipSlot::_END)) core()->guru()->halt("Invalid item interaction ID", id, equ()->size());
+            entity = equ()->at(id);
             break;
         case ItemLocation::GROUND:
         {
@@ -196,10 +197,21 @@ void Player::item_interaction(uint32_t id, ItemLocation loc)
         case ItemLocation::INVENTORY:
             item_menu->add_item("Drop");
             interactions.push_back(ItemInteraction::DROP);
+
+            if (item->item_type() == ItemType::WEAPON || item->item_type() == ItemType::ARMOUR || item->item_type() == ItemType::SHIELD)
+            {
+                item_menu->add_item("Equip");
+                interactions.push_back(ItemInteraction::EQUIP);
+            }
+
             break;
         case ItemLocation::GROUND:
             item_menu->add_item("Take");
             interactions.push_back(ItemInteraction::TAKE);
+            break;
+        case ItemLocation::EQUIPMENT:
+            item_menu->add_item("Unequip");
+            interactions.push_back(ItemInteraction::UNEQUIP);
             break;
         default: break;
     }
@@ -209,7 +221,9 @@ void Player::item_interaction(uint32_t id, ItemLocation loc)
     {
         case ItemInteraction::DO_NOTHING: return;
         case ItemInteraction::DROP: drop_item(id); break;
+        case ItemInteraction::EQUIP: equip_item(id); break;
         case ItemInteraction::TAKE: take_item(id); break;
+        case ItemInteraction::UNEQUIP: unequip_item(static_cast<EquipSlot>(id)); break;
     }
 }
 
@@ -256,18 +270,52 @@ void Player::open_a_door()
 // Interact with carried items.
 void Player::take_inventory(bool equipment)
 {
-    if (!inv()->size())
+    if (!equipment && !inv()->size())
     {
         core()->message("{y}You are carrying nothing.");
         return;
     }
 
-    auto inv_menu = std::make_unique<Menu>();
-    inv_menu->set_title("Inventory");
-    for (auto item : *inv())
-        inv_menu->add_item(item->name(), item->ascii(), item->colour(), true);
-    int result = inv_menu->render();
-    if (result >= 0) item_interaction(result, equipment ? ItemLocation::EQUIPMENT : ItemLocation::INVENTORY);
+    if (equipment)
+    {
+        auto equ_menu = std::make_unique<Menu>();
+        equ_menu->set_title("Equipment");
+        bool has_gear = false;
+        for (unsigned int i = 0; i < static_cast<unsigned int>(EquipSlot::_END); i++)
+        {
+            std::string slot_name, line_str;
+            switch(static_cast<EquipSlot>(i))
+            {
+                case EquipSlot::HAND_MAIN: slot_name = "in main hand"; break;
+                case EquipSlot::HAND_OFF: slot_name = "in off hand"; break;
+                case EquipSlot::BODY: slot_name = "worn on body"; break;
+                case EquipSlot::HEAD: slot_name = "worn on head"; break;
+                case EquipSlot::HANDS: slot_name = "worn on hands"; break;
+                case EquipSlot::FEET: slot_name = "worn on feet"; break;
+                case EquipSlot::_END: break;    // This can't happen, but this line keeps the compiler happy.
+            }
+            auto item = equ()->at(i);
+            if (item->item_type() == ItemType::NONE) equ_menu->add_item("{B}(nothing " + slot_name + ")", false);
+            else
+            {
+                equ_menu->add_item(item->name() + " {B}(" + slot_name + ")", item->ascii(), item->colour(), true);
+                has_gear = true;
+            }
+        }
+        if (!has_gear) equ_menu->set_highlight(false);
+        int result = equ_menu->render();
+        if (has_gear && result >= 0 && result < static_cast<int>(EquipSlot::_END) && equipment_.at(result)->item_type() != ItemType::NONE)
+            item_interaction(result, ItemLocation::EQUIPMENT);
+    }
+    else
+    {
+        auto inv_menu = std::make_unique<Menu>();
+        inv_menu->set_title("Inventory");
+        for (auto item : *inv())
+            inv_menu->add_item(item->name(), item->ascii(), item->colour(), true);
+        int result = inv_menu->render();
+        if (result >= 0) item_interaction(result, ItemLocation::INVENTORY);
+    }
 }
 
 }   // namespace invictus

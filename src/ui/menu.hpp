@@ -26,7 +26,8 @@ public:
     void            add_item(const std::string &txt, bool arrow);   // Another option to specify an arrow without all the other stuff.
     unsigned int    get_size();                         // Checks how many items are in this Menu already.
     int             render();                           // Renders the menu, returns the chosen menu item (or -1 if none chosen).
-    void            set_highlight(bool highlight);      // Sets the Menu option highlighting on or off.
+    void            set_highlight(bool highlight = true);       // Sets the Menu option highlighting on or off.
+    void            set_return_after_render(bool rar = true);   // Returns after rendering the menu, without caring about the user's input.
     void            set_selected(unsigned int pos);     // Sets the currently-selected item.
     void            set_title(const std::string &str);  // Sets the Menu's title.
 

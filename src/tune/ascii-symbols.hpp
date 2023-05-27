@@ -138,6 +138,7 @@ constexpr char  ASCII_PLAYER =      '@';     // The player character.
 // Z (90, upper-case Z)
 
 // [ (91, open square bracket)
+constexpr char  ASCII_ARMOUR =      '[';     // Armour worn on the body.
 
 // \ (92, backslash)
 

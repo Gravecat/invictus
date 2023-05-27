@@ -10,6 +10,7 @@
 #include <memory>
 #include <set>
 #include <string>
+#include <utility>
 #include <vector>
 
 
@@ -24,7 +25,10 @@ class Window;   // defined in terminal/window.hpp
 // Various properties that can be on Entities and their derived classes.
 enum class EntityProp : uint16_t
 {
-    LIGHT_POWER, BLEED, CRIT, POISON, POWER, RANGE, SPEED
+    ARMOUR,         // The defensive value of a piece of worn armour.
+    LIGHT_POWER,    // The power of a light source.
+    MAX_DEX,        // The maximum amount of dexterity modifier that can be used when this Item is equipped.
+    SPEED,          // The movement speed of a Mobile, or the speed at which an Item can be used.
 };
 
 // Binary tags that can be set on all kinds of Entities.
@@ -54,6 +58,9 @@ enum class EntityTag : uint16_t
     /*****************************************
      * 30000 - 30999  --  ITEM-SPECIFIC TAGS *
      *****************************************/
+
+    TwoHanded = 30000,      // This Item is a weapon which takes both hands to wield.
+    HandAndAHalf = 30001,   // This Item is a weapon which can be equipped in either one or both hands.
 };
 
 // Types of Entity and derived classes.
@@ -81,10 +88,11 @@ public:
     virtual float       distance_from(std::shared_ptr<Entity> entity) const;    // As above, but measuring distance to an Entity.
     std::vector<std::shared_ptr<Item>>* inv();          // Returns the inventory pointer.
     void                inventory_add(std::shared_ptr<Entity> entity);  // Adds an Entity to this Entity's inventory.
+    void                inventory_add(std::shared_ptr<Item> item);      // As above, but for an Entity in Item form.
     virtual bool        is_at(int ax, int ay) const;    // Checks if this Entity claims to be occupying a specified tile.
     virtual bool        is_at(std::shared_ptr<Entity> entity) const;    // As above, but checks against another Entity's position.
     virtual bool        is_in_fov() const;              // Can this Entity be seen by the player?
-    int                 light_power() const;            // Returns the power of this Entity's light source, if any.
+    int32_t             light_power() const;            // Returns the power of this Entity's light source, if any.
     std::string         name(int flags = 0) const;      // Retrieves this Entity's name.
     void                set_ascii(char new_ascii);      // Sets this Entity's ASCII character.
     void                set_colour(Colour new_colour);  // Sets this Entity's colour.
@@ -106,6 +114,8 @@ protected:
     float       get_prop_f(EntityProp prop) const;          // Retrieves an entity property (float), or returns 0 if it is not present.
     void        set_prop(EntityProp prop, int32_t value);   // Sets an entity property (int).
     void        set_prop_f(EntityProp prop, float value);   // Sets an entity property (float).
+    void        set_props(std::initializer_list<std::pair<EntityProp, int32_t>> prop_pairs);    // Sets multiple entity properties (int) at once.
+    void        set_props_f(std::initializer_list<std::pair<EntityProp, float>> prop_pairs);    // Sets multiple entity properties (float) at once.
 
 private:
     char        ascii_;     // The ASCII character representing this Entity.
