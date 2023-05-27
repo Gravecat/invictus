@@ -30,7 +30,8 @@ if(TARGET_WINDOWS)
   set(CURSES_LIBRARIES pdcurses)
   
   # Platform-specific linker flags. In this case, we're static-linking the MinGW C/C++ libraries and libwinpthread.
-  set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -static-libgcc -static-libstdc++ -Wl,-Bstatic,--whole-archive -lwinpthread -Wl,-Bdynamic,--no-whole-archive")
+  set(CMAKE_EXE_LINKER_FLAGS
+    "${CMAKE_EXE_LINKER_FLAGS} -static-libgcc -static-libstdc++ -Wl,-Bstatic,--whole-archive -lwinpthread -Wl,-Bdynamic,--no-whole-archive")
 
   # Application icon
   enable_language(RC)

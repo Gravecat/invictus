@@ -71,7 +71,8 @@ void UI::generate_dungeon_view()
 void UI::generate_message_log()
 {
     auto terminal = core()->terminal();
-    message_log_window_ = std::make_shared<Window>(terminal->get_cols() - NEARBY_BAR_WIDTH + 1, MESSAGE_LOG_HEIGHT, 0, terminal->get_rows() - MESSAGE_LOG_HEIGHT);
+    message_log_window_ = std::make_shared<Window>(terminal->get_cols() - NEARBY_BAR_WIDTH + 1, MESSAGE_LOG_HEIGHT, 0, terminal->get_rows() -
+        MESSAGE_LOG_HEIGHT);
     if (core()->game() && core()->game()->game_state() == GameState::DUNGEON) message_log_window_->set_visible(true);
     else message_log_window_->set_visible(false);
 }

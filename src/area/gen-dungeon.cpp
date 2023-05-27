@@ -54,9 +54,9 @@ bool DungeonGenerator::decorate_room_druj_tombs(unsigned int room_id)
             if (std::abs(tomb_offset_x)) diag_check_y = 1; else diag_check_x = 1;
             if (check_tile->id() == TileID::LG_WALL && area_->tile(check_x - tomb_offset_x, check_y - tomb_offset_y)->id() == TileID::LG_FLOOR &&
                     neighbours(check_x, check_y, TileID::LG_WALL, false) >= 3 && neighbours(check_x, check_y, TileID::LG_FLOOR, false) == 1 &&
-                    area_->tile(check_x + tomb_offset_x, check_y + tomb_offset_y)->id() == TileID::LG_WALL && area_->tile(check_x + tomb_offset_x + diag_check_x,
-                    check_y + tomb_offset_y + diag_check_y)->id() == TileID::LG_WALL && area_->tile(check_x + tomb_offset_x - diag_check_x, check_y +
-                    tomb_offset_y - diag_check_y)->id() == TileID::LG_WALL && Random::rng(TOMB_WALL_TOMB_CHANCE) == 1)
+                    area_->tile(check_x + tomb_offset_x, check_y + tomb_offset_y)->id() == TileID::LG_WALL && area_->tile(check_x + tomb_offset_x +
+                    diag_check_x, check_y + tomb_offset_y + diag_check_y)->id() == TileID::LG_WALL && area_->tile(check_x + tomb_offset_x - diag_check_x,
+                    check_y + tomb_offset_y - diag_check_y)->id() == TileID::LG_WALL && Random::rng(TOMB_WALL_TOMB_CHANCE) == 1)
             {
                 area_->set_tile(check_x, check_y, TileID::DRUJ_TOMB);
                 success = true;
@@ -163,8 +163,8 @@ void DungeonGenerator::generate(bool with_actors)
             continue;
         }
 
-        // Now we check each map link point against each room link point. This'll end up with a lot of potential link points, but it's still an order of magnitude
-        // less than guessing random positions.
+        // Now we check each map link point against each room link point. This'll end up with a lot of potential link points, but it's still an order of
+        // magnitude less than guessing random positions.
         for (auto mp : map_link_points)
             for (auto lp : room_link_points)
                 possible_locations.push_back(std::pair<int, int>(mp.first - lp.first, mp.second - lp.second));
@@ -286,7 +286,8 @@ void DungeonGenerator::generate(bool with_actors)
         {
             for (int y = 0; y < area_->height(); y++)
             {
-                if (area_->tile(x, y)->id() == TileID::LG_FLOOR && neighbours(x, y, TileID::LG_WALL, true) >= 5 && Random::rng(DUNGEON_ROOM_CORNER_SMOOTHING) == 1)
+                if (area_->tile(x, y)->id() == TileID::LG_FLOOR && neighbours(x, y, TileID::LG_WALL, true) >= 5 &&
+                    Random::rng(DUNGEON_ROOM_CORNER_SMOOTHING) == 1)
                 {
                     area_->set_tile(x, y, TileID::LG_WALL);
                     corners_smoothed++;
@@ -454,7 +455,7 @@ bool DungeonGenerator::paste_room(std::shared_ptr<Room> room, int x, int y)
                 auto map_tile = area_->tile(x + rx, y + ry);
                 if (room_tile->id() == TileID::VOID_TILE || map_tile->id() == TileID::VOID_TILE) continue;  // Void tiles can overlap void tiles.
                 if (room_tile->id() == TileID::LG_DOOR_CANDIDATE && map_tile->id() == TileID::LG_DOOR_CANDIDATE) door_candidates_match++;
-                else if (room_tile->id() != TileID::VOID_TILE && map_tile->id() != TileID::VOID_TILE) return false; // No overlaps allowed, except door candidates.
+                else if (room_tile->id() != TileID::VOID_TILE && map_tile->id() != TileID::VOID_TILE) return false; // No overlaps, except door candidates.
             }
         }
         if (!door_candidates_match) return false;   // At least one door candidate must align with another.

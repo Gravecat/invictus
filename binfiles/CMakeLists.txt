@@ -1,4 +1,4 @@
-# CMake build file for Morior Invictus, intended for use with MinGW/GCC on Windows and GCC on Linux. Support for OS X, Visual Studio, clang, etc. is not currently available.
+# CMake build file for Morior Invictus, intended for use with MinGW/GCC on Windows and GCC on Linux.
 # For MinGW/MSYS builds, be sure to specify -G"MinGW Makefiles" when setting up the build folder.
 # Copyright © 2023 Raine "Gravecat" Simmons. Licensed under the GNU Affero General Public License v3 or any later version.
 

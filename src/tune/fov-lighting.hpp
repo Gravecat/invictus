@@ -7,9 +7,9 @@
 namespace invictus
 {
 
-static constexpr int    PLAYER_FOV_BONUS_HIGH =     10; // When using a high light source, the field of view is set to the light source's power, plus this value.
-static constexpr int    PLAYER_FOV_BONUS_LOW =      1;  // When using a low light source, the field of view is set to the light source's power, plus this value.
-static constexpr int    PLAYER_FOV_BONUS_MEDIUM =   5;  // When using a medium light source, the field of view is set to the light source's power, plus this value.
+static constexpr int    PLAYER_FOV_BONUS_HIGH =     10; // When using a high light source, the field of view is set to the light source's power, plus this.
+static constexpr int    PLAYER_FOV_BONUS_LOW =      1;  // When using a low light source, the field of view is set to the light source's power, plus this.
+static constexpr int    PLAYER_FOV_BONUS_MEDIUM =   5;  // When using a medium light source, the field of view is set to the light source's power, plus this.
 static constexpr int    PLAYER_FOV_LIGHT_HIGH =     8;  // A light source counts as high (for PLAYER_FOV_BONUS_HIGH) when this level or above.    
 static constexpr int    PLAYER_FOV_LIGHT_MEDIUM =   4;  // A light source counts as medium (for PLAYER_FOV_BONUS_MEDIUM) when this level or above;
                                                         // below, it'll count for PLAYER_FOV_BONUS_LOW.

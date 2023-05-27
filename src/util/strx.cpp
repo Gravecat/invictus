@@ -133,7 +133,8 @@ std::string StrX::number_to_word(unsigned long long number)
     else if (number < 100) return tens[number / 10] + ((number % 10 != 0) ? "-" + number_to_word(number % 10) : "");
     else if (number < 1000) return number_to_word(number / 100) + " hundred" + ((number % 100 != 0) ? " and " + number_to_word(number % 100) : "");
     else if (number < 1000000) return number_to_word(number / 1000) + " thousand" + ((number % 1000 != 0) ? " " + number_to_word(number % 1000) : "");
-    else if (number < 1000000000UL) return number_to_word(number / 1000000) + " million" + ((number % 1000000 != 0) ? " " + number_to_word(number % 1000000) : "");
+    else if (number < 1000000000UL) return number_to_word(number / 1000000) + " million" + ((number % 1000000 != 0) ? " " + number_to_word(number % 1000000) :
+        "");
     else if (number < 1000000000000ULL) return number_to_word(number / 1000000000UL) + " billion" + ((number % 1000000000UL != 0) ? " " +
         number_to_word(number % 1000000000UL) : "");
     else return intostr_pretty(number);

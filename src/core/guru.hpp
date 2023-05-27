@@ -31,7 +31,7 @@ public:
     void    intercept_signal(int sig);                          // Catches a segfault or other fatal signal.
     bool    is_dead() const;                                    // Checks if the system has halted.
     void    log(std::string msg, int type = Guru::GURU_INFO);   // Logs a message in the system log file.
-    void    nonfatal(std::string error, int type);              // Reports a non-fatal error, which will be logged but will not halt execution unless it cascades.
+    void    nonfatal(std::string error, int type);              // Reports a non-fatal error, which will be logged but won't halt execution unless it cascades.
 
 private:
     int                 cascade_count_;     // Keeps track of rapidly-occurring, non-fatal error messages.

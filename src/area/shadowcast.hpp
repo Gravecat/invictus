@@ -17,8 +17,8 @@ public:
     static void calc_fov(Area* area, unsigned int x, unsigned int y, unsigned int radius);
 
 private:
-    static void cast_light(Area* area, unsigned int x, unsigned int y, unsigned int radius, unsigned int row, float start_slope, float end_slope, unsigned int xx,
-        unsigned int xy, unsigned int yx, unsigned int yy);
+    static void cast_light(Area* area, unsigned int x, unsigned int y, unsigned int radius, unsigned int row, float start_slope, float end_slope,
+        unsigned int xx, unsigned int xy, unsigned int yx, unsigned int yy);
 
     static int  multipliers[4][8];
 };

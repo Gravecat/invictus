@@ -1,4 +1,6 @@
-(Thanks for opening a pull request! Please make sure you've read the [contributing guidelines](https://github.com/Gravecat/invictus/blob/main/docs/CONTRIBUTING.md) and checked that there aren't any [existing pull requests](https://github.com/Gravecat/invictus/pulls) that already do the same thing. Once you've done that, please fill out the blanks below.)
+(Thanks for opening a pull request! Please make sure you've read the
+[contributing guidelines](https://github.com/Gravecat/invictus/blob/main/docs/CONTRIBUTING.md) and checked that there aren't any
+[existing pull requests](https://github.com/Gravecat/invictus/pulls) that already do the same thing. Once you've done that, please fill out the blanks below.)
 
 What is the purpose of this pull request?
 -----------------------------------------

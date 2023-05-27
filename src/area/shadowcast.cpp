@@ -24,8 +24,8 @@ void Shadowcast::calc_fov(Area* area, unsigned int x, unsigned int y, unsigned i
         cast_light(area, x, y, radius, 1, 1.0, 0.0, multipliers[0][i], multipliers[1][i], multipliers[2][i], multipliers[3][i]);
 }
 
-void Shadowcast::cast_light(Area* area, unsigned int x, unsigned int y, unsigned int radius, unsigned int row, float start_slope, float end_slope, unsigned int xx,
-    unsigned int xy, unsigned int yx, unsigned int yy)
+void Shadowcast::cast_light(Area* area, unsigned int x, unsigned int y, unsigned int radius, unsigned int row, float start_slope, float end_slope,
+    unsigned int xx, unsigned int xy, unsigned int yx, unsigned int yy)
 {
     if (start_slope < end_slope) return;
     float next_start_slope = start_slope;

@@ -7,7 +7,8 @@ assignees: ''
 
 ---
 
-(Thanks for reporting an issue! Please check [the existing open issues](https://github.com/Gravecat/invictus/issues) to see if this bug has already been reported, and if not, fill out the blanks below.)
+(Thanks for reporting an issue! Please check [the existing open issues](https://github.com/Gravecat/invictus/issues) to see if this bug has already been
+reported, and if not, fill out the blanks below.)
 
 What are the steps to reproduce this issue?
 -------------------------------------------

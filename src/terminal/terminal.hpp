@@ -24,7 +24,7 @@ class Terminal
 public:
                 Terminal();     // Sets up the Curses terminal.
                 ~Terminal();    // Destructor, calls cleanup code.
-    void        box(std::shared_ptr<Window> window = nullptr, Colour colour = Colour::NONE, unsigned int flags = 0);    // Draws a box around the edge of a Window.
+    void        box(std::shared_ptr<Window> window = nullptr, Colour colour = Colour::NONE, unsigned int flags = 0);    // Draws a box around a Window.
     void        cleanup();      // Cleans up Curses, resets the terminal to its former state.
     void        clear_line(std::shared_ptr<Window> window = nullptr);   // Clears the current line.
     void        cls(std::shared_ptr<Window> window = nullptr);          // Clears the screen.

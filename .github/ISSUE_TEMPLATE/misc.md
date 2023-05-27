@@ -7,7 +7,8 @@ assignees: ''
 
 ---
 
-(Thanks for taking the time to open an issue! Please check out the [discussions](https://github.com/Gravecat/invictus/discussions) for non-bug/enhancement-related discussion. If you're still sure you want to open an issue, please fill out the blanks below.)
+(Thanks for taking the time to open an issue! Please check out the [discussions](https://github.com/Gravecat/invictus/discussions) for
+non-bug/enhancement-related discussion. If you're still sure you want to open an issue, please fill out the blanks below.)
 
 Please describe the issue in detail
 -----------------------------------
