@@ -8,6 +8,7 @@
 #include "core/game-manager.hpp"
 #include "core/guru.hpp"
 #include "core/prefs.hpp"
+#include "core/version.hpp"
 #include "terminal/terminal.hpp"
 #include "terminal/window.hpp"
 #include "util/strx.hpp"
@@ -50,7 +51,7 @@ Terminal::Terminal() : cleanup_done_(false), cursor_state_(1), has_colour_(false
     }
 
 #ifdef INVICTUS_TARGET_WINDOWS
-    PDC_set_title("Morior Invictus prototype");
+    PDC_set_title(("Morior Invictus " + INVICTUS_VERSION_STRING).c_str());
     PDC_set_blink(true);
 #endif
     core()->guru()->console_ready(true);
