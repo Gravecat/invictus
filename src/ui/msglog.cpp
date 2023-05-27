@@ -141,9 +141,6 @@ void MessageLog::render()
 }
 
 // Lets the message log know the screen size has changed.
-void MessageLog::screen_resized()
-{
-    process_output_buffer();
-}
+void MessageLog::screen_resized() { process_output_buffer(); }
 
 }   // namespace invictus

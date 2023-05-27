@@ -161,6 +161,7 @@ void UI::window_resized()
     generate_message_log();
     generate_nearby_window();
     generate_stat_bars();
+    if (message_log_ && core() && core()->game() && core()->game()->game_state() != GameState::INITIALIZING) message_log_->screen_resized();
     full_redraw();
 }
 
