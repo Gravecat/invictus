@@ -1,4 +1,4 @@
-// ui/bars.hpp -- UI code to render health, stamina, mana and experience bars.
+// ui/bars.hpp -- UI code to render various forms of status bars.
 // Copyright © 2020, 2023 Raine "Gravecat" Simmons. Licensed under the GNU Affero General Public License v3 or any later version.
 
 #ifndef UI_BARS_HPP_
@@ -21,7 +21,7 @@ class Bars
 public:
     static void render_bar(int x, int y, unsigned int width, const std::string &name, float value, float value_max, Colour bar_colour, bool numbers = true,
         bool round_up = false, std::shared_ptr<Window> win = nullptr);  // Renders a health/mana/etc. bar.
-    static void render_health_mana_bars();  // Renders the player's health and mana bars.
+    static void render_health_mana_stamina_bars();  // Renders the player's health, mana and stamina bars.
 };
 
 }       // namespace invictus

@@ -3,7 +3,7 @@
 The ui source folder contains code dealing with the UI elements of the game (the dungeon viewport, the message log, the sidebar, other overlapping windows),
 along with menus, popup boxes, and other UI-like things.
 
-* **bars.cpp** - UI code to render health, stamina, mana and experience bars.
+* **bars.cpp** - UI code to render various forms of status bars.
 
 * **menu.cpp** - Menu class definition, for a fairly generic scrollable menu of items.
 

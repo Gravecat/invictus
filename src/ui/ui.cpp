@@ -62,7 +62,7 @@ void UI::full_redraw() { dungeon_needs_redraw_ = message_log_needs_redraw_ = nea
 void UI::generate_dungeon_view()
 {
     auto terminal = core()->terminal();
-    dungeon_view_ = std::make_shared<Window>(terminal->get_cols() - NEARBY_BAR_WIDTH, terminal->get_rows() - MESSAGE_LOG_HEIGHT - 2, 0, 0);
+    dungeon_view_ = std::make_shared<Window>(terminal->get_cols() - NEARBY_BAR_WIDTH, terminal->get_rows() - MESSAGE_LOG_HEIGHT - 1, 0, 0);
     if (core()->game() && core()->game()->game_state() == GameState::DUNGEON) dungeon_view_->set_visible(true);
     else dungeon_view_->set_visible(false);
 }
@@ -90,7 +90,7 @@ void UI::generate_nearby_window()
 void UI::generate_stat_bars()
 {
     auto terminal = core()->terminal();
-    stat_bars_ = std::make_shared<Window>(terminal->get_cols() - NEARBY_BAR_WIDTH, 2, 0, terminal->get_rows() - MESSAGE_LOG_HEIGHT - 2);
+    stat_bars_ = std::make_shared<Window>(terminal->get_cols() - NEARBY_BAR_WIDTH, 1, 0, terminal->get_rows() - MESSAGE_LOG_HEIGHT - 1);
     if (core()->game() && core()->game()->game_state() == GameState::DUNGEON) stat_bars_->set_visible(true);
     else stat_bars_->set_visible(false);
 }
@@ -144,7 +144,7 @@ void UI::render(bool force_flip)
     if (stat_bars_need_redraw_)
     {
         core()->terminal()->cls(stat_bars_);
-        Bars::render_health_mana_bars();
+        Bars::render_health_mana_stamina_bars();
         stat_bars_need_redraw_ = false;
         flip = true;
     }
