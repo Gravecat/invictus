@@ -5,6 +5,7 @@
 #include "core/core.hpp"
 #include "core/game-manager.hpp"
 #include "core/guru.hpp"
+#include "entity/player.hpp"
 #include "terminal/terminal.hpp"
 #include "terminal/window.hpp"
 #include "tune/message-log.hpp"
@@ -168,15 +169,16 @@ void UI::render(bool force_flip)
 void UI::render_stat_bars()
 {
     auto terminal = core()->terminal();
+    auto player = core()->game()->player();
     int window_w = stat_bars_->get_width();
 
     const int hp_bar_width = window_w / 2;
     const int sp_bar_width = (window_w - hp_bar_width) / 2;
     const int mp_bar_width = window_w - hp_bar_width - sp_bar_width;
 
-    Bars::render_bar(0, 0, hp_bar_width, "HP", 72, 100, Colour::RED_WHITE, BAR_FLAG_PERCENTAGE | BAR_FLAG_ROUND_UP, stat_bars_);
-    Bars::render_bar(hp_bar_width, 0, sp_bar_width, "SP", 35, 100, Colour::GREEN_WHITE, BAR_FLAG_PERCENTAGE, stat_bars_);
-    Bars::render_bar(hp_bar_width + sp_bar_width, 0, mp_bar_width, "MP", 80, 100, Colour::BLUE_WHITE, BAR_FLAG_PERCENTAGE, stat_bars_);
+    Bars::render_bar(0, 0, hp_bar_width, "HP", player->hp(), player->hp(true), Colour::RED_WHITE, BAR_FLAG_PERCENTAGE | BAR_FLAG_ROUND_UP, stat_bars_);
+    Bars::render_bar(hp_bar_width, 0, sp_bar_width, "SP", player->sp(), player->sp(true), Colour::GREEN_WHITE, BAR_FLAG_PERCENTAGE, stat_bars_);
+    Bars::render_bar(hp_bar_width + sp_bar_width, 0, mp_bar_width, "MP", player->mp(), player->mp(true), Colour::BLUE_WHITE, BAR_FLAG_PERCENTAGE, stat_bars_);
 }
 
 // Gets a pointer to the stat bars window.

@@ -29,9 +29,12 @@ public:
     std::vector<std::shared_ptr<Item>>* equ();  // Retrieves a pointer to the equipment vector.
     void            equip_item(uint32_t id);    // Equips a specified Item.
     std::shared_ptr<Item>   equipment(EquipSlot slot);  // Retrieves equipment from a given slot.
+    uint16_t        hp(bool max = false) const; // Retrieves the current or maximum hit points of this Mobile.
     bool            is_dead() const;        // Checks if this Mobile is dead.
     virtual bool    move_or_attack(std::shared_ptr<Mobile> self, int dx, int dy);   // Moves in a given direction, or attacks something in the destination tile.
     float           movement_speed() const; // Returns the amount of ticks needed for this Mobile to move one tile.
+    uint16_t        mp(bool max = false) const; // Retrieves the current or maximum mana points of this Mobile.
+    uint16_t        sp(bool max = false) const; // Retrieves the current or maximum stamina points of this Mobile.
     void            take_item(uint32_t id); // Picks up a specified item.
     void            tick(std::shared_ptr<Entity> self) override;    // Processes AI for this Mobile each turn.
     void            tick10(std::shared_ptr<Entity> self) override;  // Process slower state-change events that happen less often, such as buffs/debuffs ticking.
@@ -39,8 +42,11 @@ public:
     EntityType      type() const { return EntityType::MOBILE; } // Self-identifier function.
     void            unequip_item(EquipSlot slot);   // Unequips a specified Item.
 
-    float   banked_ticks_;  // The amount of time this Mobile has 'banked'; it can 'spend' this time to move or attack.
-    uint8_t last_dir_;      // The last direction this Mobile moved in.
+    float       banked_ticks_;  // The amount of time this Mobile has 'banked'; it can 'spend' this time to move or attack.
+    uint16_t    hp_[2];         // The current and maximum hit points of this Mobile.
+    uint8_t     last_dir_;      // The last direction this Mobile moved in.
+    uint16_t    mp_[2];         // The current and maximum mana points of this Mobile.
+    uint16_t    sp_[2];         // The current and maximum stamina points of this Mobile.
 
 protected:
     std::vector<std::shared_ptr<Item>>  equipment_; // Items equipped by this Mobile.

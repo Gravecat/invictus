@@ -21,7 +21,7 @@ std::shared_ptr<Item> Mobile::blank_item_ = std::make_shared<Item>();
 
 
 // Constructor.
-Mobile::Mobile() : Entity(), banked_ticks_(0), last_dir_(0)
+Mobile::Mobile() : Entity(), banked_ticks_(0), hp_{100, 100}, last_dir_(0), mp_{100, 100}, sp_{100, 100}
 {
     set_name("mobile");
     set_prop_f(EntityProp::SPEED, TIME_BASE_MOVEMENT);
@@ -214,8 +214,11 @@ std::shared_ptr<Item> Mobile::equipment(EquipSlot slot)
     return equ()->at(slot_id);
 }
 
+// Retrieves the current or maximum hit points of this Mobile.
+uint16_t Mobile::hp(bool max) const { return hp_[max ? 1 : 0]; }
+
 // Checks if this Mobile is dead.
-bool Mobile::is_dead() const { return false; }
+bool Mobile::is_dead() const { return !hp(); }
 
 // Moves in a given direction, or attacks something in the destination tile
 bool Mobile::move_or_attack(std::shared_ptr<Mobile> self, int dx, int dy)
@@ -289,6 +292,12 @@ bool Mobile::move_or_attack(std::shared_ptr<Mobile> self, int dx, int dy)
 
 // Returns the amount of ticks needed for this Mobile to move one tile.
 float Mobile::movement_speed() const { return get_prop_f(EntityProp::SPEED); }
+
+// Retrieves the current or maximum mana points of this Mobile.
+uint16_t Mobile::mp(bool max) const { return mp_[max ? 1 : 0]; }
+
+// Retrieves the current or maximum stamina points of this Mobile.
+uint16_t Mobile::sp(bool max) const { return sp_[max ? 1 : 0]; }
 
 // Picks up a specified item.
 void Mobile::take_item(uint32_t id)
