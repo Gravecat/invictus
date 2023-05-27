@@ -10,3 +10,5 @@ the main game loop, user preferences, error-handling, etc.
 * **guru.cpp** - Guru Meditation error-handling and reporting system.
 
 * **prefs.cpp** - User-defined preferences, which can be set in userdata/prefs.txt
+
+* **version.hpp** - The version number of the game.

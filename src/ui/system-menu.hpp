@@ -11,6 +11,10 @@ class SystemMenu
 {
 public:
     static void open(); // Opens the system menu.
+
+private:
+    static void about();        // Displays the version info.
+    static void quit_no_save(); // Quits the game without saving.
 };
 
 }       // namespae invictus

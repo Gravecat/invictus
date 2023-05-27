@@ -16,6 +16,26 @@ namespace invictus
 // Converts a bool to a string ("true" or "false").
 std::string StrX::bool_to_str(bool b) { return (b ? "true" : "false"); }
 
+// Centers all the strings in a vector.
+uint32_t StrX::center_strvec(std::vector<std::string> &vec)
+{
+    uint32_t longest = 0;
+    for (auto line : vec)
+    {
+        unsigned int len = strlen_colour(line);
+        if (len > longest) longest = len;
+    }
+    for (unsigned int i = 0; i < vec.size(); i++)
+    {
+        int to_add = longest - strlen_colour(vec.at(i));
+        if (!to_add) continue;
+        int add_front = to_add / 2;
+        int add_back = to_add - add_front;
+        vec.at(i) = std::string(add_front, ' ') + vec.at(i) + std::string(add_back, ' ');
+    }
+    return longest;
+}
+
 // Converts a vector to a comma-separated list.
 std::string StrX::comma_list(std::vector<std::string> vec, unsigned int flags)
 {

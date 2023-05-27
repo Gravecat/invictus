@@ -22,6 +22,7 @@ class StrX
 public:
     static std::string  bool_to_str(bool b);    // Converts a bool to a string ("true" or "false").
                         // Find and replace one string with another.
+    static uint32_t     center_strvec(std::vector<std::string> &vec);   // Centers all the strings in a vector.
     static std::string  comma_list(std::vector<std::string> vec, unsigned int flags);   // Converts a vector to a comma-separated list.
     static bool         find_and_replace(std::string &input, const std::string &to_find, const std::string &to_replace);
     static std::string  ftos(double num);           // Converts a float or double to a string.

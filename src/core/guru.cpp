@@ -7,6 +7,7 @@
 
 #include "core/core.hpp"
 #include "core/guru.hpp"
+#include "core/version.hpp"
 #include "terminal/terminal.hpp"
 #include "terminal/window.hpp"
 #include "tune/error-handling.hpp"
@@ -29,7 +30,7 @@ Guru::Guru(std::string log_filename) : cascade_count_(0), cascade_failure_(false
     FileX::delete_file(log_filename);
     syslog_.open(log_filename.c_str());
     if (!syslog_.is_open()) exit(EXIT_FAILURE);
-    this->log("Welcome to Morior Invictus!");
+    this->log("Welcome to Morior Invictus " + INVICTUS_VERSION_STRING + "!");
     this->log("Guru error-handling system is online.");
 }
 
