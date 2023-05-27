@@ -24,17 +24,18 @@ namespace invictus
 void SystemMenu::about()
 {
     std::vector<std::string> lines;
-    lines.push_back("{r}.~* {R}Morior Invictus {r}*~.");
+    lines.push_back("{g}.~{r}* {R}Morior Invictus {r}*{g}~.");
     lines.push_back("{r}" + INVICTUS_VERSION_STRING);
     lines.push_back("");
-    lines.push_back("{Y}Copyright (c) 2023 Raine \"Gravecat\" Simmons");
+    lines.push_back("{g}Copyright (c) 2023 Raine \"Gravecat\" Simmons");
     lines.push_back("");
-    lines.push_back("{y}github.com/Gravecat/invictus");
+    lines.push_back("{U}github.com/Gravecat/invictus");
     unsigned int longest = StrX::center_strvec(lines);
 
     auto win = std::make_shared<Window>(longest + 4, lines.size() + 4);
     auto terminal = core()->terminal();
     terminal->box(win);
+    terminal->print(" About ", win->get_width() / 2 - 3, 0, Colour::WHITE, PRINT_FLAG_REVERSE, win);
     for (unsigned int i = 0; i < lines.size(); i++)
         terminal->print(lines.at(i), 2, 2 + i, Colour::WHITE, 0, win);
     win->move(terminal->get_midcol() - win->get_width() / 2, terminal->get_midrow() - win->get_height() / 2);
