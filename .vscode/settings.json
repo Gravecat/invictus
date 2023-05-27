@@ -1,6 +1,6 @@
 {
     "editor.rulers": [
-        163
+        160
     ],
     "files.associations": {
         "bit": "cpp",
@@ -67,6 +67,13 @@
         "iostream": "cpp",
         "sstream": "cpp",
         "set": "cpp",
-        "chrono": "cpp"
+        "chrono": "cpp",
+        "ios": "cpp",
+        "xfacet": "cpp",
+        "xiosbase": "cpp",
+        "xlocale": "cpp",
+        "xlocinfo": "cpp",
+        "xlocnum": "cpp",
+        "xtree": "cpp"
     }
 }
