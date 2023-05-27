@@ -126,7 +126,7 @@ void Player::get_item()
         if (entity->is_at(x(), y())) items_nearby.push_back(i);
     }
     if (!items_nearby.size()) core()->message("{y}There isn't anything you can pick up here.");
-    if (items_nearby.size() == 1)
+    else if (items_nearby.size() == 1)
     {
         take_item(items_nearby.at(0));
         return;
