@@ -25,6 +25,7 @@ public:
     void            add_item(const std::string &txt, int ch = '\0', Colour col = Colour::WHITE, bool arrow = false);    // Adds an item to this Menu.
     void            add_item(const std::string &txt, bool arrow);   // Another option to specify an arrow without all the other stuff.
     unsigned int    get_size();                         // Checks how many items are in this Menu already.
+    void            left_aligned(bool enable);          // Sets the menu to be left-aligned, not centred.
     int             render();                           // Renders the menu, returns the chosen menu item (or -1 if none chosen).
     void            set_highlight(bool highlight = true);       // Sets the Menu option highlighting on or off.
     void            set_return_after_render(bool rar = true);   // Returns after rendering the menu, without caring about the user's input.
@@ -38,9 +39,11 @@ private:
     std::vector<bool>           arrows_;                // Whether the menu items have a > arrow to their side.
     std::vector<Colour>         colour_;                // The colours of menu items.
     int                         fixed_x_, fixed_y_;     // The fixed X,Y coordinates, if specified.
+    bool                        has_item_chars_;        // Do any of the menu items have a char set?
     std::vector<int>            item_chars_;            // Extra characters for menu items.
     std::vector<int>            item_x_;                // The menu item positions.
     std::vector<std::string>    items_;                 // The menu item text.
+    bool                        left_aligned_;          // The menu should be left-aligned.
     unsigned int                offset_;                // The menu scroll.
     int                         pos_x_, pos_y_;         // Screen coordinates.
     bool                        return_after_render_;   // Whether to return the selected value *after* doing one more render pass.

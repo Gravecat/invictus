@@ -280,6 +280,7 @@ void Player::take_inventory(bool equipment)
     {
         auto equ_menu = std::make_unique<Menu>();
         equ_menu->set_title("Equipment");
+        equ_menu->left_aligned(true);
         bool has_gear = false;
         for (unsigned int i = 0; i < static_cast<unsigned int>(EquipSlot::_END); i++)
         {
@@ -311,6 +312,7 @@ void Player::take_inventory(bool equipment)
     {
         auto inv_menu = std::make_unique<Menu>();
         inv_menu->set_title("Inventory");
+        inv_menu->left_aligned(true);
         for (auto item : *inv())
             inv_menu->add_item(item->name(), item->ascii(), item->colour(), true);
         int result = inv_menu->render();

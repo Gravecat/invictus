@@ -14,8 +14,8 @@ namespace invictus
 {
 
 // Constructor.
-Menu::Menu(int fx, int fy) : allow_highlight_(true), fixed_x_(fx), fixed_y_(fy), offset_(0), pos_x_(0), pos_y_(0), return_after_render_(false), selected_(0),
-    size_x_(0), size_y_(0), title_x_(0), window_(nullptr) { }
+Menu::Menu(int fx, int fy) : allow_highlight_(true), fixed_x_(fx), fixed_y_(fy), has_item_chars_(false), left_aligned_(false), offset_(0), pos_x_(0), pos_y_(0),
+    return_after_render_(false), selected_(0), size_x_(0), size_y_(0), title_x_(0), window_(nullptr) { }
 
 // Destructor, calls UI redraw.
 Menu::~Menu() { if (core() && core()->game() && core()->game()->ui()) core()->game()->ui()->full_redraw(); }
@@ -28,6 +28,7 @@ void Menu::add_item(const std::string &txt, int ch, Colour col , bool arrow)
     item_x_.push_back(0);
     colour_.push_back(col);
     arrows_.push_back(arrow);
+    if (ch != '\0') has_item_chars_ = true;
 }
 
 // Another option to specify an arrow without all the other stuff.
@@ -35,6 +36,9 @@ void Menu::add_item(const std::string &txt, bool arrow) { add_item(txt, '\0', Co
 
 // Checks how many items are in this Menu already.
 unsigned int Menu::get_size() { return items_.size(); }
+
+// Sets the menu to be left-aligned, not centred.
+void Menu::left_aligned(bool enable) { left_aligned_ = enable; }
 
 // Renders the menu, returns the chosen menu item (or -1 if none chosen)
 int Menu::render()
@@ -133,7 +137,7 @@ void Menu::reposition()
             if (arrows_.at(i)) target_len -= 2;
             if (item_chars_.at(i) != '\0') target_len -= 2;
             items_.at(i) = StrX::pad_string(items_.at(i), target_len);
-            if (arrows_.at(i)) items_.at(i) += " >";
+            if (arrows_.at(i)) items_.at(i) += " {W}>";
         }
     }
 
@@ -157,7 +161,10 @@ void Menu::reposition()
     }
 
     for (unsigned int i = 0; i < item_x_.size(); i++)
-        item_x_.at(i) = (size_x_ / 2) - (StrX::strlen_colour(items_.at(i)) / 2) + (item_chars_.at(i) == '\0' ? 0 : 1);
+    {
+        if (left_aligned_) item_x_.at(i) = (item_chars_.at(i) == '\0' ? (has_item_chars_ ? 4 : 2) : 4);
+        else item_x_.at(i) = (size_x_ / 2) - (StrX::strlen_colour(items_.at(i)) / 2) + (item_chars_.at(i) == '\0' ? 0 : 1);
+    }
     title_x_ = title_.size() / 2;
 
     window_->move(pos_x_, pos_y_);
@@ -167,7 +174,7 @@ void Menu::reposition()
 void Menu::set_highlight(bool highlight) { allow_highlight_ = highlight; }
 
 // Returns after rendering the menu, without caring about the user's input.
-void Menu::set_return_after_render(bool rar) { return_after_render_ = true; }
+void Menu::set_return_after_render(bool rar) { return_after_render_ = rar; }
 
 // Sets the currently-selected item.
 void Menu::set_selected(unsigned int pos)
