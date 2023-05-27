@@ -106,7 +106,7 @@ void Nearby::render()
             Colour bar_col = Colour::RED_WHITE;
             //if (!mob_ptr->is_awake()) bar_col = Colour::YELLOW_WHITE;
             // todo: replace 75,100 below with HP and max HP
-            Bars::render_bar(4, current_y, window_w - 6, mob_name, 75, 100, bar_col, false, true, nearby_window);
+            Bars::render_bar(4, current_y, window_w - 6, mob_name, 75, 100, bar_col, BAR_FLAG_ROUND_UP, nearby_window);
             if (++current_y >= window_h - 1) return;
         }
     }

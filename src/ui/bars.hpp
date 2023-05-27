@@ -16,12 +16,16 @@ enum class Colour : uint8_t;    // defined in terminal/terminal-shared-defs.hpp
 class Window;   // defined in terminal/window.hpp
 
 
+constexpr int   BAR_FLAG_NUMBERS =      1;  // Display numbers on the bar?
+constexpr int   BAR_FLAG_ROUND_UP =     2;  // Always round the bar size and numbers up, rather than rounding normally?
+constexpr int   BAR_FLAG_PERCENTAGE =   4;  // Display the bar numbers as a percentage (ignores BAR_FLAG_NUMBERS).
+
+
 class Bars
 {
 public:
-    static void render_bar(int x, int y, unsigned int width, const std::string &name, float value, float value_max, Colour bar_colour, bool numbers = true,
-        bool round_up = false, std::shared_ptr<Window> win = nullptr);  // Renders a health/mana/etc. bar.
-    static void render_health_mana_stamina_bars();  // Renders the player's health, mana and stamina bars.
+    static void render_bar(int x, int y, unsigned int width, const std::string &name, float value, float value_max, Colour bar_colour, int flags = 0,
+        std::shared_ptr<Window> win = nullptr); // Renders a coloured bar.
 };
 
 }       // namespace invictus

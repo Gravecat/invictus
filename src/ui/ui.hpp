@@ -40,6 +40,7 @@ private:
     void    generate_message_log();     // Generates the message log window.
     void    generate_nearby_window();   // Generates the nearby sidebar window.
     void    generate_stat_bars();       // Generates the stat bars window.
+    void    render_stat_bars();         // Renders the player's health, mana and stamina bars.
 
     bool    cleanup_done_;                      // Has the cleanup routine already run once?
     bool    dungeon_needs_redraw_;              // Does the dungeon need re-rendering?
