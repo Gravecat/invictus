@@ -10,6 +10,7 @@
 #include "tune/message-log.hpp"
 #include "tune/nearby-bar.hpp"
 #include "ui/bars.hpp"
+#include "ui/menu.hpp"
 #include "ui/msglog.hpp"
 #include "ui/nearby.hpp"
 #include "ui/ui.hpp"
@@ -29,6 +30,18 @@ UI::UI() : cleanup_done_(false), dungeon_needs_redraw_(true), dungeon_view_(null
 
 // Destructor, calls cleanup function.
 UI::~UI() { cleanup(); }
+
+// Renders an "are you sure?" window.
+bool UI::are_you_sure()
+{
+    auto menu = std::make_unique<Menu>();
+    menu->set_title("Are you sure?");
+    menu->add_item("{R}No...");
+    menu->add_item("{G}Yes!!");
+    int result = menu->render();
+    if (result == 1) return true;
+    else return false;
+}
 
 // Cleans up any sub-elements.
 void UI::cleanup()

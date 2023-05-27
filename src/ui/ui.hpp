@@ -29,6 +29,8 @@ public:
     void    render(bool force_flip = false);    // Renders the UI elements, if needed.
     void    window_resized();   // The terminal window has been resized.
 
+    static bool are_you_sure(); // Renders an "are you sure?" window.
+
     const std::shared_ptr<Window>       dungeon_view() const;       // Gets a pointer to the dungeon view window.
     const std::shared_ptr<Window>       message_log_window() const; // Gets a pointer to the message log window.
     const std::shared_ptr<MessageLog>   msglog() const;             // Gets a pointer to the message log object.
