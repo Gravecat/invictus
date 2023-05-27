@@ -38,33 +38,28 @@ void CodexTile::generate(Tile* tile, TileID id)
             tile->name_ = "stone wall";
             tile->ascii_ = ASCII_WALL;
             tile->colour_ = Colour::WHITE;
-            tile->set_tag(TileTag::BlocksLight);
-            tile->set_tag(TileTag::BlocksMovement);
+            tile->set_tags({TileTag::BlocksLight, TileTag::BlocksMovement});
             break;
 
         case TileID::STAIRS_DOWN:   // Stairs leading down to the dungeon level below.
             tile->name_ = "stairs down";
             tile->ascii_ = ASCII_STAIRS_DOWN;
             tile->colour_ = Colour::WHITE_BOLD;
-            tile->set_tag(TileTag::Immutable);
-            tile->set_tag(TileTag::StairsDown);
+            tile->set_tags({TileTag::Immutable, TileTag::StairsDown});
             break;
 
         case TileID::STAIRS_UP: // Stairs leading up to the dungeon level (or surface world) above.
             tile->name_ = "stairs up";
             tile->ascii_ = ASCII_STAIRS_UP;
             tile->colour_ = Colour::WHITE_BOLD;
-            tile->set_tag(TileTag::Immutable);
-            tile->set_tag(TileTag::StairsUp);
+            tile->set_tags({TileTag::Immutable, TileTag::StairsUp});
             break;
 
         case TileID::WALL_BEDROCK:  // Indestructible walls surrounding the map.
             tile->name_ = "bedrock wall";
             tile->ascii_ = ASCII_WALL;
             tile->colour_ = Colour::BLACK_BOLD;
-            tile->set_tag(TileTag::Immutable);
-            tile->set_tag(TileTag::BlocksMovement);
-            tile->set_tag(TileTag::BlocksLight);
+            tile->set_tags({TileTag::Immutable, TileTag::BlocksMovement, TileTag::BlocksLight});
             break;
 
         case TileID::LG_FLOOR:  // Dungeon generation: will become walkable floor.
@@ -77,16 +72,14 @@ void CodexTile::generate(Tile* tile, TileID id)
             tile->name_ = "unfinished wall";
             tile->ascii_ = ASCII_WALL;
             tile->colour_ = Colour::BLACK_BOLD;
-            tile->set_tag(TileTag::BlocksLight);
-            tile->set_tag(TileTag::BlocksMovement);
+            tile->set_tags({TileTag::BlocksLight, TileTag::BlocksMovement});
             break;
 
         case TileID::LG_DOOR_CANDIDATE: // Dungeon generation: may become a door.
             tile->name_ = "door candidate";
             tile->ascii_ = ASCII_DOOR_CLOSED;
             tile->colour_ = Colour::YELLOW;
-            tile->set_tag(TileTag::BlocksLight);
-            tile->set_tag(TileTag::BlocksMovement);
+            tile->set_tags({TileTag::BlocksLight, TileTag::BlocksMovement});
             break;
 
         case TileID::LG_FLOOR_CANDIDATE:    // Dungeon generation: may become floor.
@@ -99,16 +92,14 @@ void CodexTile::generate(Tile* tile, TileID id)
             tile->name_ = "druj tomb";
             tile->ascii_ = ASCII_TOMB;
             tile->colour_ = Colour::BLACK_BOLD;
-            tile->set_tag(TileTag::BlocksLight);
-            tile->set_tag(TileTag::BlocksMovement);
+            tile->set_tags({TileTag::BlocksLight, TileTag::BlocksMovement});
             break;
 
         case TileID::DOOR_WOOD: // Wooden door
             tile->name_ = "wooden door";
             tile->ascii_ = ASCII_DOOR_CLOSED;
             tile->colour_ = Colour::YELLOW;
-            tile->set_tag(TileTag::BlocksLight);
-            tile->set_tag(TileTag::Openable);
+            tile->set_tags({TileTag::BlocksLight, TileTag::Openable});
             break;
     }
 }

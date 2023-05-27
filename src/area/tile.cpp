@@ -23,6 +23,9 @@ void Tile::clear_tag(TileTag the_tag)
     tags_.erase(the_tag);
 }
 
+// Clears multiple TileTags from this Tile.
+void Tile::clear_tags(std::initializer_list<TileTag> tag_list) { for (auto &the_tag : tag_list) clear_tag(the_tag); }
+
 // Gets the colour of this Tile.
 Colour Tile::colour() const { return colour_; }
 
@@ -63,7 +66,18 @@ void Tile::set_tag(TileTag the_tag)
     tags_.insert(the_tag);
 }
 
+// Sets multiple TileTags on this Tile.
+void Tile::set_tags(std::initializer_list<TileTag> tag_list) { for (auto &the_tag : tag_list) set_tag(the_tag); }
+
 // Checks if a TileTag is set on this Tile.
 bool Tile::tag(TileTag the_tag) const { return (tags_.count(the_tag) > 0); }
+
+// Checks if multiple TileTags are all set on this Tile.
+bool Tile::tags(std::initializer_list<TileTag> tag_list) const
+{
+    for (auto &the_tag : tag_list)
+        if (!tag(the_tag)) return false;
+    return true;
+}
 
 }   // namespace invictus

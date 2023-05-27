@@ -5,6 +5,7 @@
 #define ENTITY_ENTITY_HPP_
 
 #include <cstdint>
+#include <initializer_list>
 #include <map>
 #include <memory>
 #include <set>
@@ -29,6 +30,8 @@ enum class EntityProp : uint16_t
 // Binary tags that can be set on all kinds of Entities.
 enum class EntityTag : uint16_t
 {
+    None = 0,   // This is not a tag.
+
     /**********************************************
      * 1 - 9999  --  TAGS GENERIC TO ALL ENTITIES *
      **********************************************/
@@ -71,6 +74,7 @@ public:
     virtual             ~Entity() { }   // Virtual destructor.
     char                ascii() const;  // Gets the ASCII character representing this Entity.
     void                clear_tag(EntityTag the_tag);   // Clears an EntityTag from this Entity.
+    void                clear_tags(std::initializer_list<EntityTag> tag_list);  // Clears multiple EntityTags from this Entity.
     Colour              colour() const; // Gets the colour of this Entity.
     virtual float       distance_from(int tile_x, int tile_y) const;            // Gets this Entity's distance from a specified tile.
     virtual float       distance_from(std::shared_ptr<Entity> entity) const;    // As above, but measuring distance to an Entity.
@@ -87,7 +91,9 @@ public:
     void                set_name(const std::string &new_name);  // Sets this Entity's name.
     void                set_pos(int x, int y);          // Sets this Entity's coordinates.
     void                set_tag(EntityTag the_tag);     // Sets an EntityTag on this Entity.
+    void                set_tags(std::initializer_list<EntityTag> tag_list);    // Sets multiple EntityTags on this Entity.
     bool                tag(EntityTag the_tag) const;   // Checks if an EntityTag is on this Entity.
+    bool                tags(std::initializer_list<EntityTag> tag_list) const;  // Checks if multiple EntityTags are all set on this Entity.
     virtual void        tick(std::shared_ptr<Entity> self);     // Updates the state of this Entity or takes an AI action.
     virtual void        tick10(std::shared_ptr<Entity> self);   // As above, but for slower events such as buffs/debuffs ticking.
     virtual EntityType  type() const = 0;   // Pure virtual, to ensure this is an abstract class. Derived classes will report their class type here.

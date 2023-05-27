@@ -72,10 +72,8 @@ void Mobile::close_door(int dx, int dy)
     }
     
     the_tile->set_ascii(ASCII_DOOR_CLOSED);
-    the_tile->set_tag(TileTag::Openable);
-    the_tile->set_tag(TileTag::BlocksLight);
-    the_tile->clear_tag(TileTag::Closeable);
-    the_tile->clear_tag(TileTag::Open);
+    the_tile->set_tags({TileTag::Openable, TileTag::BlocksLight});
+    the_tile->clear_tags({TileTag::Closeable, TileTag::Open});
     area->need_fov_recalc();
     timed_action(TIME_CLOSE_DOOR);
 }
@@ -129,10 +127,8 @@ bool Mobile::move_or_attack(std::shared_ptr<Mobile> self, int dx, int dy)
             }
             auto tile = area->tile(xdx, ydy);
             tile->set_ascii(ASCII_DOOR_OPEN);
-            tile->clear_tag(TileTag::Openable);
-            tile->clear_tag(TileTag::BlocksLight);
-            tile->set_tag(TileTag::Closeable);
-            tile->set_tag(TileTag::Open);
+            tile->clear_tags({TileTag::Openable, TileTag::BlocksLight});
+            tile->set_tags({TileTag::Closeable, TileTag::Open});
             area->need_fov_recalc();
             timed_action(TIME_OPEN_DOOR);
             return true;

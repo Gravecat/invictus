@@ -31,6 +31,9 @@ void Entity::clear_tag(EntityTag the_tag)
     tags_.erase(the_tag);
 }
 
+// Clears multiple EntityTags from this Entity.
+void Entity::clear_tags(std::initializer_list<EntityTag> tag_list) { for (auto &the_tag : tag_list) clear_tag(the_tag); }
+
 // Gets the colour of this Entity.
 Colour Entity::colour() const { return colour_; }
 
@@ -175,8 +178,19 @@ void Entity::set_tag(EntityTag the_tag)
     tags_.insert(the_tag);
 }
 
+// Sets multiple EntityTags on this Entity.
+void Entity::set_tags(std::initializer_list<EntityTag> tag_list) { for (auto &the_tag : tag_list) set_tag(the_tag); }
+
 // Checks if an EntityTag is on this Entity.
 bool Entity::tag(EntityTag the_tag) const { return (tags_.count(the_tag) > 0); }
+
+// Checks if multiple EntityTags are all set on this Entity.
+bool Entity::tags(std::initializer_list<EntityTag> tag_list) const
+{
+    for (auto &the_tag : tag_list)
+        if (!tag(the_tag)) return false;
+    return true;
+}
 
 // Updates the state of this Entity or takes an AI action.
 void Entity::tick(std::shared_ptr<Entity>)

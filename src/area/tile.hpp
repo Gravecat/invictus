@@ -5,6 +5,7 @@
 #define AREA_TILE_HPP_
 
 #include <cstdint>
+#include <initializer_list>
 #include <set>
 #include <string>
 
@@ -41,6 +42,7 @@ class Tile
 public:
                 Tile();     // Constructor.
     void        clear_tag(TileTag the_tag); // Clears a TileTag from this Tile.
+    void        clear_tags(std::initializer_list<TileTag> tag_list);    // Clears multiple TileTags from this Tile.
     char        ascii() const;  // Get the ASCII character for this Tile.
     Colour      colour() const; // Gets the colour of this Tile.
     TileID      id() const;     // Retrieves the ID of this Tile.
@@ -50,7 +52,9 @@ public:
     void        set_colour(Colour new_colour);  // Sets this Tile's colour.
     void        set_name(const std::string &new_name);  // Sets this Tile's name.
     void        set_tag(TileTag the_tag);   // Sets a TileTag on this Tile.
+    void        set_tags(std::initializer_list<TileTag> tag_list);  // Sets multiple TileTags on this Tile.
     bool        tag(TileTag the_tag) const; // Checks if a TileTag is set on this Tile.
+    bool        tags(std::initializer_list<TileTag> tag_list) const;    // Checks if multiple TileTags are all set on this Tile.
 
 private:
     char        ascii_;     // The ASCII character used to represent this Tile.
