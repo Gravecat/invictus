@@ -2,12 +2,11 @@
 
 The terminal source folder contains all middleware code dealing with NCurses/PDCurses, and anything Curses or terminal-related.
 
-* **escape-code-index.cpp** - Contains a map of escape code sequences, mapped to the internal `Key` enum, to convert all known terminal escape code sequences
-into useable key codes. *(Technically this should be a part of terminal.cpp, but due to its bulk, it is included separately here.)*
+* **escape-code-index.cpp** - Lookup table to convert terminal escape codes into keys.
+*(Technically this should be a part of terminal.cpp, but due to its bulk, it is included separately here.)*
 
-* **terminal-shared-defs.hpp** - Definitions used by both `terminal.hpp` and `window.hpp`; in order to keep these source files separate, they both use this
-shared header file to declare enums and such used by both.
+* **terminal-shared-defs.hpp** - Definitions shared and used by both Terminal and Window classes.
 
-* **terminal.cpp** - The primary middleware layer between the hell of NCurses *(and the slightly lesser hell of PDCurses)* and the rest of the code.
+* **terminal.cpp** - Interface code to PDCurses/NCurses, to handle cross-platform compatability and generally take away the pain of using Curses' API.
 
-* **window.cpp** - Another middleware layer, this time making it more convenient to manage Curses panels/windows without using the Curses API directly.
+* **window.cpp** - The Window class, part of the Terminal subsystem, allowing easier management of Curses windows and panels.

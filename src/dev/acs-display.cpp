@@ -1,4 +1,5 @@
-// dev/acs-display.cpp -- Displays the ACS glyphs, for determining what terminals can support which glyphs.
+// dev/acs-display.cpp -- Accessible by launching the game with the `-acs-display` parameter.
+// Displays the ACS glyphs, for determining what terminals can support which glyphs.
 // Copyright © 2023 Raine "Gravecat" Simmons. Licensed under the GNU Affero General Public License v3 or any later version.
 
 #include "core/core.hpp"

@@ -3,14 +3,14 @@
 The util source folder contains largely generic, standalone utility functions which are used elsewhere in the code, but are not tied directly to one particular
 system.
 
-* **bresenham.cpp** - Simple implementation of Bresenham's line algorithm.
+* **bresenham.cpp** - Simple implementation of Bresenham's line-drawing algorithm.
 
-* **filex.cpp** - Platform-agnostic file-handling functions.
+* **filex.cpp** - Various utility functions that deal with creating, deleting, and manipulating files.
 
-* **random.cpp** - Simple random number generation.
+* **random.cpp** - Random number generation utility code, to make RNG a little easier.
 
-* **strx.cpp** - String manipulation functions.
+* **strx.cpp** - Various utility functions that deal with string manipulation/conversion.
 
-* **timer.cpp** - Simple real-time timer class.
+* **timer.cpp** - A simple timer class for handling common in-game timing functionality.
 
-* **winx.cpp** - Windows-specific nightmare voodoo code.
+* **winx.cpp** - Windows-specific extension and utility functions.

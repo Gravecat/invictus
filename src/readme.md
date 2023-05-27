@@ -7,6 +7,9 @@ This folder contains all of the source code for the project, including third-par
 * **area** - The area source folder contains the Area class (which defines dungeons, towns, and other regions in the game that the player can explore), as well
 as the Tile class (Tiles are the component blocks that make up an Area), and anything directly related to these classes.
 
+* **codex** - The codex source folder is where the static game data resides -- it contains factory classes, which generate preset classes for tiles, items,
+monsters, etc.
+
 * **core** - The core source folder contains the most core and central elements of the game code, which are used almost everywhere -- this includes main program
 entry, the main game loop, user preferences, error-handling, etc.
 
@@ -15,9 +18,6 @@ commands.
 
 * **entity** - The entity source folder contains the Entity class, which defines all objects that inhabit the game world -- monsters, items, chests, and so on.
 Entity has multiple derived classes, which represent more specialized forms.
-
-* **factory** - The factory source folder is where the static game data resides -- it contains factory classes, which generate preset classes for tiles, items,
-monsters, etc.
 
 * **terminal** - The terminal source folder contains all middleware code dealing with NCurses/PDCurses, and anything Curses or terminal-related.
 

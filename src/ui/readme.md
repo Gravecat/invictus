@@ -3,12 +3,12 @@
 The ui source folder contains code dealing with the UI elements of the game (the dungeon viewport, the message log, the sidebar, other overlapping windows),
 along with menus, popup boxes, and other UI-like things.
 
-* **bars.cpp** - Code to render health, mana, stamina and experience bars.
+* **bars.cpp** - UI code to render health, stamina, mana and experience bars.
 
-* **menu.cpp** - Fairly generic code to build and render scrollable menus of items.
+* **menu.cpp** - Menu class definition, for a fairly generic scrollable menu of items.
 
-* **msglog.cpp** - The message log window at the bottom of the screen, displaying important messages for the player.
+* **msglog.cpp** - The message log, which displays important information to the player.
 
-* **nearby.cpp** - The sidebar at the right-hand side of the screen, showing what the visible symbols in the dungeon view mean.
+* **nearby.cpp** - The sidebar, showing NPCs and items nearby.
 
-* **ui.cpp** - The main manager class, which handles and renders the various UI elements.
+* **ui.cpp** - The UI overlay that displays additional information on top of the game's map, using other UI classes.
