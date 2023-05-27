@@ -1,7 +1,8 @@
 # This file tells Tokei (and, by extension, shields.io badges) which parts of the repo to ignore, when it comes to counting total lines and code size.
 # Copyright (c) 2023 Raine "Gravecat" Simmons. Licensed under the GNU Affero General Public License v3 or any later version.
 
+*.md
+*.txt
 .github/*
-docs/*
 LICENSE
 src/3rdparty/pdcurses/*
