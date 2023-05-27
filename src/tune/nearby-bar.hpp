@@ -7,7 +7,7 @@
 namespace invictus
 {
 
-static constexpr int    NEARBY_BAR_WIDTH =  22; // The horizontal width of the 'nearby' bar.
+constexpr int   NEARBY_BAR_WIDTH =  22; // The horizontal width of the 'nearby' bar.
 
 }       // namespace invictus
 #endif  // TUNE_NEARBY_BAR_HPP_

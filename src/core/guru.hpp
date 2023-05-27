@@ -13,25 +13,25 @@
 namespace invictus
 {
 
+constexpr int    GURU_INFO =     0;  // General logging information.
+constexpr int    GURU_WARN =     1;  // Warnings, non-fatal stuff.
+constexpr int    GURU_ERROR =    2;  // Serious errors. Shit is going down.
+constexpr int    GURU_CRITICAL = 3;  // Critical system failure.
+
 class Guru
 {
 public:
-    static constexpr int    GURU_INFO =     0;  // General logging information.
-    static constexpr int    GURU_WARN =     1;  // Warnings, non-fatal stuff.
-    static constexpr int    GURU_ERROR =    2;  // Serious errors. Shit is going down.
-    static constexpr int    GURU_CRITICAL = 3;  // Critical system failure.
-
-            Guru(std::string log_filename = "");                // Opens the output log for messages.
-            ~Guru();                                            // Destructor, calls cleanup code.
-    void    cleanup();                                          // Closes the system log gracefully.
-    void    console_ready(bool is_ready = true);                // Tells Guru that we're ready to render Guru error messages on-screen.
-    void    halt(std::string error, int a = 0, int b = 0);      // Stops the game and displays an error messge.
-    void    halt(std::exception &e);                            // As above, but with an exception instead of a string.
-    void    hook_signals();                                     // Tells Guru to hook system failure signals.
-    void    intercept_signal(int sig);                          // Catches a segfault or other fatal signal.
-    bool    is_dead() const;                                    // Checks if the system has halted.
-    void    log(std::string msg, int type = Guru::GURU_INFO);   // Logs a message in the system log file.
-    void    nonfatal(std::string error, int type);              // Reports a non-fatal error, which will be logged but won't halt execution unless it cascades.
+            Guru(std::string log_filename = "");            // Opens the output log for messages.
+            ~Guru();                                        // Destructor, calls cleanup code.
+    void    cleanup();                                      // Closes the system log gracefully.
+    void    console_ready(bool is_ready = true);            // Tells Guru that we're ready to render Guru error messages on-screen.
+    void    halt(std::string error, int a = 0, int b = 0);  // Stops the game and displays an error messge.
+    void    halt(std::exception &e);                        // As above, but with an exception instead of a string.
+    void    hook_signals();                                 // Tells Guru to hook system failure signals.
+    void    intercept_signal(int sig);                      // Catches a segfault or other fatal signal.
+    bool    is_dead() const;                                // Checks if the system has halted.
+    void    log(std::string msg, int type = GURU_INFO);     // Logs a message in the system log file.
+    void    nonfatal(std::string error, int type);          // Reports a non-fatal error, which will be logged but won't halt execution unless it cascades.
 
 private:
     int                 cascade_count_;     // Keeps track of rapidly-occurring, non-fatal error messages.

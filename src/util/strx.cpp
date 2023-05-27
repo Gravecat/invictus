@@ -23,7 +23,7 @@ std::string StrX::comma_list(std::vector<std::string> vec, unsigned int flags)
     const bool sql_mode = ((flags & CL_FLAG_SQL_MODE) == CL_FLAG_SQL_MODE);
     if (!vec.size())
     {
-        core()->guru()->nonfatal("Empty vector provided to comma_list!", Guru::GURU_WARN);
+        core()->guru()->nonfatal("Empty vector provided to comma_list!", GURU_WARN);
         return "";
     }
     if (vec.size() == 1) return vec.at(0);
@@ -156,7 +156,7 @@ bool StrX::str_to_bool(std::string str)
     {
         case '0': case 'f': case 'F': case 'n': case 'N': case '-': return false;
         case '1': case 't': case 'T': case 'y': case 'Y': return true;
-        default: core()->guru()->nonfatal("Invalid boolean string: " + str, Guru::GURU_ERROR); return false;
+        default: core()->guru()->nonfatal("Invalid boolean string: " + str, GURU_ERROR); return false;
     }
 }
 

@@ -41,7 +41,7 @@ void Prefs::load()
     std::ifstream prefs_file(filename_);
     if (!prefs_file.is_open())
     {
-        guru->nonfatal("Could not open " + filename_, Guru::GURU_WARN);
+        guru->nonfatal("Could not open " + filename_, GURU_WARN);
         return;
     }
     std::string line, pref, pref_val;
@@ -50,14 +50,14 @@ void Prefs::load()
     {
         if (!line.size()) continue;
         pref_vec = StrX::string_explode(line, ":");
-        if (pref_vec.size() != 2) guru->nonfatal("Invalid line in " + filename_ + ": " + line, Guru::GURU_WARN);
+        if (pref_vec.size() != 2) guru->nonfatal("Invalid line in " + filename_ + ": " + line, GURU_WARN);
         else
         {
             pref = StrX::str_tolower(pref_vec.at(0));
             pref_val = pref_vec.at(1);
             if (!pref.compare("use_colour")) use_colour_ = StrX::str_to_bool(pref_val);
             else if (!pref.compare("acs_flags")) acs_flags_ = std::stoi(pref_val);
-            else guru->nonfatal("Invalid line in " + filename_ + ": " + line, Guru::GURU_WARN);
+            else guru->nonfatal("Invalid line in " + filename_ + ": " + line, GURU_WARN);
         }
     }
     prefs_file.close();

@@ -73,7 +73,7 @@ void Entity::inventory_add(std::shared_ptr<Entity> entity)
 bool Entity::is_at(int ax, int ay) const
 {
     if (ax < 0 || ay < 0) core()->guru()->nonfatal("Invalid call to Entity::is_at() on " + name_ + ": " + std::to_string(ax) + "," + std::to_string(ay),
-        Guru::GURU_ERROR);
+        GURU_ERROR);
     return x_ == ax && y_ == ay;
 }
 
@@ -131,7 +131,7 @@ void Entity::set_colour(Colour new_colour) { colour_ = new_colour; }
 // Sets the power of this Entity's light source.
 void Entity::set_light_power(int new_power)
 {
-    if (new_power < 0) core()->guru()->nonfatal("Invalid light power value on " + name_ + ": " + std::to_string(new_power), Guru::GURU_ERROR);
+    if (new_power < 0) core()->guru()->nonfatal("Invalid light power value on " + name_ + ": " + std::to_string(new_power), GURU_ERROR);
     set_prop(EntityProp::LIGHT_POWER, std::max<int>(new_power, 0));
 }
 
@@ -142,7 +142,7 @@ void Entity::set_name(const std::string &new_name) { name_ = new_name; }
 void Entity::set_pos(int x, int y)
 {
     if (x < 0 || y < 0) core()->guru()->nonfatal("Invalid call to Entity::set_pos on " + name_ + ": " + std::to_string(x) + "," + std::to_string(y),
-        Guru::GURU_ERROR);
+        GURU_ERROR);
     x_ = std::max<int>(x, 0);
     y_ = std::max<int>(y, 0);
 }

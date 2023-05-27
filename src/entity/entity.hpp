@@ -60,16 +60,17 @@ enum class EntityTag : uint16_t
 enum class EntityType : uint8_t { ENTITY, MOBILE, PLAYER, ITEM };
 
 
+constexpr int   NAME_FLAG_THE =                 1;  // Prepends 'the' to the name, if appropriate.
+constexpr int   NAME_FLAG_CAPITALIZE_FIRST =    2;  // Capitalizes the first letter of the name.
+constexpr int   NAME_FLAG_POSSESSIVE =          4;  // Possessive version of the name (e.g. snake -> snake's).
+constexpr int   NAME_FLAG_PLURAL =              8;  // Plural version of the name (e.g. rat -> rats).
+constexpr int   NAME_FLAG_STACK =               16; // Show item stacks in the name.
+constexpr int   NAME_FLAG_A =                   32; // Prepends 'a' to the name, if appropriate.
+
+
 class Entity
 {
 public:
-    static constexpr int    NAME_FLAG_THE =                 1;  // Prepends 'the' to the name, if appropriate.
-    static constexpr int    NAME_FLAG_CAPITALIZE_FIRST =    2;  // Capitalizes the first letter of the name.
-    static constexpr int    NAME_FLAG_POSSESSIVE =          4;  // Possessive version of the name (e.g. snake -> snake's).
-    static constexpr int    NAME_FLAG_PLURAL =              8;  // Plural version of the name (e.g. rat -> rats).
-    static constexpr int    NAME_FLAG_STACK =               16; // Show item stacks in the name.
-    static constexpr int    NAME_FLAG_A =                   32; // Prepends 'a' to the name, if appropriate.
-
                         Entity();       // Constructor, creates a new Entity with default values.
     virtual             ~Entity() { }   // Virtual destructor.
     char                ascii() const;  // Gets the ASCII character representing this Entity.

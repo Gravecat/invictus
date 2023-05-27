@@ -61,7 +61,7 @@ void Window::move(int new_x, int new_y)
 void Window::redraw_border(Colour col, uint32_t flags)
 {
     if (border_ptr_) core()->terminal()->box(border_ptr_, col, flags);
-    else core()->guru()->nonfatal("Attempt to re-render window border, with no border defined.", Guru::GURU_WARN);
+    else core()->guru()->nonfatal("Attempt to re-render window border, with no border defined.", GURU_WARN);
 }
 
 // Set this Window's panel as visible or invisible.

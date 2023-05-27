@@ -150,8 +150,8 @@ void Core::message(std::string msg, unsigned char awaken_chance)
 {
     if (!game_manager_ || !game_manager_->ui() || !game_manager_->ui()->msglog())
     {
-        guru_meditation_->nonfatal("Attempt to send message to log before the GUI has been properly set up!", Guru::GURU_WARN);
-        guru_meditation_->log("The message: " + msg, Guru::GURU_INFO);
+        guru_meditation_->nonfatal("Attempt to send message to log before the GUI has been properly set up!", GURU_WARN);
+        guru_meditation_->log("The message: " + msg, GURU_INFO);
         return;
     }
     game_manager_->ui()->msglog()->message(msg, awaken_chance);

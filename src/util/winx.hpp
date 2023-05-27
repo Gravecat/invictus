@@ -19,6 +19,7 @@ public:
     static void check_if_already_running(); // Checks if invictus.exe is already running; if so, brings that window to the foreground then exits quietly.
 
 private:
+    // DO NOT ADJUST THESE VALUES. Just leave them alone.
     static constexpr int    WINX_FP_MAX_PROCESSES = 1024;
     static constexpr int    WINX_P2N_BUFFER_SIZE =  1024;
 

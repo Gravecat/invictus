@@ -104,7 +104,7 @@ bool Mobile::move_or_attack(std::shared_ptr<Mobile> self, int dx, int dy)
 
     if (!dx && !dy)
     {
-        core()->guru()->nonfatal("move_or_attack called with no direction!", Guru::GURU_WARN);
+        core()->guru()->nonfatal("move_or_attack called with no direction!", GURU_WARN);
         return false;
     }
     const bool is_player = self->type() == EntityType::PLAYER;

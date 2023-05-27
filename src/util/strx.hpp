@@ -12,12 +12,14 @@
 namespace invictus
 {
 
+// Flags used in StrX::comma_list().
+constexpr int   CL_FLAG_USE_AND =   1;
+constexpr int   CL_FLAG_SQL_MODE =  2;
+
+
 class StrX
 {
 public:
-    static constexpr int    CL_FLAG_USE_AND =   1;
-    static constexpr int    CL_FLAG_SQL_MODE =  2;
-
     static std::string  bool_to_str(bool b);    // Converts a bool to a string ("true" or "false").
                         // Find and replace one string with another.
     static std::string  comma_list(std::vector<std::string> vec, unsigned int flags);   // Converts a vector to a comma-separated list.
