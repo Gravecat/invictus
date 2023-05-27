@@ -176,9 +176,9 @@ void UI::render_stat_bars()
     const int sp_bar_width = (window_w - hp_bar_width) / 2;
     const int mp_bar_width = window_w - hp_bar_width - sp_bar_width;
 
-    Bars::render_bar(0, 0, hp_bar_width, "HP", player->hp(), player->hp(true), Colour::RED_WHITE, BAR_FLAG_PERCENTAGE | BAR_FLAG_ROUND_UP, stat_bars_);
-    Bars::render_bar(hp_bar_width, 0, sp_bar_width, "SP", player->sp(), player->sp(true), Colour::GREEN_WHITE, BAR_FLAG_PERCENTAGE, stat_bars_);
-    Bars::render_bar(hp_bar_width + sp_bar_width, 0, mp_bar_width, "MP", player->mp(), player->mp(true), Colour::BLUE_WHITE, BAR_FLAG_PERCENTAGE, stat_bars_);
+    Bars::render_bar(0, 0, hp_bar_width, "HP", player->hp(), player->hp(true), Colour::RED_WHITE, BAR_FLAG_NUMBERS | BAR_FLAG_ROUND_UP, stat_bars_);
+    Bars::render_bar(hp_bar_width, 0, sp_bar_width, "SP", player->sp(), player->sp(true), Colour::GREEN_WHITE, BAR_FLAG_NUMBERS, stat_bars_);
+    Bars::render_bar(hp_bar_width + sp_bar_width, 0, mp_bar_width, "MP", player->mp(), player->mp(true), Colour::BLUE_WHITE, BAR_FLAG_NUMBERS, stat_bars_);
 }
 
 // Gets a pointer to the stat bars window.

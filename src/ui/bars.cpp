@@ -26,6 +26,7 @@ void Bars::render_bar(int x, int y, unsigned int width, const std::string &name,
     const bool percentage = ((flags & BAR_FLAG_PERCENTAGE) == BAR_FLAG_PERCENTAGE);
 
     unsigned int bar_width = static_cast<int>(std::round((value / value_max) * width));
+    if (bar_width > width) bar_width = width;
     if (value > 0 && !bar_width && round_up) bar_width = 1;
     std::string msg = name;
     if (percentage)
@@ -35,6 +36,20 @@ void Bars::render_bar(int x, int y, unsigned int width, const std::string &name,
     }
     else if (numbers)
         msg += ": " + StrX::ftos(round_up ? std::ceil(value) : std::round(value)) + "/" + StrX::ftos(round_up ? std::ceil(value_max) : std::round(value_max));
+
+    if (msg.size() > width)
+    {
+        if (percentage)
+        {
+            const float perc = (value / value_max) * 100.0f;
+            msg = StrX::ftos(round_up ? std::ceil(perc) : std::round(perc)) + "%";
+        }
+        else if (numbers)
+        {
+            msg = StrX::ftos(round_up ? std::ceil(value) : std::round(value)) + "/" + StrX::ftos(round_up ? std::ceil(value_max) : std::round(value_max));
+            if (msg.size() > width) msg = StrX::ftos(round_up ? std::ceil(value) : std::round(value));
+        }
+    }
     if (msg.size() < width)
     {
         int excess = width - msg.size();
