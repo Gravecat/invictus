@@ -7,8 +7,8 @@
 [![commit activity](https://img.shields.io/github/commit-activity/m/gravecat/invictus?color=blue&style=plastic)](https://github.com/Gravecat/invictus/commits)
 [![code size](https://img.shields.io/github/languages/code-size/gravecat/invictus?color=blueviolet&style=plastic)](https://github.com/Gravecat/invictus/tree/main/src)
 
-Morior Invictus is an open-source, traditional roguelike game currently in the very, *very* early stages of development. [See here](building.md) for build
-instructions, and if you're interested in contributing to the project, please also see the [code of conduct](CODE_OF_CONDUCT.md) and
+Morior Invictus is an open-source, traditional roguelike game currently in the very, *very* early stages of development. [Build instructions](building.md)
+are provided for Windows and Linux, and if you're interested in contributing to the project, please also see the [code of conduct](CODE_OF_CONDUCT.md) and
 [contributing guidelines](CONTRIBUTING.md).
 
 
@@ -19,8 +19,5 @@ Morior Invictus is copyright © 2023 [Raine "Gravecat" Simmons](https://github.c
 
 [PDCurses](https://github.com/wmcbrine/PDCurses) maintained by William McBrine.
 
-Shadowcasting algorithm based on code from [RogueBasin](https://www.roguebasin.com/index.php/C%2B%2B_shadowcasting_implementation), based on Björn Bergström's
-shadowcasting method.
-
-GCC runtime library DLLs and any embedded GCC library code is copyright © Free Software Foundation, Inc., distrubuted under the GCC Runtime Library Exception,
-version 3.1 of the GNU General Public License version 3.
+[Shadowcasting implementation](https://www.roguebasin.com/index.php/C%2B%2B_shadowcasting_implementation) based on code from RogueBasin (author unknown), based
+on [Björn Bergström's recursive shadowcasting method](https://www.roguebasin.com/index.php/FOV_using_recursive_shadowcasting).
