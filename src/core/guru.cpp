@@ -30,6 +30,7 @@ Guru::Guru(std::string log_filename) : cascade_count_(0), cascade_failure_(false
     FileX::delete_file(log_filename);
     syslog_.open(log_filename.c_str());
     if (!syslog_.is_open()) exit(EXIT_FAILURE);
+    hook_signals();
     this->log("Welcome to Morior Invictus " + INVICTUS_VERSION_STRING + "!");
     this->log("Guru error-handling system is online.");
 }
