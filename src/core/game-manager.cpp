@@ -11,6 +11,7 @@
 #include "entity/player.hpp"
 #include "terminal/terminal.hpp"
 #include "tune/timing.hpp"
+#include "ui/system-menu.hpp"
 #include "ui/ui.hpp"
 
 
@@ -63,6 +64,7 @@ void GameManager::dungeon_input(int key)
 
         case ',': case Key::KP5: pass_time(TIME_DO_NOTHING); break; // Do nothing.
         case '.': player_->ground_items(); break;       // Interact with items on the ground.
+        case '=': SystemMenu::open(); break;            // Opens the system menu.
         case 'c': player_->close_a_door(); break;       // Attempts to close something.
         case 'e': player_->take_inventory(true); break; // Interact with equipped items.
         case 'g': player_->get_item(); break;           // Picks something up.

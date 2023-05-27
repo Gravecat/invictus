@@ -11,4 +11,6 @@ along with menus, popup boxes, and other UI-like things.
 
 * **nearby.cpp** - The sidebar, showing NPCs and items nearby.
 
+* **system-menu.cpp** - The main system menu, giving the player options such as saving or quitting the game.
+
 * **ui.cpp** - The UI overlay that displays additional information on top of the game's map, using other UI classes.
