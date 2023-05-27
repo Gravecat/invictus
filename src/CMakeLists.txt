@@ -70,6 +70,7 @@ set(INVICTUS_CPPS
   core/game-manager.cpp
   core/guru.cpp
   core/prefs.cpp
+  core/save-load.cpp
   dev/acs-display.cpp
   dev/keycode-check.cpp
   entity/entity.cpp

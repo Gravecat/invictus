@@ -8,6 +8,7 @@
 #include "core/core.hpp"
 #include "core/game-manager.hpp"
 #include "core/guru.hpp"
+#include "core/save-load.hpp"
 #include "entity/player.hpp"
 #include "terminal/terminal.hpp"
 #include "tune/timing.hpp"
@@ -53,6 +54,8 @@ void GameManager::dungeon_input(int key)
     int dx = 0, dy = 0;
     switch(key)
     {
+        case 0: return;
+
         case 'k': case Key::ARROW_UP: case Key::KP8: dy = -1; break;    // Move north
         case 'j': case Key::ARROW_DOWN: case Key::KP2: dy = 1; break;   // Move south
         case 'h': case Key::ARROW_LEFT: case Key::KP4: dx = -1; break;  // Move west
@@ -70,6 +73,7 @@ void GameManager::dungeon_input(int key)
         case 'g': player_->get_item(); break;           // Picks something up.
         case 'i': player_->take_inventory(); break;     // Interact with carried items.
         case 'o': player_->open_a_door(); break;        // Attempts to open something.
+        case 'S': SaveLoad::save_game("userdata/save/save.dat");    // Saves the game!
     }
 
     if (dx || dy)
@@ -90,22 +94,27 @@ void GameManager::game_loop()
         core()->guru()->log("Setting up new game...");
         new_game();
     }
+    else if (game_state_ == GameState::LOAD_GAME)
+    {
+        SaveLoad::load_game("userdata/save/save.dat");
+    }
 
     core()->guru()->log("Starting main game lööp, brøther.");
+    int key = 0;
     while (true)
     {
-        ui_->render();
-
-        int key = terminal->get_key();
-        if (key == Key::RESIZE) ui_->window_resized();
-
         switch(game_state_)
         {
             case GameState::DUNGEON: dungeon_input(key); break;
-            case GameState::INITIALIZING: case GameState::NEW_GAME:
+            case GameState::INITIALIZING: case GameState::NEW_GAME: case GameState::LOAD_GAME:
                 guru->halt("Invalid game state!", static_cast<int>(game_state_));
                 break;
         }
+
+        ui_->render();
+
+        key = terminal->get_key();
+        if (key == Key::RESIZE) ui_->window_resized();
 
         tick();
     }

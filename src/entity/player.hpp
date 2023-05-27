@@ -28,6 +28,8 @@ public:
     void        open_a_door();      // Attempts to open a nearby door.
     void        take_inventory(bool equipment = false);     // Interact with carried items.
     EntityType  type() const { return EntityType::PLAYER; } // Self-identifier function.
+
+friend class SaveLoad;
 };
 
 }       // namespace invictus

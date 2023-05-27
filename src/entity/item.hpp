@@ -43,6 +43,7 @@ private:
     uint16_t    stack_;         // The size of this Item's stack, if any.
 
 friend class CodexItem;
+friend class SaveLoad;
 };
 
 }       // namespace invictus

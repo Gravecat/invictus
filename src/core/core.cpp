@@ -62,6 +62,12 @@ int main(int argc, char** argv)
                     invictus::DevACSDisplay::display_test();
                     normal_start = false;
                 }
+                if (!param.compare("-load"))    // very much temporary, for testing/developing the save/load code
+                {
+                    invictus::core()->game()->set_game_state(invictus::GameState::LOAD_GAME);
+                    invictus::core()->game()->game_loop();
+                    normal_start = false;
+                }
             }
         }
         parameters.clear();

@@ -128,6 +128,7 @@ private:
     uint16_t    x_, y_;         // Position on the map.
 
 friend class CodexItem;
+friend class SaveLoad;
 };
 
 }       // namespace invictus

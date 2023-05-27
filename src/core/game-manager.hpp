@@ -15,7 +15,7 @@ class Player;   // defined in entity/player.hpp
 class UI;       // defined in ui/ui.hpp
 
 
-enum class GameState : uint8_t { INITIALIZING, NEW_GAME, DUNGEON };
+enum class GameState : uint8_t { INITIALIZING, NEW_GAME, LOAD_GAME, DUNGEON };
 
 class GameManager
 {
@@ -44,6 +44,8 @@ private:
     float       heartbeat10_;       // As above, but this one's a slower heartbeat that causes things like buffs/debuffs to trigger at a 1/10 speed rate
     std::shared_ptr<Player> player_;    // The player character object.
     std::shared_ptr<UI> ui_;        // The user interface manager.
+
+friend class SaveLoad;
 };
 
 }       // namespace invictus

@@ -52,6 +52,8 @@ protected:
     std::vector<std::shared_ptr<Item>>  equipment_; // Items equipped by this Mobile.
 
     static std::shared_ptr<Item>    blank_item_;    // A blank item, shared amongst all Mobiles to use in their empty equipment slots.
+
+friend class SaveLoad;
 };
 
 }       // namespace invictus

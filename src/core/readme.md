@@ -11,4 +11,6 @@ the main game loop, user preferences, error-handling, etc.
 
 * **prefs.cpp** - User-defined preferences, which can be set in userdata/prefs.txt
 
+* **save-load.cpp** - Handles saving and loading the game state to/from disk.
+
 * **version.hpp** - The version number of the game.
