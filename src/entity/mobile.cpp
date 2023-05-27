@@ -20,18 +20,13 @@ namespace invictus
 Mobile::Mobile() : Entity(), banked_ticks_(0), last_dir_(0)
 {
     set_name("mobile");
-    set_prop_f(EntityProp::SPEED, Timing::TIME_BASE_MOVEMENT);
+    set_prop_f(EntityProp::SPEED, TIME_BASE_MOVEMENT);
 }
 
 // Adds or removes banked ticks to this Mobile.
 void Mobile::add_banked_ticks(float amount)
 {
-    if (amount < 0)
-    {
-        core()->guru()->nonfatal("Attempt to add negative banked ticks to " + name() + ": " + std::to_string(amount) +
-            " (did you mean to use spend_banked_ticks()?)", Guru::GURU_ERROR);
-        clear_banked_ticks();
-    }
+    if (amount < 0) core()->guru()->halt("Attempt to add negative banked ticks to " + name(), static_cast<int>(amount));
     else banked_ticks_ += amount;
 }
 
@@ -47,6 +42,7 @@ void Mobile::close_door(int dx, int dy)
     auto area = core()->game()->area();
     bool success = true;
     const bool is_player = (type() == EntityType::PLAYER);
+    if (!is_player && banked_ticks() < TIME_CLOSE_DOOR) return;
     for (auto mobile : *area->entities())
     {
         if (mobile->is_at(dx, dy))
@@ -65,14 +61,9 @@ void Mobile::close_door(int dx, int dy)
         return;
     }
 
-    if (is_player)
-    {
-        core()->game()->pass_time(Timing::TIME_CLOSE_DOOR);
-        core()->message("You close the " + door_name + ".");
-    }
+    if (is_player) core()->message("You close the " + door_name + ".");
     else
     {
-        spend_banked_ticks(Timing::TIME_CLOSE_DOOR);
         if (area->is_in_fov(dx, dy))
         {
             if (is_in_fov()) core()->message("{u}You see " + name(NAME_FLAG_A) + " {u}close a " + door_name + "{u}.");
@@ -86,12 +77,14 @@ void Mobile::close_door(int dx, int dy)
     the_tile->clear_tag(TileTag::Closeable);
     the_tile->clear_tag(TileTag::Open);
     area->need_fov_recalc();
+    timed_action(TIME_CLOSE_DOOR);
 }
 
 // Drops a carried item.
 void Mobile::drop_item(uint32_t id)
 {
     if (id >= inv()->size()) core()->guru()->halt("Invalid item ID for drop", id, inv()->size());
+    if (type() != EntityType::PLAYER && banked_ticks() < TIME_DROP_ITEM) return;
     std::shared_ptr<Entity> item = inv()->at(id);
     core()->game()->area()->entities()->push_back(item);
     inv()->erase(inv()->begin() + id);
@@ -100,6 +93,7 @@ void Mobile::drop_item(uint32_t id)
     if (type() == EntityType::PLAYER) core()->message("You drop {c}" + item->name(NAME_FLAG_THE) + " {w}on the ground.");
     else if (is_in_fov()) core()->message("{u}" + name(NAME_FLAG_THE | NAME_FLAG_CAPITALIZE_FIRST) + " {u}drops " + item->name(NAME_FLAG_A) +
         " {u}on the ground.");
+    timed_action(TIME_DROP_ITEM);
 }
 
 // Checks if this Mobile is dead.
@@ -122,10 +116,8 @@ bool Mobile::move_or_attack(std::shared_ptr<Mobile> self, int dx, int dy)
     {
         auto the_tile = area->tile(xdx, ydy);
         const bool openable = (the_tile->tag(TileTag::Openable));
-        const float movement_cost = (openable ? Timing::TIME_OPEN_DOOR : self->movement_speed());
+        const float movement_cost = (openable ? TIME_OPEN_DOOR : self->movement_speed());
         if (!is_player && banked_ticks() < movement_cost) return false;
-        if (is_player) game->pass_time(movement_cost);
-        else spend_banked_ticks(movement_cost);
 
         if (openable)
         {
@@ -142,6 +134,7 @@ bool Mobile::move_or_attack(std::shared_ptr<Mobile> self, int dx, int dy)
             tile->set_tag(TileTag::Closeable);
             tile->set_tag(TileTag::Open);
             area->need_fov_recalc();
+            timed_action(TIME_OPEN_DOOR);
             return true;
         }
 
@@ -169,6 +162,7 @@ bool Mobile::move_or_attack(std::shared_ptr<Mobile> self, int dx, int dy)
             }
         }
 
+        timed_action(movement_cost);
         return true;
     }
 
@@ -180,18 +174,6 @@ bool Mobile::move_or_attack(std::shared_ptr<Mobile> self, int dx, int dy)
 // Returns the amount of ticks needed for this Mobile to move one tile.
 float Mobile::movement_speed() const { return get_prop_f(EntityProp::SPEED); }
 
-// The exact opposite of add_banked_ticks().
-void Mobile::spend_banked_ticks(float amount)
-{
-    if (amount < 0)
-    {
-        core()->guru()->nonfatal("Attempt to spend negative banked ticks on " + name() + ": " + std::to_string(amount) +
-            " (did you mean to use add_banked_ticks()?)", Guru::GURU_ERROR);
-        clear_banked_ticks();
-    }
-    else banked_ticks_ -= amount;
-}
-
 // Picks up a specified item.
 void Mobile::take_item(uint32_t id)
 {
@@ -200,11 +182,13 @@ void Mobile::take_item(uint32_t id)
     if (entities->size() <= id) core()->guru()->halt("Attempt to pick up invalid item ID.", id);
     std::shared_ptr<Entity> entity = entities->at(id);
     if (entity->type() != EntityType::ITEM) core()->guru()->halt("Attempt to pick up non-item entity.", id);
+    if (type() != EntityType::PLAYER && banked_ticks() < TIME_TAKE_ITEM) return;
 
     inventory_add(entity);
     entities->erase(entities->begin() + id);
     if (type() == EntityType::PLAYER) core()->message("You pick up {c}" + entity->name(NAME_FLAG_A) + "{w}.");
     else if (is_in_fov()) core()->message("{u}" + name() + " {u}picks up " + entity->name(NAME_FLAG_A) + "{u}.");
+    timed_action(TIME_TAKE_ITEM);
 }
 
 // Processes AI for this Mobile each turn.
@@ -215,7 +199,7 @@ void Mobile::tick(std::shared_ptr<Entity> self)
 
     if (type() == EntityType::PLAYER) return;
 
-    add_banked_ticks(Timing::TICK_SPEED);
+    add_banked_ticks(TICK_SPEED);
     auto self_mob = std::dynamic_pointer_cast<Mobile>(self);
 
     // There's nothing more to do.
@@ -227,6 +211,13 @@ void Mobile::tick10(std::shared_ptr<Entity> self)
 {
     Entity::tick10(self);
     if (is_dead()) return;
+}
+
+// This Mobile has made an action which takes time. Handles both Mobile and Player differences internally.
+void Mobile::timed_action(float time_taken)
+{
+    if (type() == EntityType::PLAYER) core()->game()->pass_time(time_taken);
+    else banked_ticks_ -= time_taken;
 }
 
 }   // namespace invictus

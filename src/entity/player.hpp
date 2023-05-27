@@ -16,6 +16,9 @@ class Player : public Mobile
 {
 public:
                 Player();   // Constructor.
+    void        add_banked_ticks(float) override;   // Don't use this on a Player.
+    float       banked_ticks() const override;      // Don't use this on a Player.
+    void        clear_banked_ticks() override;      // Don't use this on a Player.
     void        close_a_door(); // Attempts to close a nearby door.
     uint16_t    fov_radius() const; // Calculates the player's field-of-view radius.
     void        get_direction(int *dx, int *dy) const;      // Gets a direction from the player.

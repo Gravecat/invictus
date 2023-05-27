@@ -60,7 +60,7 @@ void GameManager::dungeon_input(int key)
         case 'y': case Key::KP7: dx = -1; dy = -1; break;   // Move northwest
         case 'u': case Key::KP9: dx = 1; dy = -1; break;    // Move northeast
 
-        case ',': case Key::KP5: pass_time(Timing::TIME_DO_NOTHING); break; // Do nothing.
+        case ',': case Key::KP5: pass_time(TIME_DO_NOTHING); break; // Do nothing.
         case '.': player_->ground_items(); break;   // Interact with items on the ground.
         case 'c': player_->close_a_door(); break;   // Attempts to close something.
         case 'g': player_->get_item(); break;       // Picks something up.
@@ -140,9 +140,9 @@ void GameManager::tick()
 {
     if (!area_) return;
 
-    while (heartbeat_ >= Timing::TICK_SPEED)
+    while (heartbeat_ >= TICK_SPEED)
     {
-        heartbeat_ -= Timing::TICK_SPEED;
+        heartbeat_ -= TICK_SPEED;
         for (auto entity : *area_->entities())
         {
             if (game_state_ != GameState::DUNGEON) break;   // If the game state changes, just stop processing Entity ticks.
@@ -150,9 +150,9 @@ void GameManager::tick()
         }
     }
 
-    while (heartbeat10_ >= Timing::TICK_SPEED * 10)
+    while (heartbeat10_ >= TICK_SPEED * 10)
     {
-        heartbeat10_ -= Timing::TICK_SPEED * 10;
+        heartbeat10_ -= TICK_SPEED * 10;
         for (auto entity : *area_->entities())
         {
             if (game_state_ != GameState::DUNGEON) break;   // If the game state changes, just stop processing Entity ticks.

@@ -29,6 +29,15 @@ Player::Player() : Mobile()
     set_name("player");
 }
 
+// Don't use this on a Player.
+void Player::add_banked_ticks(float) { core()->guru()->halt("Invalid call to add_banked_ticks on Player."); }
+
+// Don't use this on a Player.
+float Player::banked_ticks() const { core()->guru()->halt("Invalid call to banked_ticks on Player."); return 0; }
+
+// Don't use this on a Player.
+void Player::clear_banked_ticks() { core()->guru()->halt("Invalid call to clear_banked_ticks on Player."); }
+
 // Attempts to close a nearby door.
 void Player::close_a_door()
 {
