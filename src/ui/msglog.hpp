@@ -37,6 +37,8 @@ private:
     std::vector<std::string>    output_raw_;        // The raw, unprocessed output buffer.
     std::vector<bool>           output_raw_fade_;   // The colour fade tags on older messages.
     std::shared_ptr<Timer>      timer_;             // The timer for determining when old messages are stale.
+
+friend class SaveLoad;
 };
 
 }       // namespace invictus

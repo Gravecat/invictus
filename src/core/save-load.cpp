@@ -12,6 +12,8 @@
 #include "core/save-load.hpp"
 #include "entity/item.hpp"
 #include "entity/player.hpp"
+#include "ui/msglog.hpp"
+#include "ui/ui.hpp"
 
 
 namespace invictus
@@ -153,6 +155,7 @@ void SaveLoad::load_game_manager(std::ifstream &save_file)
     game_manager->heartbeat10_ = load_data<float>(save_file);
     game_manager->player_ = std::dynamic_pointer_cast<Player>(load_entity(save_file));
     game_manager->area_ = load_area(save_file);
+    load_ui(save_file);
 }
 
 // Loads an Item from disk.
@@ -187,6 +190,21 @@ void SaveLoad::load_mobile(std::ifstream &save_file, std::shared_ptr<Mobile> mob
         uint8_t gear_exists = load_data<uint8_t>(save_file);
         if (gear_exists) mob->equipment_.at(i) = std::dynamic_pointer_cast<Item>(load_entity(save_file));
     }
+}
+
+// Loads the message log from disk.
+void SaveLoad::load_msglog(std::ifstream &save_file)
+{
+    auto msglog = core()->game()->ui()->msglog();
+    check_tag(save_file, SaveTag::MSGLOG);
+    uint32_t size = load_data<uint32_t>(save_file);
+    for (unsigned int i = 0; i < size; i++)
+    {
+        msglog->output_raw_.push_back(load_string(save_file));
+        msglog->output_raw_fade_.push_back(load_data<uint8_t>(save_file));
+    }
+    msglog->output_raw_.push_back("{c}Game saved.");
+    msglog->output_raw_fade_.push_back(false);
 }
 
 // Loads a Player from disk.
@@ -226,6 +244,13 @@ Tile SaveLoad::load_tile(std::ifstream &save_file)
         new_tile.tags_.insert(static_cast<TileTag>(load_data<uint16_t>(save_file)));
 
     return new_tile;
+}
+
+// Loads the UI elements from the save game file.
+void SaveLoad::load_ui(std::ifstream &save_file)
+{
+    check_tag(save_file, SaveTag::UI);
+    load_msglog(save_file);
 }
 
 // Saves an Area to disk.
@@ -328,6 +353,7 @@ void SaveLoad::save_game_manager(std::ofstream &save_file)
     save_data<float>(save_file, game_manager->heartbeat10_);
     save_entity(save_file, game_manager->player_);
     save_area(save_file, game_manager->area_);
+    save_ui(save_file);
 }
 
 // Saves an Item to disk.
@@ -367,6 +393,19 @@ void SaveLoad::save_mobile(std::ofstream &save_file, std::shared_ptr<Mobile> mob
     }
 }
 
+// Saves the message log to disk.
+void SaveLoad::save_msglog(std::ofstream &save_file)
+{
+    auto msglog = core()->game()->ui()->msglog();
+    write_tag(save_file, SaveTag::MSGLOG);
+    save_data<uint32_t>(save_file, msglog->output_raw_.size());
+    for (unsigned int i = 0; i < msglog->output_raw_.size(); i++)
+    {
+        save_string(save_file, msglog->output_raw_.at(i));
+        save_data<uint8_t>(save_file, msglog->output_raw_fade_.at(i) ? 1 : 0);
+    }
+}
+
 void SaveLoad::save_player(std::ofstream &save_file, std::shared_ptr<Player>)
 {
     write_tag(save_file, SaveTag::PLAYER);
@@ -395,6 +434,13 @@ void SaveLoad::save_tile(std::ofstream &save_file, Tile tile)
     save_data<uint32_t>(save_file, tile.tags_.size());
     for (auto tag : tile.tags_)
         save_data<uint16_t>(save_file, static_cast<uint16_t>(tag));
+}
+
+// Saves the UI elements to the save game file.
+void SaveLoad::save_ui(std::ofstream &save_file)
+{
+    write_tag(save_file, SaveTag::UI);
+    save_msglog(save_file);
 }
 
 // Writes a save tag to the save game file.

@@ -28,7 +28,7 @@ public:
 
 private:
     enum class SaveTag : uint32_t { HEADER_A = 0x49564E49, HEADER_B = 0x53555443, SAVE_EOF = 0xCAFEB0BA, GAME_MANAGER = 1, ENTITY, INVENTORY, ITEM,
-        MOBILE, PLAYER, AREA, ENTITIES, TILE_MEMORY, TILE_VISIBILITY, TILES };
+        MOBILE, PLAYER, AREA, ENTITIES, TILE_MEMORY, TILE_VISIBILITY, TILES, UI, MSGLOG };
 
     static void     check_tag(std::ifstream &save_file, SaveTag expected_tag);  // Checks for an expected tag in the save file, and aborts if it isn't found.
     static void     incompatible(unsigned int error_a = 0, unsigned int error_b = 0);   // Aborts loading an incompatible save file.
@@ -37,16 +37,20 @@ private:
     static void     load_game_manager(std::ifstream &save_file);    // Loads the GameManager class state.
     static void     load_item(std::ifstream &save_file, std::shared_ptr<Item> item);    // Loads an Item from disk.
     static void     load_mobile(std::ifstream &save_file, std::shared_ptr<Mobile> mob); // Loads a Mobile from disk.
+    static void     load_msglog(std::ifstream &save_file);      // Loads the message log from disk.
     static void     load_player(std::ifstream &save_file, std::shared_ptr<Player> player);  // Loads a Player from disk.
     static std::string load_string(std::ifstream &save_file);   // Loads a string from the save game file.
     static Tile     load_tile(std::ifstream &save_file);        // Loads a Tile from the save game file.
+    static void     load_ui(std::ifstream &save_file);          // Loads the UI elements from the save game file.
     static void     save_area(std::ofstream &save_file, std::shared_ptr<Area> area);        // Saves an Area to disk.
     static void     save_entity(std::ofstream &save_file, std::shared_ptr<Entity> entity);  // Saves an Entity to disk.
     static void     save_item(std::ofstream &save_file, std::shared_ptr<Item> item);        // Saves an Item to disk.
     static void     save_game_manager(std::ofstream &save_file);        // Saves the GameManager class state.
     static void     save_mobile(std::ofstream &save_file, std::shared_ptr<Mobile> mob);     // Saves a Mobile to disk.
+    static void     save_msglog(std::ofstream &save_file);  // Saves the message log to disk.
     static void     save_player(std::ofstream &save_file, std::shared_ptr<Player> player);  // Saves a Player to disk.
     static void     save_string(std::ofstream &save_file, const std::string &str);  // Saves a string to the save game file.
+    static void     save_ui(std::ofstream &save_file);  // Saves the UI elements to the save game file.
     static void     save_tile(std::ofstream &save_file, Tile tile);     // Saves a Tile to the save game file.
     static void     write_tag(std::ofstream &save_file, SaveTag tag);   // Writes a save tag to the save game file.
 
@@ -58,7 +62,7 @@ private:
     template<class T> static void save_data(std::ofstream &save_file, T data)
     { save_file.write((char*)&data, sizeof(T)); }
 
-    static const uint32_t   SAVE_VERSION =  1;   // Increment this every time saved games are no longer compatible.
+    static const uint32_t   SAVE_VERSION =  2;   // Increment this every time saved games are no longer compatible.
 
     static constexpr int    SAVE_ERROR_VERSION =    1;  // The save file version does not match.
     static constexpr int    SAVE_ERROR_ENTITY =     2;  // Something went wrong trying to load an Entity.
