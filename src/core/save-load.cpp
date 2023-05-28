@@ -313,6 +313,7 @@ void SaveLoad::save_game(const std::string &filename)
     save_game_manager(save_file);
     write_tag(save_file, SaveTag::SAVE_EOF);
     save_file.close();
+    core()->message("{c}Game saved.");
 }
 
 // Saves the GameManager class state.
