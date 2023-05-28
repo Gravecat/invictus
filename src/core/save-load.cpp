@@ -221,6 +221,7 @@ Tile SaveLoad::load_tile(std::ifstream &save_file)
 
     // Load the TileTags.
     uint32_t tag_count = load_data<uint32_t>(save_file);
+    new_tile.tags_.clear();
     for (unsigned int i = 0; i < tag_count; i++)
         new_tile.tags_.insert(static_cast<TileTag>(load_data<uint16_t>(save_file)));
 
