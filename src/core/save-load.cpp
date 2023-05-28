@@ -1,6 +1,7 @@
 // core/save-load.cpp -- Handles saving and loading the game state to/from disk.
 // Copyright © 2023 Raine "Gravecat" Simmons. Licensed under the GNU Affero General Public License v3 or any later version.
 
+#include <algorithm>
 #include <map>
 
 #include "area/area.hpp"
@@ -53,11 +54,7 @@ std::shared_ptr<Area> SaveLoad::load_area(std::ifstream &save_file)
 
     // Load the tile memory.
     check_tag(save_file, SaveTag::TILE_MEMORY);
-    save_file.read(area->tile_memory_, size_x * size_y);
-
-    // Load the tile visibility.
-    check_tag(save_file, SaveTag::TILE_VISIBILITY);
-    save_file.read((char*)area->visible_, size_x * size_y);
+    load_blob_compressed(save_file, area->tile_memory_, size_x * size_y);
 
     // Load the individual tiles.
     check_tag(save_file, SaveTag::TILES);
@@ -65,6 +62,24 @@ std::shared_ptr<Area> SaveLoad::load_area(std::ifstream &save_file)
         area->tiles_[i] = load_tile(save_file);
 
     return area;
+}
+
+// Loads a block of memory from disk, decompressing it.
+void SaveLoad::load_blob_compressed(std::ifstream &save_file, char* blob, uint32_t blob_size)
+{
+    check_tag(save_file, SaveTag::COMPRESSED_BLOB);
+    uint32_t size_check = load_data<uint32_t>(save_file);
+    if (size_check != blob_size) incompatible(SAVE_ERROR_BLOB, size_check);
+
+    uint32_t count = 0;
+    while (count < blob_size)
+    {
+        uint32_t seq_count = load_data<uint32_t>(save_file);
+        char ch = load_data<char>(save_file);
+        std::fill_n(blob + count, seq_count, ch);
+        count += seq_count;
+    }
+    check_tag(save_file, SaveTag::COMPRESSED_BLOB_END);
 }
 
 // Loads an Entity from disk.
@@ -270,16 +285,42 @@ void SaveLoad::save_area(std::ofstream &save_file, std::shared_ptr<Area> area)
 
     // Save the tile memory. This could probably be compressed someday by storing the long sequences of spaces as some sort of integer tag, but not today.
     write_tag(save_file, SaveTag::TILE_MEMORY);
-    save_file.write(area->tile_memory_, area->size_x_ * area->size_y_);
-
-    // Save the tile visibility. (This could maybe be compressed someday, since it's just bools, so it could be mashed down into 8 bools per byte?)
-    write_tag(save_file, SaveTag::TILE_VISIBILITY);
-    save_file.write((char*)area->visible_, area->size_x_ * area->size_y_);
+    save_blob_compressed(save_file, area->tile_memory_, area->size_x_ * area->size_y_);
 
     // Save the individual tiles.
     write_tag(save_file, SaveTag::TILES);
     for (unsigned int i = 0; i < area->size_x_ * area->size_y_; i++)
         save_tile(save_file, area->tiles_[i]);
+}
+
+// Saves a block of memory to disk, in a compressed form.
+void SaveLoad::save_blob_compressed(std::ofstream &save_file, char* blob, uint32_t blob_size)
+{
+    write_tag(save_file, SaveTag::COMPRESSED_BLOB);
+    save_data<uint32_t>(save_file, blob_size);
+    uint32_t old_char = 999, char_count = 0;
+
+    auto dump_data = [&save_file, &old_char, &char_count]()
+    {
+        if (old_char == 999) return;
+        SaveLoad::save_data<uint32_t>(save_file, char_count);
+        SaveLoad::save_data<char>(save_file, old_char);
+        char_count = 0;
+        old_char = 999;
+    };
+
+    for (unsigned int i = 0; i < blob_size; i++)
+    {
+        char ch = blob[i];
+        if (static_cast<uint32_t>(ch) != old_char)
+        {
+            dump_data();
+            old_char = ch;
+        }
+        char_count++;
+    }
+    dump_data();
+    write_tag(save_file, SaveTag::COMPRESSED_BLOB_END);
 }
 
 // Saves an Entity to disk.
