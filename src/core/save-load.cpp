@@ -3,6 +3,9 @@
 
 #include <map>
 
+#include "area/area.hpp"
+#include "area/tile.hpp"
+#include "codex/codex-tile.hpp"
 #include "core/core.hpp"
 #include "core/game-manager.hpp"
 #include "core/guru.hpp"
@@ -29,6 +32,38 @@ void SaveLoad::check_tag(std::ifstream &save_file, SaveTag expected_tag)
 // Aborts loading an incompatible save file.
 void SaveLoad::incompatible(unsigned int error_a, unsigned int error_b)
 { core()->guru()->halt("Incompatible saved game", error_a, error_b); }
+
+// Loads an Area from disk.
+std::shared_ptr<Area> SaveLoad::load_area(std::ifstream &save_file)
+{
+    check_tag(save_file, SaveTag::AREA);
+    uint16_t size_x = load_data<uint16_t>(save_file);
+    uint16_t size_y = load_data<uint16_t>(save_file);
+    auto area = std::make_shared<Area>(size_x, size_y);
+    area->offset_x_ = load_data<int>(save_file);
+    area->offset_y_ = load_data<int>(save_file);
+
+    // Load the Entities in this Area.
+    check_tag(save_file, SaveTag::ENTITIES);
+    uint32_t entity_count = load_data<uint32_t>(save_file);
+    for (unsigned int i = 0; i < entity_count; i++)
+        area->entities_.push_back(load_entity(save_file));
+
+    // Load the tile memory.
+    check_tag(save_file, SaveTag::TILE_MEMORY);
+    save_file.read(area->tile_memory_, size_x * size_y);
+
+    // Load the tile visibility.
+    check_tag(save_file, SaveTag::TILE_VISIBILITY);
+    save_file.read((char*)area->visible_, size_x * size_y);
+
+    // Load the individual tiles.
+    check_tag(save_file, SaveTag::TILES);
+    for (unsigned int i = 0; i < size_x * size_y; i++)
+        area->tiles_[i] = load_tile(save_file);
+
+    return area;
+}
 
 // Loads an Entity from disk.
 std::shared_ptr<Entity> SaveLoad::load_entity(std::ifstream &save_file)
@@ -105,8 +140,6 @@ void SaveLoad::load_game(const std::string &filename)
     if (file_version != SAVE_VERSION) incompatible(SAVE_ERROR_VERSION, file_version);
     load_game_manager(save_file);
     check_tag(save_file, SaveTag::SAVE_EOF);
-
-    core()->guru()->halt("all looks good so far");
 }
 
 // Loads the GameManager class state.
@@ -119,6 +152,7 @@ void SaveLoad::load_game_manager(std::ifstream &save_file)
     game_manager->heartbeat_ = load_data<float>(save_file);
     game_manager->heartbeat10_ = load_data<float>(save_file);
     game_manager->player_ = std::dynamic_pointer_cast<Player>(load_entity(save_file));
+    game_manager->area_ = load_area(save_file);
 }
 
 // Loads an Item from disk.
@@ -151,12 +185,12 @@ void SaveLoad::load_mobile(std::ifstream &save_file, std::shared_ptr<Mobile> mob
     for (unsigned int i = 0; i < equ_size; i++)
     {
         uint8_t gear_exists = load_data<uint8_t>(save_file);
-        if (gear_exists) load_item(save_file, mob->equipment_.at(i));
+        if (gear_exists) mob->equipment_.at(i) = std::dynamic_pointer_cast<Item>(load_entity(save_file));
     }
 }
 
 // Loads a Player from disk.
-void SaveLoad::load_player(std::ifstream &save_file, std::shared_ptr<Mobile>)
+void SaveLoad::load_player(std::ifstream &save_file, std::shared_ptr<Player>)
 {
     check_tag(save_file, SaveTag::PLAYER);
 }
@@ -170,6 +204,56 @@ std::string SaveLoad::load_string(std::ifstream &save_file)
     std::string result = std::string(data, len);
     delete[] data;
     return result;
+}
+
+// Loads a Tile from the save game file.
+Tile SaveLoad::load_tile(std::ifstream &save_file)
+{
+    TileID tile_id = static_cast<TileID>(load_data<uint16_t>(save_file));
+    uint8_t changed = load_data<uint8_t>(save_file);
+    Tile new_tile;
+    CodexTile::generate(&new_tile, tile_id);
+    if (!changed) return new_tile;
+
+    new_tile.ascii_ = load_data<char>(save_file);
+    new_tile.colour_ = static_cast<Colour>(load_data<uint8_t>(save_file));
+    new_tile.name_ = load_string(save_file);
+
+    // Load the TileTags.
+    uint32_t tag_count = load_data<uint32_t>(save_file);
+    for (unsigned int i = 0; i < tag_count; i++)
+        new_tile.tags_.insert(static_cast<TileTag>(load_data<uint16_t>(save_file)));
+
+    return new_tile;
+}
+
+// Saves an Area to disk.
+void SaveLoad::save_area(std::ofstream &save_file, std::shared_ptr<Area> area)
+{
+    write_tag(save_file, SaveTag::AREA);
+    save_data<uint16_t>(save_file, area->size_x_);
+    save_data<uint16_t>(save_file, area->size_y_);
+    save_data<int>(save_file, area->offset_x_);
+    save_data<int>(save_file, area->offset_y_);
+
+    // Save the Entities in this Area.
+    write_tag(save_file, SaveTag::ENTITIES);
+    save_data<uint32_t>(save_file, area->entities_.size());
+    for (auto entity : area->entities_)
+        save_entity(save_file, entity);
+
+    // Save the tile memory. This could probably be compressed someday by storing the long sequences of spaces as some sort of integer tag, but not today.
+    write_tag(save_file, SaveTag::TILE_MEMORY);
+    save_file.write(area->tile_memory_, area->size_x_ * area->size_y_);
+
+    // Save the tile visibility. (This could maybe be compressed someday, since it's just bools, so it could be mashed down into 8 bools per byte?)
+    write_tag(save_file, SaveTag::TILE_VISIBILITY);
+    save_file.write((char*)area->visible_, area->size_x_ * area->size_y_);
+
+    // Save the individual tiles.
+    write_tag(save_file, SaveTag::TILES);
+    for (unsigned int i = 0; i < area->size_x_ * area->size_y_; i++)
+        save_tile(save_file, area->tiles_[i]);
 }
 
 // Saves an Entity to disk.
@@ -241,6 +325,7 @@ void SaveLoad::save_game_manager(std::ofstream &save_file)
     save_data<float>(save_file, game_manager->heartbeat_);
     save_data<float>(save_file, game_manager->heartbeat10_);
     save_entity(save_file, game_manager->player_);
+    save_area(save_file, game_manager->area_);
 }
 
 // Saves an Item to disk.
@@ -272,7 +357,11 @@ void SaveLoad::save_mobile(std::ofstream &save_file, std::shared_ptr<Mobile> mob
     for (auto eq : mob->equipment_)
     {
         if (eq->item_type_ == ItemType::NONE) save_data<uint8_t>(save_file, 0);
-        else save_item(save_file, eq);
+        else
+        {
+            save_data<uint8_t>(save_file, 1);
+            save_entity(save_file, eq);
+        }
     }
 }
 
@@ -286,6 +375,24 @@ void SaveLoad::save_string(std::ofstream &save_file, const std::string &str)
 {
     save_data<uint32_t>(save_file, str.size());
     save_file.write(str.c_str(), str.size());
+}
+
+// Saves a Tile to the save game file.
+void SaveLoad::save_tile(std::ofstream &save_file, Tile tile)
+{
+    save_data<uint16_t>(save_file, static_cast<uint16_t>(tile.id_));
+    uint8_t changed = (tile.tag(TileTag::Changed) ? 1 : 0);
+    save_data<uint8_t>(save_file, changed);
+    if (!changed) return;
+
+    save_data<char>(save_file, tile.ascii_);
+    save_data<uint8_t>(save_file, static_cast<uint8_t>(tile.colour_));
+    save_string(save_file, tile.name_);
+
+    // Save the TileTags.
+    save_data<uint32_t>(save_file, tile.tags_.size());
+    for (auto tag : tile.tags_)
+        save_data<uint16_t>(save_file, static_cast<uint16_t>(tag));
 }
 
 // Writes a save tag to the save game file.

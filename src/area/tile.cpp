@@ -17,14 +17,15 @@ Tile::Tile() : ascii_(ASCII_NOTHING), colour_(Colour::WHITE), id_(TileID::VOID_T
 char Tile::ascii() const { return ascii_; }
 
 // Clears a TileTag from this Tile.
-void Tile::clear_tag(TileTag the_tag)
+void Tile::clear_tag(TileTag the_tag, bool changed)
 {
     if (!(tags_.count(the_tag) > 0)) return;
     tags_.erase(the_tag);
+    if (changed && the_tag != TileTag::Changed) set_tag(TileTag::Changed);
 }
 
 // Clears multiple TileTags from this Tile.
-void Tile::clear_tags(std::initializer_list<TileTag> tag_list) { for (auto &the_tag : tag_list) clear_tag(the_tag); }
+void Tile::clear_tags(std::initializer_list<TileTag> tag_list, bool changed) { for (auto &the_tag : tag_list) clear_tag(the_tag, changed); }
 
 // Gets the colour of this Tile.
 Colour Tile::colour() const { return colour_; }
@@ -51,23 +52,36 @@ std::string Tile::name() const
 }
 
 // Sets this Tile's ASCII character.
-void Tile::set_ascii(char new_ascii) { ascii_ = new_ascii; }
+void Tile::set_ascii(char new_ascii)
+{
+    ascii_ = new_ascii;
+    set_tag(TileTag::Changed);
+}
 
 // Sets this Tile's colour.
-void Tile::set_colour(Colour new_colour) { colour_ = new_colour; }
+void Tile::set_colour(Colour new_colour)
+{
+    colour_ = new_colour;
+    set_tag(TileTag::Changed);
+}
 
 // Sets this Tile's name.
-void Tile::set_name(const std::string &new_name) { name_ = new_name; }
+void Tile::set_name(const std::string &new_name)
+{
+    name_ = new_name;
+    set_tag(TileTag::Changed);
+}
 
 // Sets a TileTag on this Tile.
-void Tile::set_tag(TileTag the_tag)
+void Tile::set_tag(TileTag the_tag, bool changed)
 {
     if (tags_.count(the_tag) > 0) return;
     tags_.insert(the_tag);
+    if (changed && the_tag != TileTag::Changed) set_tag(TileTag::Changed);
 }
 
 // Sets multiple TileTags on this Tile.
-void Tile::set_tags(std::initializer_list<TileTag> tag_list) { for (auto &the_tag : tag_list) set_tag(the_tag); }
+void Tile::set_tags(std::initializer_list<TileTag> tag_list, bool changed) { for (auto &the_tag : tag_list) set_tag(the_tag, changed); }
 
 // Checks if a TileTag is set on this Tile.
 bool Tile::tag(TileTag the_tag) const { return (tags_.count(the_tag) > 0); }

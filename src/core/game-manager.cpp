@@ -97,6 +97,7 @@ void GameManager::game_loop()
     else if (game_state_ == GameState::LOAD_GAME)
     {
         SaveLoad::load_game("userdata/save/save.dat");
+        ui_->window_resized();
     }
 
     core()->guru()->log("Starting main game lööp, brøther.");

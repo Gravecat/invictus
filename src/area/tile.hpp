@@ -26,6 +26,7 @@ enum class TileTag : uint16_t
     Immutable = 3,      // This Tile is important and should not be changed.
 
     // Transient tags which are (usually) not defined by default, but are set by player behaviour.
+    Changed = 100,      // This Tile has changed from its stock data.
     Bloodied = 102,     // This Tile has been splashed with blood and gore.
     Open = 103,         // This Tile is currently open.
 
@@ -41,8 +42,8 @@ class Tile
 {
 public:
                 Tile();     // Constructor.
-    void        clear_tag(TileTag the_tag); // Clears a TileTag from this Tile.
-    void        clear_tags(std::initializer_list<TileTag> tag_list);    // Clears multiple TileTags from this Tile.
+    void        clear_tag(TileTag the_tag, bool changed = true);    // Clears a TileTag from this Tile.
+    void        clear_tags(std::initializer_list<TileTag> tag_list, bool changed = true);   // Clears multiple TileTags from this Tile.
     char        ascii() const;  // Get the ASCII character for this Tile.
     Colour      colour() const; // Gets the colour of this Tile.
     TileID      id() const;     // Retrieves the ID of this Tile.
@@ -51,8 +52,8 @@ public:
     void        set_ascii(char new_ascii);      // Sets this Tile's ASCII character.
     void        set_colour(Colour new_colour);  // Sets this Tile's colour.
     void        set_name(const std::string &new_name);  // Sets this Tile's name.
-    void        set_tag(TileTag the_tag);   // Sets a TileTag on this Tile.
-    void        set_tags(std::initializer_list<TileTag> tag_list);  // Sets multiple TileTags on this Tile.
+    void        set_tag(TileTag the_tag, bool changed = true);  // Sets a TileTag on this Tile.
+    void        set_tags(std::initializer_list<TileTag> tag_list, bool changed = true); // Sets multiple TileTags on this Tile.
     bool        tag(TileTag the_tag) const; // Checks if a TileTag is set on this Tile.
     bool        tags(std::initializer_list<TileTag> tag_list) const;    // Checks if multiple TileTags are all set on this Tile.
 
@@ -64,6 +65,7 @@ private:
     std::set<TileTag>   tags_;  // Any and all TileTags on this Tile.
 
 friend class CodexTile;
+friend class SaveLoad;
 };
 
 }       // namespace invictus

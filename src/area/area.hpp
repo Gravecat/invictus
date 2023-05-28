@@ -58,6 +58,8 @@ private:
     char*       tile_memory_;   // The player's memory of previously-seen Tiles.
     Tile*       tiles_;     // An array of Tiles that make up this Area.
     bool*       visible_;   // Which tiles are currently visible by the player.
+
+friend class SaveLoad;
 };
 
 }       // namespace invictus
