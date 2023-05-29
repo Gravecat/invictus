@@ -29,6 +29,8 @@ enum class EntityProp : uint16_t
     LIGHT_POWER,    // The power of a light source.
     MAX_DEX,        // The maximum amount of dexterity modifier that can be used when this Item is equipped.
     SPEED,          // The movement speed of a Mobile, or the speed at which an Item can be used.
+    DAMAGE_DICE_A,  // The amount of damage dice to roll.
+    DAMAGE_DICE_B,  // The number of faces on each damage die.
 };
 
 // Binary tags that can be set on all kinds of Entities.

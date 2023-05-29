@@ -282,6 +282,7 @@ void Player::take_inventory(bool equipment)
         equ_menu->set_title("Equipment");
         equ_menu->left_aligned(true);
         bool has_gear = false;
+        std::shared_ptr<Item> main_hand_item = nullptr;
         for (unsigned int i = 0; i < static_cast<unsigned int>(EquipSlot::_END); i++)
         {
             std::string slot_name, line_str;
@@ -296,9 +297,16 @@ void Player::take_inventory(bool equipment)
                 case EquipSlot::_END: break;    // This can't happen, but this line keeps the compiler happy.
             }
             auto item = equ()->at(i);
-            if (item->item_type() == ItemType::NONE) equ_menu->add_item("{B}(nothing " + slot_name + ")", false);
+            if (item->item_type() == ItemType::NONE)
+            {
+                if (static_cast<EquipSlot>(i) == EquipSlot::HAND_OFF && main_hand_item && main_hand_item->item_type() != ItemType::NONE &&
+                    (main_hand_item->tag(EntityTag::HandAndAHalf) || main_hand_item->tag(EntityTag::TwoHanded)))
+                    equ_menu->add_item("{B}(" + main_hand_item->name() + ") (in off hand)");
+                else equ_menu->add_item("{B}(nothing " + slot_name + ")", false);
+            }
             else
             {
+                if (static_cast<EquipSlot>(i) == EquipSlot::HAND_MAIN) main_hand_item = item;
                 equ_menu->add_item(item->name() + " {B}(" + slot_name + ")", item->ascii(), item->colour(), true);
                 has_gear = true;
             }

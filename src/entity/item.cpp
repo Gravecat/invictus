@@ -25,6 +25,9 @@ int32_t Item::armour() const { return get_prop(EntityProp::ARMOUR); }
 // Checks if this Item blocks a specified tile.
 bool Item::blocks_tile(uint16_t, uint16_t) const { return false; }
 
+// Retrieves the damage roll for this weapon.
+std::pair<uint8_t, uint8_t> Item::damage() const { return { get_prop(EntityProp::DAMAGE_DICE_A), get_prop(EntityProp::DAMAGE_DICE_B) }; }
+
 // Returns the sub-type of this Item.
 ItemSub Item::item_subtype() const { return item_subtype_; }
 
@@ -33,6 +36,13 @@ ItemType Item::item_type() const { return item_type_; }
 
 // Retrieves the maximum dexterity modifier of this Item, if any.
 int32_t Item::max_dex() const { return get_prop(EntityProp::MAX_DEX); }
+
+// Sets the damage value on a weapon.
+void Item::set_damage(uint8_t dice, uint8_t sides)
+{
+    set_prop(EntityProp::DAMAGE_DICE_A, dice);
+    set_prop(EntityProp::DAMAGE_DICE_B, sides);
+}
 
 // Sets the stack size for this Item.
 void Item::set_stack(uint16_t size) { stack_ = size; }

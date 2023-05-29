@@ -8,42 +8,42 @@ namespace invictus
 {
 
 //   (32, space)
-constexpr char  ASCII_NOTHING =     ' ';    // Used for representing... nothing.
+constexpr char  ASCII_NOTHING =         ' ';    // Used for representing... nothing.
 
 // ! (33, exclamation mark)
 
 // " (34, double quote)
 
 // # (35, hash)
-constexpr char  ASCII_WALL =        '#';    // Walls.
+constexpr char  ASCII_WALL =            '#';    // Walls.
 
 // $ (36, dollar sign)
 
 // % (37, percent)
-constexpr char  ASCII_TOMB =        '%';    // Tombs, coffins, etc.
+constexpr char  ASCII_TOMB =            '%';    // Tombs, coffins, etc.
 
 // & (38, ampersand)
-constexpr char  ASCII_STACK =       '&';    // A stack of multiple items.
+constexpr char  ASCII_STACK =           '&';    // A stack of multiple items.
 
 // ' (39, single quote)
-constexpr char  ASCII_DOOR_OPEN =   '\'';   // Open doors.
+constexpr char  ASCII_DOOR_OPEN =       '\'';   // Open doors.
 
 // ( (40, open bracket)
 
 // ) (41, closed bracket)
 
 // * (42, star)
-constexpr char  ASCII_UNKNOWN =     '*';    // Used to represent undefined items.
+constexpr char  ASCII_UNKNOWN =         '*';    // Used to represent undefined items.
 
 // + (43, plus)
-constexpr char  ASCII_DOOR_CLOSED = '+';    // Closed doors.
+constexpr char  ASCII_DOOR_CLOSED =     '+';    // Closed doors.
 
 // , (44, comma)
 
 // - (45, dash)
 
 // . (46, full stop)
-constexpr char  ASCII_GROUND =      '.';    // Ground/floor tiles.
+constexpr char  ASCII_GROUND =          '.';    // Ground/floor tiles.
 
 // / (47, forward slash)
 
@@ -68,22 +68,22 @@ constexpr char  ASCII_GROUND =      '.';    // Ground/floor tiles.
 // 9 (57, nine)
 
 // : (58, colon)
-constexpr char  ASCII_STONE =       ':';    // Stones or rocks.
+constexpr char  ASCII_STONE =           ':';    // Stones or rocks.
 
 // ; (59, semicolon)
 
 // < (60, less than)
-constexpr char  ASCII_STAIRS_UP =   '<';    // Stairs leading upward.
+constexpr char  ASCII_STAIRS_UP =       '<';    // Stairs leading upward.
 
 // = (61, equals)
 
 // > (62, greater than)
-constexpr char  ASCII_STAIRS_DOWN = '>';    // Stairs leading downward.
+constexpr char  ASCII_STAIRS_DOWN =     '>';    // Stairs leading downward.
 
 // ? (63, question mark)
 
 // @ (64, at sign)
-constexpr char  ASCII_PLAYER =      '@';     // The player character.
+constexpr char  ASCII_PLAYER =          '@';     // The player character.
 
 // A (65, upper-case A)
 
@@ -138,7 +138,7 @@ constexpr char  ASCII_PLAYER =      '@';     // The player character.
 // Z (90, upper-case Z)
 
 // [ (91, open square bracket)
-constexpr char  ASCII_ARMOUR =      '[';     // Armour worn on the body.
+constexpr char  ASCII_ARMOUR =          '[';     // Armour worn on the body.
 
 // \ (92, backslash)
 
@@ -205,6 +205,7 @@ constexpr char  ASCII_ARMOUR =      '[';     // Armour worn on the body.
 // { (123, open curly brace)
 
 // | (124, vertical bar)
+constexpr char  ASCII_EDGED_WEAPON =    '|';     // Edged weapons such as swords.
 
 // } (125, closed curly brace)
 

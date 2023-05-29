@@ -120,8 +120,8 @@ void Mobile::equip_item(uint32_t id)
         auto off_item = equipment(EquipSlot::HAND_OFF);
 
         bool unequips_main = false, unequips_off = false;
-        bool main_used = (main_item->item_type() == ItemType::NONE);
-        bool off_used = ((off_item->item_type() == ItemType::NONE) || main_item->tag(EntityTag::TwoHanded));
+        bool main_used = (main_item->item_type() != ItemType::NONE);
+        bool off_used = ((off_item->item_type() != ItemType::NONE) || main_item->tag(EntityTag::TwoHanded));
         time_taken = TIME_EQUIP_WEAPON;
 
         if (item->tag(EntityTag::TwoHanded))
