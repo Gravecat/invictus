@@ -154,7 +154,9 @@ void SaveLoad::load_game(const std::string &filename)
     check_tag(save_file, SaveTag::HEADER_A);
     check_tag(save_file, SaveTag::HEADER_B);
     uint32_t file_version = load_data<uint32_t>(save_file);
+    uint32_t file_subversion = load_data<uint32_t>(save_file);
     if (file_version != SAVE_VERSION) incompatible(SAVE_ERROR_VERSION, file_version);
+    else if (file_subversion > SAVE_SUBVERSION) incompatible(SAVE_ERROR_SUBVERSION, file_subversion);
     load_game_manager(save_file);
     check_tag(save_file, SaveTag::SAVE_EOF);
 }
@@ -377,6 +379,7 @@ void SaveLoad::save_game(const std::string &filename)
     write_tag(save_file, SaveTag::HEADER_A);
     write_tag(save_file, SaveTag::HEADER_B);
     save_data<uint32_t>(save_file, SAVE_VERSION);
+    save_data<uint32_t>(save_file, SAVE_SUBVERSION);
     save_game_manager(save_file);
     write_tag(save_file, SaveTag::SAVE_EOF);
     save_file.close();

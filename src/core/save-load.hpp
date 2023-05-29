@@ -64,12 +64,14 @@ private:
     template<class T> static void save_data(std::ofstream &save_file, T data)
     { save_file.write((char*)&data, sizeof(T)); }
 
-    static const uint32_t   SAVE_VERSION =  3;   // Increment this every time saved games are no longer compatible.
+    static const uint32_t   SAVE_VERSION =      4;  // Increment this every time saved games are no longer compatible.
+    static const uint32_t   SAVE_SUBVERSION =   0;  // The game is able to load saves of the same version, and any current or older subversion.
 
     static constexpr int    SAVE_ERROR_VERSION =    1;  // The save file version does not match.
     static constexpr int    SAVE_ERROR_ENTITY =     2;  // Something went wrong trying to load an Entity.
     static constexpr int    SAVE_ERROR_EQUIPMENT =  3;  // Equipment slot size mismatch.
     static constexpr int    SAVE_ERROR_BLOB =       4;  // Size mismatch when loading a compressed blob.
+    static constexpr int    SAVE_ERROR_SUBVERSION = 5;  // The save file's subversion is newer than the running binary.
 };
 
 
