@@ -24,13 +24,14 @@ void guru_intercept_signal(int sig) { core()->guru()->intercept_signal(sig); }
 
 // Opens the output log for messages.
 Guru::Guru(std::string log_filename) : cascade_count_(0), cascade_failure_(false), cascade_timer_(std::time(0)), cleanup_done_(false), console_ready_(false),
-    dead_already_(false)
+    dead_already_(false), stderr_buffer_(new std::stringstream()), stderr_old_(nullptr)
 {
     if (!log_filename.size()) exit(EXIT_FAILURE);
     FileX::delete_file(log_filename);
     syslog_.open(log_filename.c_str());
     if (!syslog_.is_open()) exit(EXIT_FAILURE);
     hook_signals();
+    stderr_old_ = std::cerr.rdbuf(stderr_buffer_->rdbuf());
     this->log("Welcome to Morior Invictus " + INVICTUS_VERSION_STRING + "!");
     this->log("Guru error-handling system is online.");
 }
@@ -38,11 +39,32 @@ Guru::Guru(std::string log_filename) : cascade_count_(0), cascade_failure_(false
 // Destructor, calls cleanup code.
 Guru::~Guru() { cleanup(); }
 
+
+// Checks stderr for any updates, puts them in the log if any exist.
+void Guru::check_stderr()
+{
+    const std::string buffer = stderr_buffer_->str();
+    if (!buffer.size()) return;
+    Guru::nonfatal(buffer, GURU_ERROR);
+    stderr_buffer_->str(std::string());
+    stderr_buffer_->clear();
+}
+
 // Closes the system log gracefully.
 void Guru::cleanup()
 {
     if (cleanup_done_) return;
     cleanup_done_ = true;
+    if (stderr_old_)
+    {
+        std::cerr.rdbuf(stderr_old_);
+        stderr_old_ = nullptr;
+    }
+    if (stderr_buffer_)
+    {
+        delete stderr_buffer_;
+        stderr_buffer_ = nullptr;
+    }
     this->log("Guru Meditation system shutting down.");
     this->log("The rest is silence.");
     syslog_.close();

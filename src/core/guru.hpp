@@ -7,6 +7,7 @@
 #include <ctime>
 #include <exception>
 #include <fstream>
+#include <sstream>
 #include <string>
 
 
@@ -23,6 +24,7 @@ class Guru
 public:
             Guru(std::string log_filename = "");            // Opens the output log for messages.
             ~Guru();                                        // Destructor, calls cleanup code.
+    void    check_stderr();                                 // Checks stderr for any updates, puts them in the log if any exist.
     void    cleanup();                                      // Closes the system log gracefully.
     void    console_ready(bool is_ready = true);            // Tells Guru that we're ready to render Guru error messages on-screen.
     void    halt(std::string error, int a = 0, int b = 0);  // Stops the game and displays an error messge.
@@ -40,6 +42,8 @@ private:
     bool                cleanup_done_;      // Has the cleanup routine already run once?
     bool                console_ready_;     // Have we fully initialized the console yet?
     bool                dead_already_;      // Have we already died? Is this crash within the Guru subsystem?
+    std::stringstream*  stderr_buffer_;     // Pointer to a stringstream buffer used to catch stderr messages.
+    std::streambuf*     stderr_old_;        // The old stderr buffer.
     std::ofstream       syslog_;            // The system log file.
 };
 

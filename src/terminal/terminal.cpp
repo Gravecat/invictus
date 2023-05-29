@@ -189,6 +189,7 @@ int Terminal::get_key(std::shared_ptr<Window> window)
 {
     if (!initialized_) return 0;
     WINDOW *win = (window ? window->win() : stdscr);
+    if (core()->guru()) core()->guru()->check_stderr();
     key_raw_ = wgetch(win);
     escape_key_string_.clear();
 
