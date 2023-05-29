@@ -28,7 +28,12 @@ void Menu::add_item(const std::string &txt, int ch, Colour col , bool arrow)
     item_x_.push_back(0);
     colour_.push_back(col);
     arrows_.push_back(arrow);
-    if (ch != '\0') has_item_chars_ = true;
+    if (ch != '\0')
+    {
+        has_item_chars_ = true;
+        left_aligned_ = true;
+    }
+    if (arrow) left_aligned_ = true;
 }
 
 // Another option to specify an arrow without all the other stuff.
@@ -118,12 +123,7 @@ void Menu::reposition()
     {
         std::string item = items_.at(i);
         unsigned int len = StrX::strlen_colour(item);
-        if (arrows_.at(i))
-        {
-            len += 2;
-            if (items_.at(i).at(items_.at(i).size() - 1) != '>') add_arrows = true;
-        }
-        if (item_chars_.at(i) != '\0') len += 2;
+        if (arrows_.at(i) && items_.at(i).at(items_.at(i).size() - 1) != '>') add_arrows = true;
         if (len > widest) widest = len;
     }
 
@@ -134,15 +134,13 @@ void Menu::reposition()
         {
             if (!items_.at(i).size()) continue;
             int target_len = widest;
-            if (arrows_.at(i)) target_len -= 2;
-            if (item_chars_.at(i) != '\0') target_len -= 2;
-            items_.at(i) = StrX::pad_string(items_.at(i), target_len);
+            items_.at(i) = StrX::pad_string(items_.at(i), target_len, true);
             if (arrows_.at(i)) items_.at(i) += " {W}>";
         }
     }
 
     if (title_.size() > widest) widest = title_.size();
-    size_x_ = widest + 4;
+    size_x_ = widest + 4 + (has_item_chars_ ? 2 : 0) + (add_arrows ? 2 : 0);
     size_y_ = items_.size() + 4;
     if (size_y_ > 24) size_y_ = 24;
     window_ = std::make_shared<Window>(size_x_, size_y_);

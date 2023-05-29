@@ -161,10 +161,11 @@ std::string StrX::number_to_word(unsigned long long number)
 }
 
 // Pads a string to a given length.
-std::string StrX::pad_string(const std::string &str, unsigned int min_len)
+std::string StrX::pad_string(const std::string &str, unsigned int min_len, bool ansi)
 {
     std::string output = str;
-    if (output.size() < min_len) output += std::string(min_len - str.size(), ' ');
+    uint32_t len = (ansi ? strlen_colour(str) : str.size());
+    if (len < min_len) output += std::string(min_len - len, ' ');
     return output;
 }
 
