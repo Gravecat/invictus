@@ -5,7 +5,7 @@
 [![open issues](https://img.shields.io/github/issues-raw/gravecat/invictus?color=yellow&style=plastic)](https://github.com/Gravecat/invictus/issues)
 [![last commit](https://img.shields.io/github/last-commit/Gravecat/invictus/main?color=brightgreen&style=plastic)](https://github.com/Gravecat/invictus/commits/main)
 [![commit activity](https://img.shields.io/github/commit-activity/m/gravecat/invictus?color=blue&style=plastic)](https://github.com/Gravecat/invictus/commits)
-[![code size](https://img.shields.io/github/languages/code-size/gravecat/invictus?color=blueviolet&style=plastic)](https://github.com/Gravecat/invictus/tree/main/src)
+[![total lines](https://img.shields.io/tokei/lines/github/gravecat/invictus?color=blueviolet&style=plastic)](https://github.com/Gravecat/invictus/tree/main/src)
 
 Morior Invictus is an open-source, traditional roguelike game currently in the very, *very* early stages of development. [Build instructions](building.md)
 are provided for Windows and Linux, and if you're interested in contributing to the project, please also see the [code of conduct](CODE_OF_CONDUCT.md) and
