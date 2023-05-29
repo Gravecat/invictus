@@ -215,20 +215,10 @@ std::vector<std::string> StrX::string_explode(std::string str, const std::string
     return results;
 }
 
-// Similar to string_explode(), but takes colour and high/low-ASCII tags into account, and wraps to a given line length.
+// Similar to string_explode(), but takes colour tags into account, and wraps to a given line length.
 std::vector<std::string> StrX::string_explode_colour(const std::string &str, unsigned int line_len)
 {
     std::vector<std::string> output;
-
-    // Check to see if the line of text has the no-split tag (ASCII character 0) at the start.
-    if (str.size() >= 5)
-    {
-        if (!str.substr(0, 5).compare("^000^"))
-        {
-            output.push_back(str);
-            return output;
-        }
-    }
 
     // Check to see if the line is too short to be worth splitting.
     if (strlen_colour(str) <= line_len)
@@ -251,21 +241,6 @@ std::vector<std::string> StrX::string_explode_colour(const std::string &str, uns
     {
         unsigned int length = word.length();    // Find the length of the word.
 
-        // If the word includes high/low-ASCII tags, adjust the length.
-        size_t htag_pos = word.find("^");
-        bool high_ascii = false;
-        if (htag_pos != std::string::npos)
-        {
-            if (word.size() > htag_pos + 4)
-            {
-                if (word.at(htag_pos + 4) == '^')
-                {
-                    length -= word_count(word, "^") * 2;
-                    high_ascii = true;
-                }
-            }
-        }
-
         const int colour_count = word_count(word, "{"); // Count the colour tags.
         if (colour_count) length -= (colour_count * 3); // Reduce the length if one or more colour tags are found.
         if (length + line_pos >= line_len)  // Is the word too long for the current line?
@@ -286,8 +261,7 @@ std::vector<std::string> StrX::string_explode_colour(const std::string &str, uns
         }
 
         // Is the word STILL too long to fit over a single line?
-        // Don't attempt this on high/low-ASCII 'words'.
-        while (length > line_len && !high_ascii)
+        while (length > line_len)
         {
             const std::string trunc = word.substr(0, line_len);
             word = word.substr(line_len);
@@ -304,7 +278,7 @@ std::vector<std::string> StrX::string_explode_colour(const std::string &str, uns
     return output;
 }
 
-// Returns the length of a string, taking colour and high/low-ASCII tags into account.
+// Returns the length of a string, taking colour tags into account.
 unsigned int StrX::strlen_colour(const std::string &str)
 {
     unsigned int len = str.size();
@@ -312,9 +286,7 @@ unsigned int StrX::strlen_colour(const std::string &str)
 
     // Count any colour tags.
     const int openers = std::count(str.begin(), str.end(), '{');
-    const int symbols = std::count(str.begin(), str.end(), '^');
     if (openers) len -= openers * 3;
-    if (symbols) len -= (symbols / 2) * 4;
 
     return len;
 }

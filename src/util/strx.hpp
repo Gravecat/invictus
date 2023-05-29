@@ -35,10 +35,10 @@ public:
     static std::string  str_tolower(std::string str);   // Converts a string to lower-case.
     static std::string  str_toupper(std::string str);   // Converts a string to upper-case.
     static std::vector<std::string> string_explode(std::string str, const std::string &separator);  // String split/explode function.
-    // Similar to string_explode(), but takes colour and high/low-ASCII tags into account, and wraps to a given line length.
+    // Similar to string_explode(), but takes colour tags into account, and wraps to a given line length.
     static std::vector<std::string> string_explode_colour(const std::string &str, unsigned int line_len);
     // Returns a count of the amount of times a string is found in a parent string.
-    static unsigned int strlen_colour(const std::string &str);  // Returns the length of a string, taking colour and high/low-ASCII tags into account.
+    static unsigned int strlen_colour(const std::string &str);  // Returns the length of a string, taking colour tags into account.
     static unsigned int word_count(const std::string &str, const std::string &word);
 };
 
