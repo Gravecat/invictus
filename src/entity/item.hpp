@@ -31,7 +31,7 @@ public:
                 Item();                 // Constructor, sets default values.
     void        adjust_stack(int mod);  // Adds or removes from this Item stack.
     int32_t     armour() const;         // Retrieves the defensive armour value of this Item, if any.
-    bool        blocks_tile(uint16_t tile_x, uint16_t tile_y) const;    // Checks if this Item blocks a specified tile.
+    bool        blocks_tile(int x_tile, int y_tile) const override; // Checks if this Item blocks a specified tile.
     std::pair<uint8_t, uint8_t> damage() const; // Retrieves the damage roll for this weapon.
     ItemSub     item_subtype() const;   // Returns the sub-type of this Item.
     ItemType    item_type() const;      // Returns the type of this Item.

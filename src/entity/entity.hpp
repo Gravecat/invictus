@@ -83,17 +83,18 @@ public:
                         Entity();       // Constructor, creates a new Entity with default values.
     virtual             ~Entity() { }   // Virtual destructor.
     char                ascii() const;  // Gets the ASCII character representing this Entity.
+    virtual bool        blocks_tile(int x_tile, int y_tile) const = 0;  // Checks if this Entity blocks a specified tile.
     void                clear_tag(EntityTag the_tag);   // Clears an EntityTag from this Entity.
     void                clear_tags(std::initializer_list<EntityTag> tag_list);  // Clears multiple EntityTags from this Entity.
     Colour              colour() const; // Gets the colour of this Entity.
-    virtual float       distance_from(int tile_x, int tile_y) const;            // Gets this Entity's distance from a specified tile.
-    virtual float       distance_from(std::shared_ptr<Entity> entity) const;    // As above, but measuring distance to an Entity.
+    float               distance_from(int tile_x, int tile_y) const;            // Gets this Entity's distance from a specified tile.
+    float               distance_from(std::shared_ptr<Entity> entity) const;    // As above, but measuring distance to an Entity.
     std::vector<std::shared_ptr<Item>>* inv();          // Returns the inventory pointer.
     void                inventory_add(std::shared_ptr<Entity> entity);  // Adds an Entity to this Entity's inventory.
     void                inventory_add(std::shared_ptr<Item> item);      // As above, but for an Entity in Item form.
-    virtual bool        is_at(int ax, int ay) const;    // Checks if this Entity claims to be occupying a specified tile.
-    virtual bool        is_at(std::shared_ptr<Entity> entity) const;    // As above, but checks against another Entity's position.
-    virtual bool        is_in_fov() const;              // Can this Entity be seen by the player?
+    bool                is_at(int ax, int ay) const;    // Checks if this Entity claims to be occupying a specified tile.
+    bool                is_at(std::shared_ptr<Entity> entity) const;    // As above, but checks against another Entity's position.
+    bool                is_in_fov() const;              // Can this Entity be seen by the player?
     int32_t             light_power() const;            // Returns the power of this Entity's light source, if any.
     std::string         name(int flags = 0) const;      // Retrieves this Entity's name.
     void                set_ascii(char new_ascii);      // Sets this Entity's ASCII character.

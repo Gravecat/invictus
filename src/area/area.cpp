@@ -41,8 +41,8 @@ bool Area::can_walk(int x, int y)
 {
     if (x < 0 || y < 0 || x >= size_x_ || y >= size_y_) return false;
     if (tile(x, y)->tag(TileTag::BlocksMovement)) return false;
-    //for (auto actor : *actors())
-        //if (actor->blocks_tile(x, y)) return false;
+    for (auto entity : *entities())
+        if (entity->blocks_tile(x, y)) return false;
     return true;
 }
 

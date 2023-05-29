@@ -23,7 +23,7 @@ void Item::adjust_stack(int mod)
 int32_t Item::armour() const { return get_prop(EntityProp::ARMOUR); }
 
 // Checks if this Item blocks a specified tile.
-bool Item::blocks_tile(uint16_t, uint16_t) const { return false; }
+bool Item::blocks_tile(int, int) const { return false; }
 
 // Retrieves the damage roll for this weapon.
 std::pair<uint8_t, uint8_t> Item::damage() const { return { get_prop(EntityProp::DAMAGE_DICE_A), get_prop(EntityProp::DAMAGE_DICE_B) }; }

@@ -23,6 +23,7 @@ public:
                     Mobile();   // Constructor.
     virtual void    add_banked_ticks(float amount); // Adds or removes banked ticks to this Mobile.
     virtual float   banked_ticks() const;   // Retrieves the amount of ticks banked by this Mobile.
+    bool            blocks_tile(int x_tile, int y_tile) const override; // Checks if this Mobile blocks a specified tile.
     virtual void    clear_banked_ticks();   // Erase all banked ticks on this Mobile.
     void            close_door(int dx, int dy); // Attempts to close a door.
     void            drop_item(uint32_t id); // Drops a carried item.

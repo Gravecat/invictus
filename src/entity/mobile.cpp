@@ -41,6 +41,10 @@ void Mobile::add_banked_ticks(float amount)
 // Retrieves the amount of ticks banked by this Mobile.
 float Mobile::banked_ticks() const { return banked_ticks_; }
 
+// Checks if this Mobile blocks a specified tile.
+bool Mobile::blocks_tile(int x_tile, int y_tile) const
+{ return (x_tile == x() && y_tile == y()); }
+
 // Erase all banked ticks on this Mobile.
 void Mobile::clear_banked_ticks() { banked_ticks_ = 0; }
 
