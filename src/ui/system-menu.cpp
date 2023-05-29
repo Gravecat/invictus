@@ -51,13 +51,17 @@ void SystemMenu::open()
     menu->set_title("System Menu");
 
     menu->add_item("About");
+    menu->add_item("Save Game");
+    menu->add_item("Save & Quit");
     menu->add_item("{R}Quit (Don't Save)");
 
     int result = menu->render();
     switch(result)
     {
         case 0: about(); break;
-        case 1: quit_no_save(); break;
+        case 1: SaveLoad::save_game(); break;
+        case 2: save_and_quit(); break;
+        case 3: quit_no_save(); break;
     }
 }
 
