@@ -31,6 +31,7 @@ public:
     static std::string  itoh(uint32_t num, uint8_t min_len);    // Converts an integer into a hex string.
     static std::string  number_to_word(unsigned long long number);  // Converts small numbers into words.
     static std::string  pad_string(const std::string &str, unsigned int min_len, bool ansi = false);    // Pads a string to a given length.
+    static std::string  pad_string_center(const std::string &str, unsigned int min_len, bool ansi = false); // As above, but centers the string.
     static bool         str_to_bool(std::string str);   // Converts a string to a bool.
     static std::string  str_tolower(std::string str);   // Converts a string to lower-case.
     static std::string  str_toupper(std::string str);   // Converts a string to upper-case.

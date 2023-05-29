@@ -33,7 +33,6 @@ void Nearby::render()
     auto nearby_window = ui->nearby_window();
     auto area = core()->game()->area();
     const int window_w = nearby_window->get_width(), window_h = nearby_window->get_height();
-    const int window_midcol = window_w / 2;
     terminal->box(nearby_window, Colour::WHITE);
     terminal->put(Glyph::RTEE, 0, window_h - MESSAGE_LOG_HEIGHT, Colour::WHITE, 0, nearby_window);
     terminal->put(Glyph::BTEE, 0, window_h - 1, Colour::WHITE, 0, nearby_window);
@@ -91,7 +90,7 @@ void Nearby::render()
     if (items.size()) std::sort(items.begin(), items.end(), sort_entities);
 
     int current_y = 1;
-    terminal->print(" Hostiles Nearby ", window_midcol - 8, 1, Colour::WHITE, PRINT_FLAG_REVERSE, nearby_window);
+    terminal->print(StrX::pad_string_center("Hostiles Nearby", window_w - 4), 2, 1, Colour::WHITE, PRINT_FLAG_REVERSE, nearby_window);
     current_y++;
     if (current_y >= window_h - 1) return;
     if (mobiles.size())
@@ -111,13 +110,13 @@ void Nearby::render()
     }
     else
     {
-        terminal->print("(nothing visible)", window_midcol - 8, current_y, Colour::BLACK_BOLD, 0, nearby_window);
+        terminal->print("(nothing visible)", 2, current_y, Colour::BLACK_BOLD, 0, nearby_window);
         current_y++;
     }
     current_y++;
 
     if (current_y >= window_h - 1) return;
-    terminal->print(" Items Nearby ", window_midcol - 7, current_y, Colour::WHITE, PRINT_FLAG_REVERSE, nearby_window);
+    terminal->print(StrX::pad_string_center("Items Nearby", window_w - 4), 2, current_y, Colour::WHITE, PRINT_FLAG_REVERSE, nearby_window);
     current_y++;
     if (current_y >= window_h - 1) return;
     if (items.size())
@@ -136,7 +135,7 @@ void Nearby::render()
     }
     else
     {
-        terminal->print("(nothing visible)", window_midcol - 8, current_y, Colour::BLACK_BOLD, 0, nearby_window);
+        terminal->print("(nothing visible)", 2, current_y, Colour::BLACK_BOLD, 0, nearby_window);
         current_y++;
     }
     current_y++;
@@ -194,7 +193,7 @@ void Nearby::render()
     } while(rearranged);
 
     if (current_y >= window_h - 1) return;
-    terminal->print(" Other Symbols ", window_midcol - 7, current_y, Colour::WHITE, PRINT_FLAG_REVERSE, nearby_window);
+    terminal->print(StrX::pad_string_center("Other Symbols", window_w - 4), 2, current_y, Colour::WHITE, PRINT_FLAG_REVERSE, nearby_window);
     current_y++;
 
     for (auto tile : tiles)

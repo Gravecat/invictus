@@ -2,6 +2,7 @@
 // Copyright © 2023 Raine "Gravecat" Simmons. Licensed under the GNU Affero General Public License v3 or any later version.
 
 #include <algorithm>
+#include <cmath>
 #include <cstdlib>
 #include <sstream>
 
@@ -166,6 +167,21 @@ std::string StrX::pad_string(const std::string &str, unsigned int min_len, bool 
     std::string output = str;
     uint32_t len = (ansi ? strlen_colour(str) : str.size());
     if (len < min_len) output += std::string(min_len - len, ' ');
+    return output;
+}
+
+// As above, but centers the string.
+std::string StrX::pad_string_center(const std::string &str, unsigned int min_len, bool ansi)
+{
+    std::string output = str;
+    uint32_t len = (ansi ? strlen_colour(str) : str.size());
+    if (len < min_len)
+    {
+        const int padding = min_len - len;
+        const int left_padding = std::round(padding / 2.0f);
+        const int right_padding = padding - left_padding;
+        output = (left_padding ? std::string(left_padding, ' ') : "") + output + (right_padding ? std::string(right_padding, ' ') : "");
+    }
     return output;
 }
 
