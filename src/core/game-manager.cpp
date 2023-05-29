@@ -151,7 +151,7 @@ void GameManager::pass_time(float time)
 const std::shared_ptr<Player> GameManager::player() const { return player_; }
 
 // Retrieves the name of the saved game folder currently in use.
-const std::string GameManager::save_folder() const { return save_folder_; };
+const std::string GameManager::save_folder() const { return save_folder_; }
 
 // Sets the game state.
 void GameManager::set_game_state(GameState new_state) { game_state_ = new_state; }
