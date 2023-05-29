@@ -385,15 +385,7 @@ void DungeonGenerator::generate(bool with_actors)
             TileID chosen_tile = TileID::VOID_TILE;
             switch (the_tile->id())
             {
-                case TileID::LG_FLOOR:
-                    chosen_tile = TileID::FLOOR_STONE;
-                    if (Random::rng(50) == 1)
-                    {
-                        auto new_item = CodexItem::generate(ItemID::TEST_ITEM);
-                        new_item->set_pos(x, y);
-                        area_->entities()->push_back(new_item);
-                    }
-                    break;
+                case TileID::LG_FLOOR: chosen_tile = TileID::FLOOR_STONE; break;
                 case TileID::LG_WALL: chosen_tile = TileID::WALL_STONE; break;
                 case TileID::LG_DOOR_CANDIDATE: chosen_tile = TileID::DOOR_WOOD; break;
                 case TileID::STAIRS_UP: case TileID::STAIRS_DOWN: chosen_tile = the_tile->id(); break;

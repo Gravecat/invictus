@@ -64,7 +64,7 @@ private:
     template<class T> static void save_data(std::ofstream &save_file, T data)
     { save_file.write((char*)&data, sizeof(T)); }
 
-    static const uint32_t   SAVE_VERSION =      4;  // Increment this every time saved games are no longer compatible.
+    static const uint32_t   SAVE_VERSION =      5;  // Increment this every time saved games are no longer compatible.
     static const uint32_t   SAVE_SUBVERSION =   0;  // The game is able to load saves of the same version, and any current or older subversion.
 
     static constexpr int    SAVE_ERROR_VERSION =    1;  // The save file version does not match.

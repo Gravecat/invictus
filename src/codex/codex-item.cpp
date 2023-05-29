@@ -18,13 +18,6 @@ std::shared_ptr<Item> CodexItem::generate(ItemID id)
     {
         case ItemID::NOTHING: break;
 
-        case ItemID::TEST_ITEM: // This is just used for testing, and will likely be removed later.
-            new_item->name_ = "interesting rock";
-            new_item->ascii_ = ASCII_STONE;
-            new_item->colour_ = Colour::GREEN;
-            new_item->item_type_ = ItemType::JUNK;
-            break;
-
         case ItemID::LEATHER_ARMOUR:    // The most basic tier of armour, adds protection but has no downsides.
             new_item->name_ = "leather armour";
             new_item->ascii_ = ASCII_ARMOUR;
