@@ -147,8 +147,10 @@ std::shared_ptr<Entity> SaveLoad::load_entity(std::ifstream &save_file)
 }
 
 // Loads the game state from a specified file.
-void SaveLoad::load_game(const std::string &filename)
+void SaveLoad::load_game(const std::string &save_folder)
 {
+    core()->game()->save_folder_ = save_folder;
+    const std::string filename = save_folder + "/save.dat";
     std::ifstream save_file(filename, std::ios::in | std::ios::binary);
 
     check_tag(save_file, SaveTag::HEADER_A);
@@ -373,8 +375,9 @@ void SaveLoad::save_entity(std::ofstream &save_file, std::shared_ptr<Entity> ent
 }
 
 // Saves the game to a specified file.
-void SaveLoad::save_game(const std::string &filename)
+void SaveLoad::save_game()
 {
+    const std::string filename = core()->game()->save_folder() + "/save.dat";
     std::ofstream save_file(filename, std::ios::out | std::ios::binary);
     write_tag(save_file, SaveTag::HEADER_A);
     write_tag(save_file, SaveTag::HEADER_B);

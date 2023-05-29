@@ -13,8 +13,9 @@ public:
     static void open(); // Opens the system menu.
 
 private:
-    static void about();        // Displays the version info.
-    static void quit_no_save(); // Quits the game without saving.
+    static void about();            // Displays the version info.
+    static void quit_no_save();     // Quits the game without saving.
+    static void save_and_quit();    // Saves the game, then closes.
 };
 
 }       // namespae invictus

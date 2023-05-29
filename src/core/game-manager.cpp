@@ -21,7 +21,7 @@ namespace invictus
 
 // Constructor, sets default values.
 GameManager::GameManager() : area_(nullptr), cleanup_done_(false), game_state_(GameState::INITIALIZING), heartbeat_(0), heartbeat10_(0),
-    player_(std::make_shared<Player>()), ui_(std::make_shared<UI>())
+    player_(std::make_shared<Player>()), save_folder_("userdata/save"), ui_(std::make_shared<UI>())
 { core()->guru()->log("Game manager ready!"); }
 
 // Destructor, calls cleanup code.
@@ -73,7 +73,7 @@ void GameManager::dungeon_input(int key)
         case 'g': player_->get_item(); break;           // Picks something up.
         case 'i': player_->take_inventory(); break;     // Interact with carried items.
         case 'o': player_->open_a_door(); break;        // Attempts to open something.
-        case 'S': SaveLoad::save_game("userdata/save/save.dat");    // Saves the game!
+        case 'S': SaveLoad::save_game();                // Saves the game!
     }
 
     if (dx || dy)
@@ -96,7 +96,7 @@ void GameManager::game_loop()
     }
     else if (game_state_ == GameState::LOAD_GAME)
     {
-        SaveLoad::load_game("userdata/save/save.dat");
+        SaveLoad::load_game("userdata/save");
         ui_->window_resized();
     }
 
@@ -146,6 +146,9 @@ void GameManager::pass_time(float time)
 
 // Returns a pointer to the player character object.
 const std::shared_ptr<Player> GameManager::player() const { return player_; }
+
+// Retrieves the name of the saved game folder currently in use.
+const std::string GameManager::save_folder() const { return save_folder_; };
 
 // Sets the game state.
 void GameManager::set_game_state(GameState new_state) { game_state_ = new_state; }

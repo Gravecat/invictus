@@ -23,8 +23,8 @@ class Tile;     // defined in area/tile.hpp
 class SaveLoad
 {
 public:
-    static void load_game(const std::string &filename); // Loads the game state from a specified file.
-    static void save_game(const std::string &filename); // Saves the game to a specified file.
+    static void load_game(const std::string &save_folder);  // Loads the game state from a specified folder.
+    static void save_game();    // Saves the game to a specified file.
 
 private:
     enum class SaveTag : uint32_t { HEADER_A = 0x49564E49, HEADER_B = 0x53555443, SAVE_EOF = 0xCAFEB0BA, GAME_MANAGER = 1, ENTITY, INVENTORY, ITEM,

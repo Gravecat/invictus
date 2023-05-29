@@ -5,6 +5,7 @@
 #define CORE_GAME_MANAGER_HPP_
 
 #include <memory>
+#include <string>
 
 
 namespace invictus
@@ -26,6 +27,7 @@ public:
     void        game_loop();        // Brøther, may I have some lööps?
     GameState   game_state() const; // Retrieves the current state of the game.
     void        pass_time(float time);  // The player has taken an action which causes some time to pass.
+    const std::string save_folder() const;  // Retrieves the name of the saved game folder currently in use.
     void        set_game_state(GameState new_state);    // Sets the game state.
     void        tick();             // Processes non-player actions and progresses the world state.
 
@@ -43,6 +45,7 @@ private:
     float       heartbeat_;         // The main timer of the world, incremented when the player takes actions.
     float       heartbeat10_;       // As above, but this one's a slower heartbeat that causes things like buffs/debuffs to trigger at a 1/10 speed rate
     std::shared_ptr<Player> player_;    // The player character object.
+    std::string save_folder_;       // The saved game folder currently in use.
     std::shared_ptr<UI> ui_;        // The user interface manager.
 
 friend class SaveLoad;

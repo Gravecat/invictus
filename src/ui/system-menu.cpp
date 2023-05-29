@@ -8,6 +8,7 @@
 
 #include "core/core.hpp"
 #include "core/game-manager.hpp"
+#include "core/save-load.hpp"
 #include "core/version.hpp"
 #include "terminal/terminal.hpp"
 #include "terminal/window.hpp"
@@ -64,6 +65,14 @@ void SystemMenu::open()
 void SystemMenu::quit_no_save()
 {
     if (!UI::are_you_sure()) return;
+    core()->cleanup();
+    exit(EXIT_SUCCESS);
+}
+
+// Saves the game, then closes.
+void SystemMenu::save_and_quit()
+{
+    SaveLoad::save_game();
     core()->cleanup();
     exit(EXIT_SUCCESS);
 }
