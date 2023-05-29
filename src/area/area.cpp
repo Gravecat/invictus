@@ -238,6 +238,15 @@ void Area::render()
     }
 
     // Third pass: Mobiles.
+    for (auto entity : entities_)
+    {
+        if (entity->type() != EntityType::MOBILE || !entity->is_in_fov()) continue;
+        const int ox = entity->x() - offset_x(), oy = entity->y() - offset_y();
+        if (ox < 0 || oy < 0 || ox >= visible_x || oy >= visible_y) continue;
+        auto mob = std::dynamic_pointer_cast<Mobile>(entity);
+        if (mob->is_dead()) continue;
+        terminal->put(mob->ascii(), ox, oy, mob->colour(), 0, dungeon_view);
+    }
 
     // Fourth pass: the player. No need for off-screen checks here, the player should always be on the screen.
     terminal->put(player->ascii(), player->x() - offset_x_, player->y() - offset_y_, player->colour(), 0, dungeon_view);

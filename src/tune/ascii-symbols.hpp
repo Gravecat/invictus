@@ -201,6 +201,7 @@ constexpr char  ASCII_ARMOUR =          '[';     // Armour worn on the body.
 // y (121, lower-case Y)
 
 // z (122, lower-case Z)
+constexpr char  ASCII_ZOMBIE =          'z';    // Zombies, ghouls, and similar forms of undead.
 
 // { (123, open curly brace)
 

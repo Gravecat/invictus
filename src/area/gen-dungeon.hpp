@@ -23,7 +23,7 @@ class DungeonGenerator
 {
 public:
             DungeonGenerator(std::shared_ptr<Area> area_to_gen);    // Prepares an Area for procedural generation.
-    void    generate(bool with_actors = false); // Generates the new map!
+    void    generate(); // Generates the new map!
 
 private:
     void    decorate_room(unsigned int room_id);    // Decorates a specified room.

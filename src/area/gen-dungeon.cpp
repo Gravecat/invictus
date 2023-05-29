@@ -8,14 +8,13 @@
 #include "area/area.hpp"
 #include "area/gen-dungeon.hpp"
 #include "area/tile.hpp"
+#include "codex/codex-mobile.hpp"
 #include "codex/codex-tile.hpp"
 #include "core/core.hpp"
 #include "core/guru.hpp"
+#include "entity/mobile.hpp"
 #include "tune/area-generation.hpp"
 #include "util/random.hpp"
-
-#include "codex/codex-item.hpp" // temp
-#include "entity/item.hpp"      // temp
 
 
 namespace invictus
@@ -115,7 +114,7 @@ void DungeonGenerator::get_internal_room_size(unsigned int room_id, int *x, int 
 }
 
 // Generates the new map!
-void DungeonGenerator::generate(bool with_actors)
+void DungeonGenerator::generate()
 {
     auto guru = core()->guru();
     int failed_rooms = 0;
@@ -134,7 +133,7 @@ void DungeonGenerator::generate(bool with_actors)
             {
                 // We couldn't even paste the first room in? This should be impossible, but just in case, just quietly abort to avoid an infinite loop.
                 void_map();
-                generate(with_actors);
+                generate();
                 return;
             }
             rooms_.push_back(std::tuple<int, int, int, int>(new_x, new_y, new_room->actual_width(), new_room->actual_height()));
@@ -219,7 +218,7 @@ void DungeonGenerator::generate(bool with_actors)
     {
         if (AREA_GEN_DEBUG_MESSAGES) guru->log("Aborting.");
         void_map();
-        generate(with_actors);
+        generate();
         return;
     }
 
@@ -366,7 +365,7 @@ void DungeonGenerator::generate(bool with_actors)
         {
             if (AREA_GEN_DEBUG_MESSAGES) guru->log("ABORTING: Could not find viable stair locations!");
             void_map();
-            generate(with_actors);
+            generate();
             return;
         }
     }
@@ -390,23 +389,20 @@ void DungeonGenerator::generate(bool with_actors)
                 case TileID::LG_DOOR_CANDIDATE: chosen_tile = TileID::DOOR_WOOD; break;
                 case TileID::STAIRS_UP: case TileID::STAIRS_DOWN: chosen_tile = the_tile->id(); break;
                 case TileID::DRUJ_TOMB:
+                {
                     chosen_tile = TileID::DRUJ_TOMB;
-                    if (with_actors)
-                    {
-                        /*
-                        auto new_actor = core()->codex()->get_mobile(core()->codex()->get_list("MOB_DRUJ")->rnd(core()->player()->level()).str);
-                        new_actor->set_pos(x, y);
-                        area_->actors()->push_back(new_actor);
-                        */
-                    }
+                    auto new_mob = CodexMobile::generate(MobileID::DRUJ_WALKER);
+                    new_mob->set_pos(x, y);
+                    area_->entities()->push_back(new_mob);
                     break;
+                }
                 default: break;
             }
             if (chosen_tile == TileID::VOID_TILE)
             {
                 if (AREA_GEN_DEBUG_MESSAGES) guru->log("ABORTING: Invalid tile detected during baking process!");
                 void_map();
-                generate(with_actors);
+                generate();
                 return;
             }
             if (the_tile->id() != chosen_tile) area_->set_tile(x, y, chosen_tile);

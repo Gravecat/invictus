@@ -53,6 +53,7 @@ protected:
 
     static std::shared_ptr<Item>    blank_item_;    // A blank item, shared amongst all Mobiles to use in their empty equipment slots.
 
+friend class CodexMobile;
 friend class SaveLoad;
 };
 

@@ -65,6 +65,7 @@ set(INVICTUS_CPPS
   area/shadowcast.cpp
   area/tile.cpp
   codex/codex-item.cpp
+  codex/codex-mobile.cpp
   codex/codex-tile.cpp
   core/core.cpp
   core/game-manager.cpp
