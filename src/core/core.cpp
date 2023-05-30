@@ -106,15 +106,15 @@ void Core::cleanup()
         game_manager_->cleanup();
         game_manager_ = nullptr;
     }
-    if (guru_meditation_)   // Clean up the Guru Meditation system and shut down.
-    {
-        guru_meditation_->cleanup();
-        guru_meditation_ = nullptr;
-    }
     if (terminal_)  // Run cleanup code on Terminal.
     {
         terminal_->cleanup();
         terminal_ = nullptr;
+    }
+    if (guru_meditation_)   // Clean up the Guru Meditation system and shut down.
+    {
+        guru_meditation_->cleanup();
+        guru_meditation_ = nullptr;
     }
     prefs_ = nullptr;   // There should be no destructor/cleanup code to worry about here.
 }

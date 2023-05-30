@@ -55,6 +55,8 @@ void Guru::cleanup()
 {
     if (cleanup_done_) return;
     cleanup_done_ = true;
+    this->log("Guru Meditation system shutting down.");
+
     if (stderr_old_)
     {
         std::cerr.rdbuf(stderr_old_);
@@ -65,7 +67,16 @@ void Guru::cleanup()
         delete stderr_buffer_;
         stderr_buffer_ = nullptr;
     }
-    this->log("Guru Meditation system shutting down.");
+
+    // Drop all signal hooks.
+    signal(SIGABRT, SIG_IGN);
+    signal(SIGSEGV, SIG_IGN);
+    signal(SIGILL, SIG_IGN);
+    signal(SIGFPE, SIG_IGN);
+#ifdef INVICTUS_TARGET_LINUX
+    signal(SIGBUS, SIG_IGN);
+#endif
+
     this->log("The rest is silence.");
     syslog_.close();
 }
