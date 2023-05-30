@@ -25,7 +25,8 @@ std::shared_ptr<Item> Mobile::blank_item_ = std::make_shared<Item>();
 
 
 // Constructor.
-Mobile::Mobile() : Entity(), awake_(false), banked_ticks_(0), finesse_(0), hp_{50, 50}, intellect_(0), last_dir_(0), might_(0), mp_{50, 50}, sp_{50, 50}
+Mobile::Mobile() : Entity(), awake_(false), banked_ticks_(0), finesse_(0), hp_{BASE_HIT_POINTS, BASE_HIT_POINTS}, intellect_(0), last_dir_(0), might_(0),
+    mp_{BASE_MANA_POINTS, BASE_MANA_POINTS}, sp_{BASE_STAMINA_POINTS, BASE_STAMINA_POINTS}
 {
     set_name("mobile");
     set_prop_f(EntityProp::SPEED, TIME_BASE_MOVEMENT);
@@ -365,9 +366,9 @@ uint16_t Mobile::mp(bool max) const { return mp_[max ? 1 : 0]; }
 // Recalculates the maximum HP/SP/MP values, based on Strength, Finesse and Intellect.
 void Mobile::recalc_max_hp_mp_sp()
 {
-    hp_[0] = hp_[1] = 50 + (might_ * 5);
-    sp_[0] = sp_[1] = 25 + (finesse_ * 10) + (might_ * 5);
-    mp_[0] = mp_[1] = intellect_ * 15;
+    hp_[0] = hp_[1] = BASE_HIT_POINTS + (might_ * HIT_POINTS_PER_MIGHT);
+    sp_[0] = sp_[1] = BASE_STAMINA_POINTS + (finesse_ * STAMINA_PER_FINESSE) + (might_ * STAMINA_PER_MIGHT);
+    mp_[0] = mp_[1] = BASE_MANA_POINTS + (intellect_ * MANA_PER_INTELLECT);
 
     int hp_override = get_prop(EntityProp::HP_OVERRIDE);
     if (hp_override) hp_[0] = hp_[1] = hp_override;
