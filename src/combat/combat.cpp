@@ -208,31 +208,51 @@ void Combat::perform_attack(std::shared_ptr<Mobile> attacker, std::shared_ptr<Mo
     }
 
     // Determine what weapon skills the attacker and defender are using.
-    // This is not yet implemented, so it's largely a placeholder here.
-    int hit_bonus = 0, damage_bonus = 0, evasion_bonus = 0;
+    int hit_bonus = 0, damage_bonus = 0;
     const bool ranged_attack = (wield_type_attacker == WieldType::RANGED_ATTACK);
+    const bool finesse_weapon = (weapon_ptr->tag(EntityTag::WeaponFinesse));
+
+    const int might_hit_bonus = (attacker->might() * MIGHT_HIT_BONUS);
+    const int might_damage_bonus = (attacker->might() * MIGHT_DAMAGE_BONUS);
+    const int finesse_hit_bonus = (attacker->finesse() * FINESSE_HIT_BONUS);
+    const int finesse_damage_bonus = (attacker->finesse() * FINESSE_DAMAGE_BONUS);
+    if (ranged_attack)
+    {
+        hit_bonus = finesse_hit_bonus;
+        damage_bonus = finesse_damage_bonus;
+    }
+    else if (finesse_weapon)
+    {
+        hit_bonus = std::max(finesse_hit_bonus, might_hit_bonus);
+        damage_bonus = std::max(finesse_damage_bonus, might_damage_bonus);
+    }
+    else
+    {
+        hit_bonus = might_hit_bonus;
+        damage_bonus = might_damage_bonus;
+    }
+
+    // Special to-hit modifiers for certain weapon styles.
     if (wield_type_attacker == WieldType::UNARMED)
     {
-        // unarmed attack
         weapon_ptr = CodexItem::generate(ItemID::UNARMED_ATTACK);
+        damage_bonus = hit_bonus = 0;
     }
-    else if (wield_type_attacker == WieldType::TWO_HAND || wield_type_attacker == WieldType::HAND_AND_A_HALF_2H) { }    // two-handed
-    else if (wield_type_attacker == WieldType::DUAL_WIELD) { }  // dual-wielding
-    else if (ranged_attack) { } // ranged
-    else { }    // one-handed
+    else if (wield_type_attacker == WieldType::DUAL_WIELD)
+    {
+        if (weapon_ptr->tag(EntityTag::WeaponLight)) hit_bonus += DUAL_WIELD_TO_HIT_MOD_LIGHT;
+        else if (weapon_ptr->tag(EntityTag::WeaponFinesse)) hit_bonus += DUAL_WIELD_TO_HIT_MOD_FINESSE;
+        else hit_bonus += DUAL_WIELD_TO_HIT_MOD;
+    }
+    else if (wield_type_attacker == WieldType::SINGLE_WIELD)
+    {
+        if (weapon_ptr->tag(EntityTag::WeaponFinesse)) hit_bonus += SINGLE_WIELD_HIT_MOD_FINESSE;
+        else hit_bonus += SINGLE_WIELD_HIT_MOD;
+    }
 
     // Roll to hit!
-    int hit_modifier = 0;
-    switch (wield_type_attacker)
-    {
-        case WieldType::DUAL_WIELD: hit_modifier = DUAL_WIELD_TO_HIT_MOD; break;
-        case WieldType::HAND_AND_A_HALF_2H: hit_modifier = HAND_AND_A_HALF_SINGLE_HAND_HIT_MOD; break;
-        case WieldType::SINGLE_WIELD: hit_modifier = SINGLE_WIELD_HIT_MOD; break;
-        case WieldType::ONE_HAND_PLUS_SHIELD: hit_modifier = SWORD_AND_BOARD_HIT_MULTI; break;
-        default: break;
-    }
     const int raw_hit_roll = Random::rng(20);
-    const int hit_roll = raw_hit_roll + hit_modifier + hit_bonus;
+    const int hit_roll = raw_hit_roll + hit_bonus;
 
     // Check if the defender can attempt to block or parry.
     const bool can_block = (defender->is_awake() && ((wield_type_defender == WieldType::ONE_HAND_PLUS_SHIELD || wield_type_defender == WieldType::SHIELD_ONLY)
@@ -245,7 +265,15 @@ void Combat::perform_attack(std::shared_ptr<Mobile> attacker, std::shared_ptr<Mo
     const bool guaranteed_hit = (defender->tag(EntityTag::CannotDodge) || !defender->is_awake() || ranged_attack);
 
     bool parried = false, blocked = false, evaded = false;
-    if (guaranteed_hit || hit_roll >= defender->armour() + evasion_bonus)   // Evasion failed; the target was hit.
+    const int defender_armour = defender->armour();
+    const int defender_dodge = defender->dodge();
+
+    if (DEBUG_VIEW_COMBAT_NUMBERS)
+        core()->message("{w}Hit roll: {c}" + std::to_string(raw_hit_roll) + " {w}+ {c}" + std::to_string(hit_bonus) + " {w}({c}" +
+            std::to_string(raw_hit_roll + hit_bonus) + "{w}), defender armour: {c}" + std::to_string(defender_armour) + "{w}, defender dodge: {c}" +
+            std::to_string(defender_dodge));
+
+    if (guaranteed_hit || hit_roll >= std::max(defender_armour, defender_dodge))    // Evasion failed; the target was hit.
     {
         // Now to check if the defender can successfully parry this attack.
         if (can_parry)
@@ -277,7 +305,14 @@ void Combat::perform_attack(std::shared_ptr<Mobile> attacker, std::shared_ptr<Mo
         else
         {
             if (player_can_see_attacker || player_can_see_defender)
-                core()->message(good_colour_defender + attacker_your_string_c + " " + weapon_name + " misses " + defender_name + ".");
+            {
+                auto defender_armour_item = defender->equipment(EquipSlot::BODY);
+                bool dodged = (defender_armour_item->item_type() == ItemType::NONE);
+                if ((defender_armour > defender_dodge && hit_roll < defender_dodge) || defender_dodge > defender_armour) dodged = true;
+                if (dodged) core()->message(good_colour_defender + attacker_your_string_c + " " + weapon_name + " misses " + defender_name + ".");
+                else core()->message(good_colour_defender + attacker_your_string_c + " " + weapon_name + " is deflected by " + defender_name_s +
+                    defender->equipment(EquipSlot::BODY)->name() + ".");
+            }
         }
     }
     else

@@ -42,8 +42,8 @@ ItemSub Item::item_subtype() const { return item_subtype_; }
 // Returns the type of this Item.
 ItemType Item::item_type() const { return item_type_; }
 
-// Retrieves the maximum dexterity modifier of this Item, if any.
-int32_t Item::max_dex() const { return get_prop(EntityProp::MAX_DEX); }
+// Retrieves the maximum finesse bonus this Item allows, if any.
+int32_t Item::max_finesse() const { return get_prop(EntityProp::MAX_FINESSE); }
 
 // Sets the damage value on a weapon.
 void Item::set_damage(uint8_t dice, uint8_t sides)

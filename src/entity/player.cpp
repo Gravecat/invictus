@@ -27,6 +27,10 @@ Player::Player() : Mobile()
     set_colour(Colour::WHITE_BOLD);
     set_light_power(4);
     set_name("player");
+    set_finesse(2);
+    set_intellect(1);
+    set_might(2);
+    recalc_max_hp_mp_sp();
     awake_ = true;
 }
 

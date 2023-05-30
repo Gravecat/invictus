@@ -1,6 +1,8 @@
 // entity/mobile.cpp -- The Mobile class is a kind of Entity that can move around and fight. This includes monsters and the player character.
 // Copyright © 2023 Raine "Gravecat" Simmons. Licensed under the GNU Affero General Public License v3 or any later version.
 
+#include <cmath>
+
 #include "area/area.hpp"
 #include "area/tile.hpp"
 #include "combat/combat.hpp"
@@ -10,6 +12,7 @@
 #include "entity/item.hpp"
 #include "entity/mobile.hpp"
 #include "tune/ascii-symbols.hpp"
+#include "tune/combat.hpp"
 #include "tune/timing.hpp"
 #include "util/strx.hpp"
 
@@ -22,10 +25,11 @@ std::shared_ptr<Item> Mobile::blank_item_ = std::make_shared<Item>();
 
 
 // Constructor.
-Mobile::Mobile() : Entity(), awake_(false), banked_ticks_(0), hp_{100, 100}, last_dir_(0), mp_{100, 100}, sp_{100, 100}
+Mobile::Mobile() : Entity(), awake_(false), banked_ticks_(0), finesse_(0), hp_{50, 50}, intellect_(0), last_dir_(0), might_(0), mp_{50, 50}, sp_{50, 50}
 {
     set_name("mobile");
     set_prop_f(EntityProp::SPEED, TIME_BASE_MOVEMENT);
+    recalc_max_hp_mp_sp();
 
     // Populates the equipment vector with blank items.
     for (unsigned int i = 0; i < static_cast<unsigned int>(EquipSlot::_END); i++)
@@ -40,12 +44,17 @@ void Mobile::add_banked_ticks(float amount)
 }
 
 // Returns the total armour modifier from this Mobile and their equipped gear.
-int Mobile::armour() const
+int Mobile::armour()
 {
-    int total = 0;
-    for (auto item : equipment_)
-        if (item->item_type() != ItemType::NONE && item->item_type() != ItemType::SHIELD) total += item->armour();  // Shield armour works in a different way.
-    return total;
+    auto armour_item = equipment(EquipSlot::BODY);
+    int armour_value = armour_item->armour();
+    int armour_value_might = std::max(10, armour_value) + (might_ * ARMOUR_PER_MIGHT);
+    if (armour_item->tag(EntityTag::ArmourLight))
+    {
+        int armour_value_finesse = armour_value + (finesse_ * DODGE_PER_FINESSE);
+        return std::max(armour_value_finesse, armour_value_might);
+    }
+    else return armour_value_might;
 }
 
 // Returns the number of ticks needed for this Mobile to make an attack.
@@ -101,6 +110,18 @@ void Mobile::close_door(int dx, int dy)
     the_tile->clear_tags({TileTag::Closeable, TileTag::Open});
     area->need_fov_recalc();
     timed_action(TIME_CLOSE_DOOR);
+}
+
+// Returns this Mobile's dodge score.
+int Mobile::dodge()
+{
+    const int base_dodge = 10 + (finesse_ * DODGE_PER_FINESSE);
+    auto armour_item = equipment(EquipSlot::BODY);
+
+    if (armour_item->item_type() == ItemType::NONE || armour_item->tag(EntityTag::ArmourLight)) return base_dodge;
+    else if (armour_item->tag(EntityTag::ArmourHeavy)) return std::min(base_dodge, 10);
+    else if (armour_item->tag(EntityTag::ArmourMedium)) return std::min(armour_item->max_finesse(), base_dodge);
+    else throw std::runtime_error("Unable to determine armour type for " + name());
 }
 
 // Drops a carried item.
@@ -231,14 +252,23 @@ std::shared_ptr<Item> Mobile::equipment(EquipSlot slot)
     return equ()->at(slot_id);
 }
 
+// Retrieves this Mobile's finesse attribute.
+int8_t Mobile::finesse() const { return finesse_; }
+
 // Retrieves the current or maximum hit points of this Mobile.
 uint16_t Mobile::hp(bool max) const { return hp_[max ? 1 : 0]; }
+
+// Retrieves this Mobile's intellect attribute.
+int8_t Mobile::intellect() const { return intellect_; }
 
 // Check if this Mobile is awake and active.
 bool Mobile::is_awake() const { return awake_; }
 
 // Checks if this Mobile is dead.
 bool Mobile::is_dead() const { return !hp(); }
+
+// Retrieves this Mobile's might attribute.
+int8_t Mobile::might() const { return might_; }
 
 // Moves in a given direction, or attacks something in the destination tile
 bool Mobile::move_or_attack(std::shared_ptr<Mobile> self, int dx, int dy)
@@ -331,6 +361,26 @@ float Mobile::movement_speed() const { return get_prop_f(EntityProp::SPEED); }
 
 // Retrieves the current or maximum mana points of this Mobile.
 uint16_t Mobile::mp(bool max) const { return mp_[max ? 1 : 0]; }
+
+// Recalculates the maximum HP/SP/MP values, based on Strength, Finesse and Intellect.
+void Mobile::recalc_max_hp_mp_sp()
+{
+    hp_[0] = hp_[1] = 50 + (might_ * 5);
+    sp_[0] = sp_[1] = 25 + (finesse_ * 10) + (might_ * 5);
+    mp_[0] = mp_[1] = intellect_ * 15;
+
+    int hp_override = get_prop(EntityProp::HP_OVERRIDE);
+    if (hp_override) hp_[0] = hp_[1] = hp_override;
+}
+
+// Sets this Mobile's Finesse level.
+void Mobile::set_finesse(int8_t new_fin) { finesse_ = new_fin; }
+
+// Sets this Mobile's Intellect attribute.
+void Mobile::set_intellect(int8_t new_int) { intellect_ = new_int; }
+
+// Sets this Mobile's Might attribute.
+void Mobile::set_might(int8_t new_mig) { might_ = new_mig; }
 
 // Retrieves the current or maximum stamina points of this Mobile.
 uint16_t Mobile::sp(bool max) const { return sp_[max ? 1 : 0]; }

@@ -26,11 +26,12 @@ class Window;   // defined in terminal/window.hpp
 enum class EntityProp : uint16_t
 {
     ARMOUR,         // The defensive value of a piece of worn armour.
-    LIGHT_POWER,    // The power of a light source.
-    MAX_DEX,        // The maximum amount of dexterity modifier that can be used when this Item is equipped.
-    SPEED,          // The movement speed of a Mobile, or the speed at which an Item can be used.
     DAMAGE_DICE_A,  // The amount of damage dice to roll.
     DAMAGE_DICE_B,  // The number of faces on each damage die.
+    HP_OVERRIDE,    // Overrides the automatically-calculated HP value with something else.
+    LIGHT_POWER,    // The power of a light source.
+    MAX_FINESSE,    // The maximum amount of finesse bonus that can be used when this Item is equipped.
+    SPEED,          // The movement speed of a Mobile, or the speed at which an Item can be used.
 };
 
 // Binary tags that can be set on all kinds of Entities.
@@ -78,8 +79,13 @@ enum class EntityTag : uint16_t
     TwoHanded = 33000,  // This Item is a weapon which takes both hands to wield.
     HandAndAHalf,       // This Item is a weapon which can be equipped in either one or both hands.
     WeaponRanged,       // This Item is a ranged weapon.
+    WeaponFinesse,      // This weapon can get hit/damage bonuses from either Might or Finesse.
+    WeaponLight,        // This weapon does not have a penalty when dual-wielding.
 
     // 33500 - 33999 -- Tags specific to armour.
+    ArmourLight = 33500,    // This armour is lightweight, and allows for adding the user's Finesse bonus.
+    ArmourMedium,           // This armour is medium, and partially limits the user's Finesse bonus.
+    ArmourHeavy,            // This armour is heavy, and allows no Finesse bonus at all.
 };
 
 // Types of Entity and derived classes.

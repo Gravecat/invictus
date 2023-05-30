@@ -36,7 +36,7 @@ public:
     int         damage_roll() const;    // Rolls for damage, if this weapon has damage.
     ItemSub     item_subtype() const;   // Returns the sub-type of this Item.
     ItemType    item_type() const;      // Returns the type of this Item.
-    int32_t     max_dex() const;        // Retrieves the maximum dexterity modifier of this Item, if any.
+    int32_t     max_finesse() const;    // Retrieves the maximum finesse bonus this Item allows, if any.
     void        set_damage(uint8_t dice, uint8_t sides);    // Sets the damage value on a weapon.
     void        set_stack(uint16_t size);   // Sets the stack size for this Item.
     uint16_t    stack() const;          // Retrieves the size of this Item stack, if any.

@@ -22,10 +22,15 @@ std::shared_ptr<Mobile> CodexMobile::generate(MobileID id)
             mob->name_ = "druj walker";
             mob->ascii_ = ASCII_ZOMBIE;
             mob->colour_ = Colour::CYAN;
+            mob->finesse_ = -2;
+            mob->intellect_ = -4;
+            mob->might_ = -1;
             mob->set_tags({EntityTag::Unliving, EntityTag::ImmunityPoison});
+            mob->set_prop(EntityProp::HP_OVERRIDE, 16);
             break;
     }
 
+    mob->recalc_max_hp_mp_sp();
     return mob;
 }
 
