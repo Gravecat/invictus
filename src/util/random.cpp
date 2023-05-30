@@ -23,6 +23,18 @@ unsigned int Random::rng(unsigned int min, unsigned int max)
 // As above, but with an implied minimum number of 1.
 unsigned int Random::rng(unsigned int max) { return rng(1, max); }
 
+// 'Rolls' some virtual dice.
+unsigned int Random::roll(unsigned int num_dice, unsigned int num_faces)
+{
+    if (!num_dice || !num_faces) return 0;
+    unsigned int result = 0;
+
+    for (unsigned int i = 0; i < num_dice; i++)
+        result += rng(num_faces);
+
+    return result;
+}
+
 // Seed the random number generator.
 void Random::seed()
 {

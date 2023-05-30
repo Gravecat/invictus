@@ -12,6 +12,7 @@ class Random
 public:
     static unsigned int rng(unsigned int min, unsigned int max);    // Generates a random number between, and including, the two specified values.
     static unsigned int rng(unsigned int max);  // As above, but with an implied minimum number of 1.
+    static unsigned int roll(unsigned int num_dice, unsigned int num_faces);    // 'Rolls' some virtual dice.
     static void         seed();     // Seed the random number generator.
 
 private:

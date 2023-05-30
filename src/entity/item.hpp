@@ -33,6 +33,7 @@ public:
     int32_t     armour() const;         // Retrieves the defensive armour value of this Item, if any.
     bool        blocks_tile(int x_tile, int y_tile) const override; // Checks if this Item blocks a specified tile.
     std::pair<uint8_t, uint8_t> damage() const; // Retrieves the damage roll for this weapon.
+    int         damage_roll() const;    // Rolls for damage, if this weapon has damage.
     ItemSub     item_subtype() const;   // Returns the sub-type of this Item.
     ItemType    item_type() const;      // Returns the type of this Item.
     int32_t     max_dex() const;        // Retrieves the maximum dexterity modifier of this Item, if any.

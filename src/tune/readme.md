@@ -7,6 +7,8 @@ tweaked to make sweeping changes to large parts of the game code at once.
 
 * **ascii-symbols.hpp** -- Definitions for which ASCII symbols are used for which things in the game, allowing for easily changing them en masse if needed.
 
+* **combat.hpp** -- Predefined variables which can be tweaked to rebalance aspects of combat.
+
 * **error-handling.hpp** -- Tune values for adjusting error-handling in the Guru Meditation subsystem.
 
 * **fov-lighting.hpp** -- Tune values for field-of-view, line-of-sight and static/dynamic lighting.

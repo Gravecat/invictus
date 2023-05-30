@@ -67,6 +67,7 @@ set(INVICTUS_CPPS
   codex/codex-item.cpp
   codex/codex-mobile.cpp
   codex/codex-tile.cpp
+  combat/combat.cpp
   core/core.cpp
   core/game-manager.cpp
   core/guru.cpp

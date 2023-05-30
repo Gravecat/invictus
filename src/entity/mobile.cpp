@@ -3,6 +3,7 @@
 
 #include "area/area.hpp"
 #include "area/tile.hpp"
+#include "combat/combat.hpp"
 #include "core/core.hpp"
 #include "core/game-manager.hpp"
 #include "core/guru.hpp"
@@ -21,7 +22,7 @@ std::shared_ptr<Item> Mobile::blank_item_ = std::make_shared<Item>();
 
 
 // Constructor.
-Mobile::Mobile() : Entity(), banked_ticks_(0), hp_{100, 100}, last_dir_(0), mp_{100, 100}, sp_{100, 100}
+Mobile::Mobile() : Entity(), awake_(false), banked_ticks_(0), hp_{100, 100}, last_dir_(0), mp_{100, 100}, sp_{100, 100}
 {
     set_name("mobile");
     set_prop_f(EntityProp::SPEED, TIME_BASE_MOVEMENT);
@@ -37,6 +38,18 @@ void Mobile::add_banked_ticks(float amount)
     if (amount < 0) core()->guru()->halt("Attempt to add negative banked ticks to " + name(), static_cast<int>(amount));
     else banked_ticks_ += amount;
 }
+
+// Returns the total armour modifier from this Mobile and their equipped gear.
+int Mobile::armour() const
+{
+    int total = 0;
+    for (auto item : equipment_)
+        if (item->item_type() != ItemType::NONE && item->item_type() != ItemType::SHIELD) total += item->armour();  // Shield armour works in a different way.
+    return total;
+}
+
+// Returns the number of ticks needed for this Mobile to make an attack.
+float Mobile::attack_speed() { return 1.0f; }
 
 // Retrieves the amount of ticks banked by this Mobile.
 float Mobile::banked_ticks() const { return banked_ticks_; }
@@ -221,6 +234,9 @@ std::shared_ptr<Item> Mobile::equipment(EquipSlot slot)
 // Retrieves the current or maximum hit points of this Mobile.
 uint16_t Mobile::hp(bool max) const { return hp_[max ? 1 : 0]; }
 
+// Check if this Mobile is awake and active.
+bool Mobile::is_awake() const { return awake_; }
+
 // Checks if this Mobile is dead.
 bool Mobile::is_dead() const { return !hp(); }
 
@@ -287,6 +303,22 @@ bool Mobile::move_or_attack(std::shared_ptr<Mobile> self, int dx, int dy)
 
         timed_action(movement_cost);
         return true;
+    }
+    if (!is_player && banked_ticks() < attack_speed()) return false;
+    for (auto entity : *core()->game()->area()->entities())
+    {
+        if (entity.get() == this) continue; // Ignore ourselves on the list.
+        if (!entity->is_at(xdx, ydy)) continue; // Ignore anything not in the target tile.
+        if (entity->type() != EntityType::MOBILE && entity->type() != EntityType::PLAYER) continue; // Ignore anything that isn't a Mobile (or the player).
+
+        // This is safe -- we just checked above, only Mobile and Player (a derived class of Mobile) can continue to this point in the loop.
+        // In case anything could possibly go wrong, dynamic_pointer_cast will either throw an exception or return a null pointer.
+        auto mob = std::dynamic_pointer_cast<Mobile>(entity);
+        // The dead can't fight back. Okay, that's not strictly true, zombies and skeletons can be pretty feisty, but you know what I mean.
+        if (mob->is_dead()) continue;
+
+        timed_action(attack_speed());
+        return Combat::bump_attack(self, mob);
     }
 
     // We're not taking an action right now.

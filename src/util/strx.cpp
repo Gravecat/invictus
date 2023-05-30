@@ -17,6 +17,13 @@ namespace invictus
 // Converts a bool to a string ("true" or "false").
 std::string StrX::bool_to_str(bool b) { return (b ? "true" : "false"); }
 
+// Capitalizes the first letter of a string.
+std::string StrX::capitalize_first_letter(std::string str)
+{
+    if (str.size() && str[0] >= 'a' && str[0] <= 'z') str[0] -= 32;
+    return str;
+}
+
 // Centers all the strings in a vector.
 uint32_t StrX::center_strvec(std::vector<std::string> &vec)
 {
@@ -182,6 +189,40 @@ std::string StrX::pad_string_center(const std::string &str, unsigned int min_len
         const int right_padding = padding - left_padding;
         output = (left_padding ? std::string(left_padding, ' ') : "") + output + (right_padding ? std::string(right_padding, ' ') : "");
     }
+    return output;
+}
+
+// Makes a string into a possessive noun (e.g. orc = orc's, platypus = platypus')
+std::string StrX::possessive_string(const std::string &str)
+{
+    if (!str.size()) return "";
+    if (str[str.size() - 1] == 's' || str[str.size() - 1] == 'S') return str + "'";
+    else return str + "'s";
+}
+
+// Makes pretty rainbow text!
+std::string StrX::rainbow_text(const std::string &str, const std::string &colours)
+{
+    std::string output;
+    int position = 0;
+    int direction = 1;
+
+    for (auto letter : str)
+    {
+        output += "{" + std::string(1, colours[position]) + "}" + std::string(1, letter);
+        position += direction;
+        if (position >= static_cast<int>(colours.size()))
+        {
+            position -= 2;
+            direction = -1;
+        }
+        else if (position < 0)
+        {
+            position = 1;
+            direction = 1;
+        }
+    }
+
     return output;
 }
 

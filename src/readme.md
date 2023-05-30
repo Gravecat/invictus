@@ -10,6 +10,8 @@ as the Tile class (Tiles are the component blocks that make up an Area), and any
 * **codex** - The codex source folder is where the static game data resides -- it contains factory classes, which generate preset classes for tiles, items,
 monsters, etc.
 
+* **combat** - The combat source folder contains most of the code regarding fighting and death.
+
 * **core** - The core source folder contains the most core and central elements of the game code, which are used almost everywhere -- this includes main program
 entry, the main game loop, user preferences, error-handling, etc.
 

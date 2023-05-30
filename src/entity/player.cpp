@@ -27,6 +27,7 @@ Player::Player() : Mobile()
     set_colour(Colour::WHITE_BOLD);
     set_light_power(4);
     set_name("player");
+    awake_ = true;
 }
 
 // Don't use this on a Player.

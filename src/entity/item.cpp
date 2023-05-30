@@ -4,6 +4,7 @@
 #include "core/core.hpp"
 #include "core/guru.hpp"
 #include "entity/item.hpp"
+#include "util/random.hpp"
 
 
 namespace invictus
@@ -27,6 +28,13 @@ bool Item::blocks_tile(int, int) const { return false; }
 
 // Retrieves the damage roll for this weapon.
 std::pair<uint8_t, uint8_t> Item::damage() const { return { get_prop(EntityProp::DAMAGE_DICE_A), get_prop(EntityProp::DAMAGE_DICE_B) }; }
+
+// Rolls for damage, if this weapon has damage.
+int Item::damage_roll() const
+{
+    int dice = get_prop(EntityProp::DAMAGE_DICE_A), sides = get_prop(EntityProp::DAMAGE_DICE_B);
+    return Random::roll(dice, sides);
+}
 
 // Returns the sub-type of this Item.
 ItemSub Item::item_subtype() const { return item_subtype_; }

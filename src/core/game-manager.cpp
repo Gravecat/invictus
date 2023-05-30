@@ -15,6 +15,8 @@
 #include "ui/system-menu.hpp"
 #include "ui/ui.hpp"
 
+#include "combat/combat.hpp"
+
 
 namespace invictus
 {
@@ -73,7 +75,7 @@ void GameManager::dungeon_input(int key)
         case 'g': player_->get_item(); break;           // Picks something up.
         case 'i': player_->take_inventory(); break;     // Interact with carried items.
         case 'o': player_->open_a_door(); break;        // Attempts to open something.
-        case 'S': SaveLoad::save_game();                // Saves the game!
+        case 'S': SaveLoad::save_game(); break;         // Saves the game!
     }
 
     if (dx || dy)

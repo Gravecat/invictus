@@ -141,6 +141,7 @@ constexpr char  ASCII_PLAYER =          '@';     // The player character.
 constexpr char  ASCII_ARMOUR =          '[';     // Armour worn on the body.
 
 // \ (92, backslash)
+constexpr char  ASCII_BLUNT_WEAPON =    '\\';   // Blunt weapons such as maces and clubs.
 
 // ] (93, closed square bracket)
 

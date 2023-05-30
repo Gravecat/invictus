@@ -22,6 +22,8 @@ class Mobile : public Entity
 public:
                     Mobile();   // Constructor.
     virtual void    add_banked_ticks(float amount); // Adds or removes banked ticks to this Mobile.
+    int             armour() const; // Returns the total armour modifier from this Mobile and their equipped gear.
+    float           attack_speed(); // Returns the number of ticks needed for this Mobile to make an attack.
     virtual float   banked_ticks() const;   // Retrieves the amount of ticks banked by this Mobile.
     bool            blocks_tile(int x_tile, int y_tile) const override; // Checks if this Mobile blocks a specified tile.
     virtual void    clear_banked_ticks();   // Erase all banked ticks on this Mobile.
@@ -31,6 +33,7 @@ public:
     void            equip_item(uint32_t id);    // Equips a specified Item.
     std::shared_ptr<Item>   equipment(EquipSlot slot);  // Retrieves equipment from a given slot.
     uint16_t        hp(bool max = false) const; // Retrieves the current or maximum hit points of this Mobile.
+    bool            is_awake() const;       // Check if this Mobile is awake and active.
     bool            is_dead() const;        // Checks if this Mobile is dead.
     virtual bool    move_or_attack(std::shared_ptr<Mobile> self, int dx, int dy);   // Moves in a given direction, or attacks something in the destination tile.
     float           movement_speed() const; // Returns the amount of ticks needed for this Mobile to move one tile.
@@ -43,14 +46,16 @@ public:
     EntityType      type() const { return EntityType::MOBILE; } // Self-identifier function.
     void            unequip_item(EquipSlot slot);   // Unequips a specified Item.
 
+protected:
+    bool        awake_; // Is this Mobile active?
+    std::vector<std::shared_ptr<Item>>  equipment_; // Items equipped by this Mobile.
+
+private:
     float       banked_ticks_;  // The amount of time this Mobile has 'banked'; it can 'spend' this time to move or attack.
     uint16_t    hp_[2];         // The current and maximum hit points of this Mobile.
     uint8_t     last_dir_;      // The last direction this Mobile moved in.
     uint16_t    mp_[2];         // The current and maximum mana points of this Mobile.
     uint16_t    sp_[2];         // The current and maximum stamina points of this Mobile.
-
-protected:
-    std::vector<std::shared_ptr<Item>>  equipment_; // Items equipped by this Mobile.
 
     static std::shared_ptr<Item>    blank_item_;    // A blank item, shared amongst all Mobiles to use in their empty equipment slots.
 

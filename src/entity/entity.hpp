@@ -56,13 +56,30 @@ enum class EntityTag : uint16_t
      * 20000 - 29999  --  MOBILE-SPECIFIC TAGS *
      *******************************************/
 
+    // 20000 - 20999 -- General-purpose tags regarding this Mobile's state of being.
+    Unliving = 20000,       // This Mobile is either undead or an unliving construct.
+	ImmunityBleed,          // This Mobile cannot bleed.
+	ImmunityPoison,         // This Mobile cannot be poisoned.
+
+
+    // 21000 - 21999 -- Combat-related tags.
+	CannotBlock = 21000,    // This Mobile cannot use a shield to block in combat.
+	CannotDodge,            // This Mobile is unable to dodge attacks.
+	CannotParry,            // This Mobile is unable to parry attacks.
+
 
     /*****************************************
      * 30000 - 30999  --  ITEM-SPECIFIC TAGS *
      *****************************************/
 
-    TwoHanded = 30000,      // This Item is a weapon which takes both hands to wield.
-    HandAndAHalf = 30001,   // This Item is a weapon which can be equipped in either one or both hands.
+    // 30000 - 32999 -- Generic item tags not specific to any particular type of item.
+
+    // 33000 - 33499 -- Tags specific to weapons.
+    TwoHanded = 33000,  // This Item is a weapon which takes both hands to wield.
+    HandAndAHalf,       // This Item is a weapon which can be equipped in either one or both hands.
+    WeaponRanged,       // This Item is a ranged weapon.
+
+    // 33500 - 33999 -- Tags specific to armour.
 };
 
 // Types of Entity and derived classes.

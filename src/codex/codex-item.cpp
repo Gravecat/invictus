@@ -56,6 +56,15 @@ std::shared_ptr<Item> CodexItem::generate(ItemID id)
             new_item->set_damage(2, 6);
             new_item->set_tag(EntityTag::TwoHanded);
             break;
+
+        case ItemID::UNARMED_ATTACK:    // Used for unarmed attacks, when the Mobile has no weapon equipped.
+            new_item->name_ = "meaty fist";
+            new_item->ascii_ = ASCII_BLUNT_WEAPON;
+            new_item->colour_ = Colour::YELLOW;
+            new_item->item_type_ = ItemType::WEAPON;
+            new_item->item_subtype_ = ItemSub::UNARMED;
+            new_item->set_damage(1, 2);
+            break;
     }
 
     return new_item;

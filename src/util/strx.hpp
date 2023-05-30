@@ -22,6 +22,7 @@ class StrX
 public:
     static std::string  bool_to_str(bool b);    // Converts a bool to a string ("true" or "false").
                         // Find and replace one string with another.
+    static std::string  capitalize_first_letter(std::string str);   // Capitalizes the first letter of a string.
     static uint32_t     center_strvec(std::vector<std::string> &vec);   // Centers all the strings in a vector.
     static std::string  comma_list(std::vector<std::string> vec, unsigned int flags);   // Converts a vector to a comma-separated list.
     static bool         find_and_replace(std::string &input, const std::string &to_find, const std::string &to_replace);
@@ -32,6 +33,8 @@ public:
     static std::string  number_to_word(unsigned long long number);  // Converts small numbers into words.
     static std::string  pad_string(const std::string &str, unsigned int min_len, bool ansi = false);    // Pads a string to a given length.
     static std::string  pad_string_center(const std::string &str, unsigned int min_len, bool ansi = false); // As above, but centers the string.
+    static std::string  possessive_string(const std::string &str);  // Makes a string into a possessive noun (e.g. orc = orc's, platypus = platypus')
+    static std::string  rainbow_text(const std::string &str, const std::string &colours);   // Makes pretty rainbow text!
     static bool         str_to_bool(std::string str);   // Converts a string to a bool.
     static std::string  str_tolower(std::string str);   // Converts a string to lower-case.
     static std::string  str_toupper(std::string str);   // Converts a string to upper-case.
