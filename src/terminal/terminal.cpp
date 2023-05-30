@@ -17,8 +17,11 @@
 namespace invictus
 {
 
+bool Terminal::cleanup_done_ = false;   // Has the cleanup routine already run once?
+
+
 // Sets up the Curses terminal.
-Terminal::Terminal() : cleanup_done_(false), cursor_state_(1), has_colour_(false), initialized_(false), key_raw_(0)
+Terminal::Terminal() : cursor_state_(1), has_colour_(false), initialized_(false), key_raw_(0)
 {
     initscr();  // Curses initialization
     cbreak();   // Disable line-buffering.
@@ -84,15 +87,14 @@ void Terminal::box(std::shared_ptr<Window> window, Colour colour, unsigned int f
 // Cleans up Curses, resets the terminal to its former state.
 void Terminal::cleanup()
 {
-    if (!initialized_ || cleanup_done_) return;
-    if (core()->guru()) core()->guru()->log("Cleaning up Curses terminal.");
-    cleanup_done_ = true;
-    initialized_ = false;
+    if (cleanup_done_) return;
+    if (core() && core()->guru()) core()->guru()->log("Cleaning up Curses terminal.");
     echo();                 // Re-enables keyboard input being printed to the screen (normal console behaviour)
     keypad(stdscr, false);  // Disables the numeric keypad (it's off by default)
     curs_set(1);            // Re-enables the blinking cursor
     nocbreak();             // Re-enables line buffering.
     endwin();               // Cleans up Curses internally.
+    cleanup_done_ = true;
 }
 
 // Clears the current line.
@@ -187,7 +189,7 @@ uint16_t Terminal::get_cursor_y(std::shared_ptr<Window> window)
 // Gets keyboard input from the user.
 int Terminal::get_key(std::shared_ptr<Window> window)
 {
-    if (!initialized_) return 0;
+    if (!initialized_ || cleanup_done_) return 0;
     WINDOW *win = (window ? window->win() : stdscr);
     if (core()->guru()) core()->guru()->check_stderr();
     key_raw_ = wgetch(win);

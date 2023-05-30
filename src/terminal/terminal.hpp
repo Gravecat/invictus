@@ -25,7 +25,7 @@ public:
                 Terminal();     // Sets up the Curses terminal.
                 ~Terminal();    // Destructor, calls cleanup code.
     void        box(std::shared_ptr<Window> window = nullptr, Colour colour = Colour::NONE, unsigned int flags = 0);    // Draws a box around a Window.
-    void        cleanup();      // Cleans up Curses, resets the terminal to its former state.
+    static void cleanup();      // Cleans up Curses, resets the terminal to its former state.
     void        clear_line(std::shared_ptr<Window> window = nullptr);   // Clears the current line.
     void        cls(std::shared_ptr<Window> window = nullptr);          // Clears the screen.
     void        flip();     // Updates the screen.
@@ -53,7 +53,7 @@ public:
 private:
     unsigned long   colour_pair_code(Colour col, uint32_t flags = 0);   // Returns a colour pair code.
 
-    bool        cleanup_done_;      // Has the cleanup routine already run once?
+    static bool cleanup_done_;      // Has the cleanup routine already run once?
     int         cursor_state_;      // The current state of the cursor.
     std::string escape_key_string_; // The last escape key string processed.
     bool        has_colour_;        // The terminal has colour support.

@@ -146,6 +146,7 @@ void Core::init(std::vector<std::string>)
 
     // Sets up the terminal emulator (Curses)
     terminal_ = std::make_shared<Terminal>();
+    atexit(Terminal::cleanup);
 
     // Set up the game manager.
     game_manager_ = std::make_shared<GameManager>();
