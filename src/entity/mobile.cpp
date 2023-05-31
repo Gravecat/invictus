@@ -33,7 +33,7 @@ std::shared_ptr<Item> Mobile::blank_item_ = std::make_shared<Item>();
 
 
 // Constructor.
-Mobile::Mobile() : Entity(), awake_(true), banked_ticks_(0), bloody_feet_(0), finesse_(0), hp_{BASE_HIT_POINTS, BASE_HIT_POINTS}, intellect_(0), last_dir_(0),
+Mobile::Mobile() : Entity(), awake_(false), banked_ticks_(0), bloody_feet_(0), finesse_(0), hp_{BASE_HIT_POINTS, BASE_HIT_POINTS}, intellect_(0), last_dir_(0),
     might_(0), mp_{BASE_MANA_POINTS, BASE_MANA_POINTS}, player_last_seen_x_(-1), player_last_seen_y_(-1), sp_{BASE_STAMINA_POINTS, BASE_STAMINA_POINTS},
     tracking_turns_(0)
 {
@@ -394,7 +394,6 @@ bool Mobile::move_or_attack(std::shared_ptr<Mobile> self, int dx, int dy)
         return true;
     }
     if (!is_player && banked_ticks() < attack_speed()) return false;
-    /*
     for (auto entity : *core()->game()->area()->entities())
     {
         if (entity.get() == this) continue; // Ignore ourselves on the list.
@@ -410,7 +409,6 @@ bool Mobile::move_or_attack(std::shared_ptr<Mobile> self, int dx, int dy)
         timed_action(attack_speed());
         return Combat::bump_attack(self, mob);
     }
-    */
 
     // We're not taking an action right now.
     if (!is_player) clear_banked_ticks();
@@ -457,6 +455,7 @@ uint16_t Mobile::sp(bool max) const { return sp_[max ? 1 : 0]; }
 void Mobile::take_damage(int damage)
 {
     if (damage <= 0) return;
+    if (type() == EntityType::PLAYER) core()->game()->ui()->redraw_stat_bars();
     if (damage >= hp_[0])
     {
         hp_[0] = 0;
@@ -528,7 +527,7 @@ void Mobile::tick(std::shared_ptr<Entity> self)
         // Check to see if anything is blocking the way.
         for (auto entity : *core()->game()->area()->entities())
         {
-            if (entity == self) continue;
+            if (entity == self || entity->type() == EntityType::PLAYER) continue;
             if (entity->blocks_tile(next_x, next_y))
             {
                 clear_banked_ticks();

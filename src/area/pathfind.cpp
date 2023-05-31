@@ -118,13 +118,15 @@ std::vector<std::pair<int, int>> Pathfind::pathfind()
                 {
                     if (entity->blocks_tile(coord_x, coord_y))
                     {
-                        if (mode_ == PathfindMode::PATHFIND_MOBILE) possible_tile->set_tile_cost(current_cost + travel_cost + PATHFIND_ALLY_BLOCKER_COST);
-                        else
+                        if (mode_ == PathfindMode::PATHFIND_MOBILE && entity->type() == EntityType::PLAYER) continue;
+                        if (mode_ == PathfindMode::PATHFIND_MOBILE && entity->type() == EntityType::MOBILE)
                         {
-                            possible_tile->set_tile_cost(BIG_NUMBER);
-                            add_to_viable = false;
-                            break;
+                            possible_tile->set_tile_cost(current_cost + travel_cost + PATHFIND_ALLY_BLOCKER_COST);
+                            continue;
                         }
+                        possible_tile->set_tile_cost(BIG_NUMBER);
+                        add_to_viable = false;
+                        break;
                     }
                 }
                 if (!add_to_viable) continue;
