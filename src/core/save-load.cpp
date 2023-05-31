@@ -207,6 +207,7 @@ void SaveLoad::load_mobile(std::ifstream &save_file, std::shared_ptr<Mobile> mob
     mob->tracking_turns_ = load_data<int16_t>(save_file);
     mob->player_last_seen_x_ = load_data<int>(save_file);
     mob->player_last_seen_y_ = load_data<int>(save_file);
+    mob->awake_ = load_data<bool>(save_file);
 
     // Load the equipment.
     uint8_t equ_size = load_data<uint8_t>(save_file);
@@ -443,6 +444,7 @@ void SaveLoad::save_mobile(std::ofstream &save_file, std::shared_ptr<Mobile> mob
     save_data<int16_t>(save_file, mob->tracking_turns_);
     save_data<int>(save_file, mob->player_last_seen_x_);
     save_data<int>(save_file, mob->player_last_seen_y_);
+    save_data<bool>(save_file, mob->awake_);
 
     // Saves the equipment.
     save_data<uint8_t>(save_file, static_cast<uint8_t>(EquipSlot::_END));
