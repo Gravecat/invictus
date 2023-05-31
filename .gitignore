@@ -6,5 +6,6 @@
 *.lnk
 *.o
 *.tmp
+.vscode/*
 build/*
 scripts/*
