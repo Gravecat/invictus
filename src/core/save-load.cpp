@@ -255,7 +255,9 @@ Tile SaveLoad::load_tile(std::ifstream &save_file)
     if (!changed) return new_tile;
 
     new_tile.ascii_ = load_data<char>(save_file);
+    new_tile.ascii_scars_ = load_data<char>(save_file);
     new_tile.colour_ = static_cast<Colour>(load_data<uint8_t>(save_file));
+    new_tile.colour_scars_ = static_cast<Colour>(load_data<uint8_t>(save_file));
     new_tile.name_ = load_string(save_file);
 
     // Load the TileTags.
@@ -478,7 +480,9 @@ void SaveLoad::save_tile(std::ofstream &save_file, Tile tile)
     if (!changed) return;
 
     save_data<char>(save_file, tile.ascii_);
+    save_data<char>(save_file, tile.ascii_scars_);
     save_data<uint8_t>(save_file, static_cast<uint8_t>(tile.colour_));
+    save_data<uint8_t>(save_file, static_cast<uint8_t>(tile.colour_scars_));
     save_string(save_file, tile.name_);
 
     // Save the TileTags.

@@ -159,7 +159,7 @@ void Nearby::render()
             bool found = false;
             for (auto tc : tiles)
             {
-                if (tc->is_identical_to(tile))
+                if (tc->is_identical_to(tile, true))
                 {
                     found = true;
                     break;
@@ -199,7 +199,7 @@ void Nearby::render()
     for (auto tile : tiles)
     {
         if (current_y >= window_h - 1) return;
-        terminal->put(tile->ascii(), 2, current_y, tile->colour(), 0, nearby_window);
+        terminal->put(tile->ascii(true), 2, current_y, tile->colour(true), 0, nearby_window);
         
         std::vector<std::string> name_str = StrX::string_explode_colour("{w}" + tile->name(), 16);
         for (auto l : name_str)

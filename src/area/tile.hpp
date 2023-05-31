@@ -44,24 +44,27 @@ public:
                 Tile();     // Constructor.
     void        clear_tag(TileTag the_tag, bool changed = true);    // Clears a TileTag from this Tile.
     void        clear_tags(std::initializer_list<TileTag> tag_list, bool changed = true);   // Clears multiple TileTags from this Tile.
-    char        ascii() const;  // Get the ASCII character for this Tile.
-    Colour      colour() const; // Gets the colour of this Tile.
+    char        ascii(bool ignore_scars = false) const;     // Get the ASCII character for this Tile.
+    Colour      colour(bool ignore_scars = false) const;    // Gets the colour of this Tile.
     TileID      id() const;     // Retrieves the ID of this Tile.
-    bool        is_identical_to(Tile* tile);    // Checks if this Tile is identical to another.
+    bool        is_identical_to(Tile* tile, bool ignore_scars = false); // Checks if this Tile is identical to another.
     std::string name() const;   // Gets the name of this Tile.
     void        set_ascii(char new_ascii);      // Sets this Tile's ASCII character.
     void        set_colour(Colour new_colour);  // Sets this Tile's colour.
     void        set_name(const std::string &new_name);  // Sets this Tile's name.
+    void        set_scars(char ch, Colour col); // Sets the ASCII character and colour of this Tile, from blood/burns/etc.
     void        set_tag(TileTag the_tag, bool changed = true);  // Sets a TileTag on this Tile.
     void        set_tags(std::initializer_list<TileTag> tag_list, bool changed = true); // Sets multiple TileTags on this Tile.
     bool        tag(TileTag the_tag) const; // Checks if a TileTag is set on this Tile.
     bool        tags(std::initializer_list<TileTag> tag_list) const;    // Checks if multiple TileTags are all set on this Tile.
 
 private:
-    char        ascii_;     // The ASCII character used to represent this Tile.
-    Colour      colour_;    // The colour of this Tile.
-    TileID      id_;        // The template ID of this Tile.
-    std::string name_;      // The name of this Tile.
+    char        ascii_;         // The ASCII character used to represent this Tile.
+    char        ascii_scars_;   // The ASCII character for this Tile when it's been bloodied/burned/etc.
+    Colour      colour_;        // The colour of this Tile.
+    Colour      colour_scars_;  // The colour of this Tile when it's been bloodied/burned/etc.
+    TileID      id_;            // The template ID of this Tile.
+    std::string name_;          // The name of this Tile.
     std::set<TileTag>   tags_;  // Any and all TileTags on this Tile.
 
 friend class CodexTile;

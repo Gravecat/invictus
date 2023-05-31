@@ -11,10 +11,16 @@ namespace invictus
 {
 
 // Constructor.
-Tile::Tile() : ascii_(ASCII_NOTHING), colour_(Colour::WHITE), id_(TileID::VOID_TILE), name_("tile") { }
+Tile::Tile() : ascii_(ASCII_NOTHING), ascii_scars_(ASCII_NOTHING), colour_(Colour::WHITE), colour_scars_(Colour::WHITE), id_(TileID::VOID_TILE), name_("tile")
+{ }
 
 // Get the ASCII character for this Tile.
-char Tile::ascii() const { return ascii_; }
+char Tile::ascii(bool ignore_scars) const
+{
+    if (ignore_scars) return ascii_;
+    else if (tag(TileTag::Bloodied)) return ascii_scars_;
+    else return ascii_;
+}
 
 // Clears a TileTag from this Tile.
 void Tile::clear_tag(TileTag the_tag, bool changed)
@@ -28,19 +34,33 @@ void Tile::clear_tag(TileTag the_tag, bool changed)
 void Tile::clear_tags(std::initializer_list<TileTag> tag_list, bool changed) { for (auto &the_tag : tag_list) clear_tag(the_tag, changed); }
 
 // Gets the colour of this Tile.
-Colour Tile::colour() const { return colour_; }
+Colour Tile::colour(bool ignore_scars) const
+{
+    if (ignore_scars) return colour_;
+    else if (tag(TileTag::Bloodied)) return colour_scars_;
+    else return colour_;
+}
 
 // Retrieves the ID of this Tile.
 TileID Tile::id() const { return id_; }
 
 // Checks if this Tile is identical to another.
-bool Tile::is_identical_to(Tile* tile)
+bool Tile::is_identical_to(Tile* tile, bool ignore_scars)
 {
     if (id_ != tile->id_ || ascii_ != tile->ascii_ || colour_ != tile->colour_ || name_.compare(tile->name_)) return false;
+    if (!ignore_scars && (ascii_scars_ != tile->ascii_scars_ || colour_scars_ != tile->colour_scars_)) return false;
     for (auto the_tag : tags_)
+    {
+        if (the_tag == TileTag::Changed) continue;
+        if (ignore_scars && the_tag == TileTag::Bloodied) continue;
         if (!tile->tag(the_tag)) return false;
+    }
     for (auto the_tag : tile->tags_)
+    {
+        if (the_tag == TileTag::Changed) continue;
+        if (ignore_scars && the_tag == TileTag::Bloodied) continue;
         if (!tag(the_tag)) return false;
+    }
     return true;
 }
 
@@ -70,6 +90,13 @@ void Tile::set_name(const std::string &new_name)
 {
     name_ = new_name;
     set_tag(TileTag::Changed);
+}
+
+// Sets the ASCII character and colour of this Tile, from blood/burns/etc.
+void Tile::set_scars(char ch, Colour col)
+{
+    ascii_scars_ = ch;
+    colour_scars_ = col;
 }
 
 // Sets a TileTag on this Tile.
