@@ -31,6 +31,7 @@ Area::Area(int width, int height) : cleanup_done_(false), needs_fov_recalc_(true
     std::fill_n(visible_, width * height, false);
     tile_memory_ = new char[width * height];
     std::fill_n(tile_memory_, width * height, ' ');
+    entities_.push_back(core()->game()->player());
 }
 
 // Destructor, cleans up memory.

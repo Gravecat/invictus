@@ -172,7 +172,6 @@ void SaveLoad::load_game_manager(std::ifstream &save_file)
     game_manager->game_state_ = static_cast<GameState>(load_data<uint8_t>(save_file));
     game_manager->heartbeat_ = load_data<float>(save_file);
     game_manager->heartbeat10_ = load_data<float>(save_file);
-    game_manager->player_ = std::dynamic_pointer_cast<Player>(load_entity(save_file));
     game_manager->area_ = load_area(save_file);
     load_ui(save_file);
 }
@@ -409,7 +408,6 @@ void SaveLoad::save_game_manager(std::ofstream &save_file)
     save_data<uint8_t>(save_file, static_cast<uint8_t>(game_manager->game_state_));
     save_data<float>(save_file, game_manager->heartbeat_);
     save_data<float>(save_file, game_manager->heartbeat10_);
-    save_entity(save_file, game_manager->player_);
     save_area(save_file, game_manager->area_);
     save_ui(save_file);
 }
