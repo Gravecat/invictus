@@ -401,7 +401,6 @@ void Terminal::print(std::string str, int x, int y, Colour col, unsigned int fla
         const unsigned long ansi_code = colour_pair_code(col, flags);
         if (has_colour_) wattron(win, ansi_code | colour_flags);
         const unsigned int first_word_size = first_word.size();
-        StrX::find_and_replace(first_word, "%", "%%");
         mvwprintw(win, y, x, "%s", first_word.c_str());
         if (has_colour_) wattroff(win, ansi_code | colour_flags);
         x += first_word_size;
