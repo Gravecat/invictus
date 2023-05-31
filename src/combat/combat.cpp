@@ -42,23 +42,23 @@ bool Combat::bump_attack(std::shared_ptr<Mobile> attacker, std::shared_ptr<Mobil
 }
 
 // Generates a standard-format damage number string.
-std::string Combat::damage_number_str(float damage, float blocked, bool crit, bool bleed, bool poison)
+std::string Combat::damage_number_str(int damage, int blocked, bool crit, bool bleed, bool poison)
 {
     std::string dmg_str;
     if (crit) dmg_str = "{w}[{m}*"; else dmg_str = "{w}[";
-    dmg_str += StrX::intostr_pretty(round(damage));
+    dmg_str += StrX::intostr_pretty(damage);
     if (bleed && !crit) dmg_str += "B";
     if (poison && !crit) dmg_str += "P";
     if (crit) dmg_str += "{m}*{w}]";
     else dmg_str += "]";
-    if (std::round(blocked) > 0) dmg_str += " {w}<{b}-" + StrX::intostr_pretty(round(blocked)) + "{w}>";
+    if (blocked > 0) dmg_str += " {w}<{b}-" + StrX::intostr_pretty(blocked) + "{w}>";
     return dmg_str;
 }
 
 // Returns an appropriate damage string.
-std::string Combat::damage_str(float damage, std::shared_ptr<Mobile> defender, bool heat)
+std::string Combat::damage_str(int damage, std::shared_ptr<Mobile> defender, bool heat)
 {
-    const float percentage = (damage / defender->hp(true)) * 100;
+    const float percentage = std::round((static_cast<float>(damage) / static_cast<float>(defender->hp(true))) * 100);
     if (percentage >= 200000) return StrX::rainbow_text("SUPERNOVAS", "rym");
     else if (percentage >= 150000) return StrX::rainbow_text("METEORITES", "urm");
     else if (percentage >= 125000) return StrX::rainbow_text("GLACIATES", "cuw");
@@ -327,7 +327,7 @@ void Combat::perform_attack(std::shared_ptr<Mobile> attacker, std::shared_ptr<Mo
         if (critical_hit)
         {
             bleed = true;
-            damage = std::round(damage * CRITICAL_HIT_DAMAGE_MULTI);
+            damage *= CRITICAL_HIT_DAMAGE_MULTI;
         }
 
         if (damage < 0) damage = 0; // Just in case.
@@ -364,15 +364,15 @@ void Combat::perform_attack(std::shared_ptr<Mobile> attacker, std::shared_ptr<Mo
 }
 
 // Returns a threshold string, if a damage threshold has been passed.
-std::string Combat::threshold_str(std::shared_ptr<Mobile> defender, float damage, const std::string &good_colour, const std::string &bad_colour)
+std::string Combat::threshold_str(std::shared_ptr<Mobile> defender, int damage, const std::string &good_colour, const std::string &bad_colour)
 {
     const bool alive = !defender->tag(EntityTag::Unliving);
     const bool is_player = defender->type() == EntityType::PLAYER;
     const bool plural = defender->tag(EntityTag::PluralName) || is_player;
     const std::string name = (is_player ? " You " : (plural ? " They " : " It "));
 
-    const float old_perc = defender->hp() / defender->hp(true);
-    float new_perc = (defender->hp() - damage) / defender->hp(true);
+    const float old_perc = static_cast<float>(defender->hp()) / static_cast<float>(defender->hp(true));
+    float new_perc = (static_cast<float>(defender->hp()) - static_cast<float>(damage)) / static_cast<float>(defender->hp(true));
     if (defender->hp() <= damage) new_perc = 0;
 
     if (old_perc >= 0.99f && new_perc >= 0.95f) return bad_colour + name + (alive ? (plural ? "barely notice." : "barely notices.") :

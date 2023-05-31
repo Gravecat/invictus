@@ -31,10 +31,10 @@ public:
         WieldType wield_type_defender);	// Performs an attack with a single weapon.
 
 private:
-    static std::string  damage_number_str(float damage, float blocked, bool crit, bool bleed, bool poison); // Generates a standard-format damage number string.
-    static std::string  damage_str(float damage, std::shared_ptr<Mobile> defender, bool heat);  // Returns an appropriate damage string.
+    static std::string  damage_number_str(int damage, int blocked, bool crit, bool bleed, bool poison); // Generates a standard-format damage number string.
+    static std::string  damage_str(int damage, std::shared_ptr<Mobile> defender, bool heat);    // Returns an appropriate damage string.
     // Returns a threshold string, if a damage threshold has been passed.
-    static std::string  threshold_str(std::shared_ptr<Mobile> defender, float damage, const std::string &good_colour, const std::string &bad_colour);
+    static std::string  threshold_str(std::shared_ptr<Mobile> defender, int damage, const std::string &good_colour, const std::string &bad_colour);
 };
 
 }       // namespace invictus
