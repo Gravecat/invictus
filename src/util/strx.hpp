@@ -14,7 +14,7 @@ namespace invictus
 
 // Flags used in StrX::comma_list().
 constexpr int   CL_FLAG_USE_AND =   1;
-constexpr int   CL_FLAG_SQL_MODE =  2;
+constexpr int   CL_FLAG_USE_OR =    2;
 
 
 class StrX
@@ -24,7 +24,7 @@ public:
                         // Find and replace one string with another.
     static std::string  capitalize_first_letter(std::string str);   // Capitalizes the first letter of a string.
     static uint32_t     center_strvec(std::vector<std::string> &vec);   // Centers all the strings in a vector.
-    static std::string  comma_list(std::vector<std::string> vec, unsigned int flags);   // Converts a vector to a comma-separated list.
+    static std::string  comma_list(std::vector<std::string> vec, unsigned int flags = 0);   // Converts a vector to a comma-separated list.
     static bool         find_and_replace(std::string &input, const std::string &to_find, const std::string &to_replace);
     static std::string  ftos(double num);           // Converts a float or double to a string.
     static std::string  intostr_pretty(int num);    // Returns a 'pretty' version of a number in string format, such as "12,345".

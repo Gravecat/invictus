@@ -1,10 +1,13 @@
 // area/tile.cpp -- The Tile class, defining floors, walls, and other semi-permanent obstacles in the game.
 // Copyright © 2023 Raine "Gravecat" Simmons. Licensed under the GNU Affero General Public License v3 or any later version.
 
+#include <vector>
+
 #include "area/tile.hpp"
 #include "codex/codex-tile.hpp"
 #include "terminal/terminal-shared-defs.hpp"
 #include "tune/ascii-symbols.hpp"
+#include "util/strx.hpp"
 
 
 namespace invictus
@@ -47,7 +50,8 @@ TileID Tile::id() const { return id_; }
 // Checks if this Tile is identical to another.
 bool Tile::is_identical_to(Tile* tile)
 {
-    if (id_ != tile->id_ || ascii_ != tile->ascii_ || colour_ != tile->colour_ || name_.compare(tile->name_)) return false;
+    if (id_ != tile->id_ || ascii_ != tile->ascii_ || colour_ != tile->colour_ || ascii_scars_ != tile->ascii_scars_ || colour_scars_ != tile->colour_scars_ ||
+        name_.compare(tile->name_)) return false;
     for (auto the_tag : tags_)
         if (!tile->tag(the_tag)) return false;
     for (auto the_tag : tile->tags_)
@@ -58,8 +62,12 @@ bool Tile::is_identical_to(Tile* tile)
 // Gets the name of this Tile.
 std::string Tile::name() const
 {
-    if (tag(TileTag::Open)) return name_ + " (open)";
-    return name_;
+    std::vector<std::string> suffixes;
+
+    if (tag(TileTag::Bloodied)) suffixes.push_back("bloodied");
+    if (tag(TileTag::Open)) suffixes.push_back("open");
+    if (suffixes.size()) return name_ + " (" + StrX::comma_list(suffixes) + ")";
+    else return name_;
 }
 
 // Sets this Tile's ASCII character.

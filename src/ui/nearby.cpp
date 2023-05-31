@@ -210,9 +210,7 @@ void Nearby::render()
         if (current_y >= window_h - 1) return;
         terminal->put(tile->ascii(), 2, current_y, tile->colour(), 0, nearby_window);
         
-        std::string tile_name = tile->name();
-        if (tile->tag(TileTag::Bloodied)) tile_name += " (bloody)";
-        std::vector<std::string> name_str = StrX::string_explode_colour("{w}" + tile_name, 16);
+        std::vector<std::string> name_str = StrX::string_explode_colour("{w}" + tile->name(), 16);
         for (auto l : name_str)
         {
             terminal->print(l, 4, current_y, Colour::WHITE, 0, nearby_window);

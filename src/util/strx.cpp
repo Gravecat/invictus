@@ -48,7 +48,7 @@ uint32_t StrX::center_strvec(std::vector<std::string> &vec)
 std::string StrX::comma_list(std::vector<std::string> vec, unsigned int flags)
 {
     const bool use_and = ((flags & CL_FLAG_USE_AND) == CL_FLAG_USE_AND);
-    const bool sql_mode = ((flags & CL_FLAG_SQL_MODE) == CL_FLAG_SQL_MODE);
+    const bool use_or = ((flags & CL_FLAG_USE_OR) == CL_FLAG_USE_OR);
     if (!vec.size())
     {
         core()->guru()->nonfatal("Empty vector provided to comma_list!", GURU_WARN);
@@ -58,8 +58,8 @@ std::string StrX::comma_list(std::vector<std::string> vec, unsigned int flags)
     std::string plus = " and ";
     if (!use_and)
     {
-        if (sql_mode) plus = ", ";
-        else plus = " or ";
+        if (use_or) plus = " or ";
+        else plus = ", ";
     }
     else if (vec.size() == 2) return vec.at(0) + plus + vec.at(1);
 
