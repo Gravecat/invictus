@@ -35,6 +35,9 @@ unsigned int Random::roll(unsigned int num_dice, unsigned int num_faces)
     return result;
 }
 
+// Retrieves a random float between the two specified values.
+float Random::rng_float(float min, float max) { return min + (static_cast<float>(std::rand()) / (RAND_MAX / (max - min))); }
+
 // Seed the random number generator.
 void Random::seed()
 {
