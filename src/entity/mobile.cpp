@@ -33,11 +33,8 @@ std::shared_ptr<Item> Mobile::blank_item_ = std::make_shared<Item>();
 
 
 // Constructor.
-Mobile::Mobile() : Entity(), awake_(false), bloody_feet_(0), hp_{1, 1}, mp_{0, 0},  sp_{0, 0}
+Mobile::Mobile() : Entity(), awake_(false), bloody_feet_(0), hp_{1, 1}, move_speed_(TIME_BASE_MOVEMENT), mp_{0, 0}, sp_{0, 0}
 {
-    set_name("mobile");
-    set_prop_f(EntityProp::SPEED, TIME_BASE_MOVEMENT);
-
     // Populates the equipment vector with blank items.
     for (unsigned int i = 0; i < static_cast<unsigned int>(EquipSlot::_END); i++)
         equipment_.push_back(blank_item_);
@@ -373,7 +370,7 @@ bool Mobile::move_or_attack(std::shared_ptr<Mobile> self, int dx, int dy)
 }
 
 // Returns the amount of ticks needed for this Mobile to move one tile.
-float Mobile::movement_speed() const { return get_prop_f(EntityProp::SPEED); }
+float Mobile::movement_speed() const { return move_speed_; }
 
 // Retrieves the current or maximum mana points of this Mobile.
 uint16_t Mobile::mp(bool max) const { return mp_[max ? 1 : 0]; }

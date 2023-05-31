@@ -20,7 +20,8 @@ namespace invictus
 
 // Constructor.
 Monster::Monster() : Mobile(), banked_ticks_(0), dodge_(10), last_dir_(0), player_last_seen_x_(-1), player_last_seen_y_(-1), to_damage_bonus_(0),
-    to_hit_bonus_(0), tracking_turns_(0) { }
+    to_hit_bonus_(0), tracking_turns_(0)
+{ set_name("monster"); }
 
 // Adds or removes banked ticks to this Monster.
 void Monster::add_banked_ticks(float amount)

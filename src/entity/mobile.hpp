@@ -65,6 +65,7 @@ private:
     float       bloody_feet_;       // How bloodied are this Mobile's feet?
     std::vector<std::shared_ptr<Item>>  equipment_; // Items equipped by this Mobile.
     uint16_t    hp_[2];             // The current and maximum hit points of this Mobile.
+    float       move_speed_;        // The movement speed of this Mobile.
     uint16_t    mp_[2];             // The current and maximum mana points of this Mobile.
     uint16_t    sp_[2];             // The current and maximum stamina points of this Mobile.
 

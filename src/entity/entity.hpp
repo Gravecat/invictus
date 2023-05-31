@@ -30,7 +30,6 @@ enum class EntityProp : uint16_t
     DAMAGE_DICE_B,  // The number of faces on each damage die.
     LIGHT_POWER,    // The power of a light source.
     MAX_FINESSE,    // The maximum amount of finesse bonus that can be used when this Item is equipped.
-    SPEED,          // The movement speed of a Mobile, or the speed at which an Item can be used.
 };
 
 // Binary tags that can be set on all kinds of Entities.
