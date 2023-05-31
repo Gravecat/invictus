@@ -13,6 +13,8 @@ tweaked to make sweeping changes to large parts of the game code at once.
 
 * **fov-lighting.hpp** -- Tune values for field-of-view, line-of-sight and static/dynamic lighting.
 
+* **gore.hpp** -- These values affect the spread of blood and gore during combat.
+
 * **message-log.hpp** -- Tune values specific to the scrolling message log at the bottom of the screen.
 
 * **nearby-bar.hpp** -- Tune values for the 'nearby' sidebar, which shows players what the various visible ASCII symbols represent.

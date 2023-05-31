@@ -203,6 +203,7 @@ void SaveLoad::load_mobile(std::ifstream &save_file, std::shared_ptr<Mobile> mob
     mob->finesse_ = load_data<int8_t>(save_file);
     mob->intellect_ = load_data<int8_t>(save_file);
     mob->might_ = load_data<int8_t>(save_file);
+    mob->bloody_feet_ = load_data<float>(save_file);
 
     // Load the equipment.
     uint8_t equ_size = load_data<uint8_t>(save_file);
@@ -430,6 +431,7 @@ void SaveLoad::save_mobile(std::ofstream &save_file, std::shared_ptr<Mobile> mob
     save_data<int8_t>(save_file, mob->finesse_);
     save_data<int8_t>(save_file, mob->intellect_);
     save_data<int8_t>(save_file, mob->might_);
+    save_data<float>(save_file, mob->bloody_feet_);
 
     // Saves the equipment.
     save_data<uint8_t>(save_file, static_cast<uint8_t>(EquipSlot::_END));

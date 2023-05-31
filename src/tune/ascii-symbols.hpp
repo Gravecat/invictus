@@ -15,11 +15,13 @@ constexpr char  ASCII_NOTHING =         ' ';    // Used for representing... noth
 // " (34, double quote)
 
 // # (35, hash)
+constexpr char  ASCII_GORE_6B =         '#';    // Ground/floor tiles covered in blood/gore.
 constexpr char  ASCII_WALL =            '#';    // Walls.
 
 // $ (36, dollar sign)
 
 // % (37, percent)
+constexpr char  ASCII_GORE_6A =         '%';    // Ground/floor tiles covered in blood/gore.
 constexpr char  ASCII_TOMB =            '%';    // Tombs, coffins, etc.
 
 // & (38, ampersand)
@@ -27,6 +29,7 @@ constexpr char  ASCII_STACK =           '&';    // A stack of multiple items.
 
 // ' (39, single quote)
 constexpr char  ASCII_DOOR_OPEN =       '\'';   // Open doors.
+constexpr char  ASCII_GORE_3 =          '\'';   // Ground/floor tiles with a fair amount of blood/gore.
 
 // ( (40, open bracket)
 
@@ -39,10 +42,12 @@ constexpr char  ASCII_UNKNOWN =         '*';    // Used to represent undefined i
 constexpr char  ASCII_DOOR_CLOSED =     '+';    // Closed doors.
 
 // , (44, comma)
+constexpr char  ASCII_GORE_2 =          ',';    // Ground/floor tiles with a little blood/gore.
 
 // - (45, dash)
 
 // . (46, full stop)
+constexpr char  ASCII_GORE_1 =          '.';    // Ground/floor tiles with the lowest blood/gore level.
 constexpr char  ASCII_GROUND =          '.';    // Ground/floor tiles.
 
 // / (47, forward slash)
@@ -68,9 +73,11 @@ constexpr char  ASCII_GROUND =          '.';    // Ground/floor tiles.
 // 9 (57, nine)
 
 // : (58, colon)
+constexpr char  ASCII_GORE_4 =          ':';    // Ground/floor tiles with a lot of blood/gore.
 constexpr char  ASCII_STONE =           ':';    // Stones or rocks.
 
 // ; (59, semicolon)
+constexpr char  ASCII_GORE_5 =          ';';    // Ground/floor tiles with a whole lot of blood/gore.
 
 // < (60, less than)
 constexpr char  ASCII_STAIRS_UP =       '<';    // Stairs leading upward.

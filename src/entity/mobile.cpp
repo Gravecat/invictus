@@ -4,6 +4,7 @@
 #include <cmath>
 
 #include "area/area.hpp"
+#include "area/gore.hpp"
 #include "area/tile.hpp"
 #include "combat/combat.hpp"
 #include "core/core.hpp"
@@ -14,8 +15,10 @@
 #include "terminal/terminal-shared-defs.hpp"
 #include "tune/ascii-symbols.hpp"
 #include "tune/combat.hpp"
+#include "tune/gore.hpp"
 #include "tune/resting.hpp"
 #include "tune/timing.hpp"
+#include "util/random.hpp"
 #include "util/strx.hpp"
 
 
@@ -27,8 +30,8 @@ std::shared_ptr<Item> Mobile::blank_item_ = std::make_shared<Item>();
 
 
 // Constructor.
-Mobile::Mobile() : Entity(), awake_(false), banked_ticks_(0), finesse_(0), hp_{BASE_HIT_POINTS, BASE_HIT_POINTS}, intellect_(0), last_dir_(0), might_(0),
-    mp_{BASE_MANA_POINTS, BASE_MANA_POINTS}, sp_{BASE_STAMINA_POINTS, BASE_STAMINA_POINTS}
+Mobile::Mobile() : Entity(), awake_(false), banked_ticks_(0), bloody_feet_(0), finesse_(0), hp_{BASE_HIT_POINTS, BASE_HIT_POINTS}, intellect_(0), last_dir_(0),
+    might_(0), mp_{BASE_MANA_POINTS, BASE_MANA_POINTS}, sp_{BASE_STAMINA_POINTS, BASE_STAMINA_POINTS}
 {
     set_name("mobile");
     set_prop_f(EntityProp::SPEED, TIME_BASE_MOVEMENT);
@@ -45,6 +48,9 @@ void Mobile::add_banked_ticks(float amount)
     if (amount < 0) core()->guru()->halt("Attempt to add negative banked ticks to " + name(), static_cast<int>(amount));
     else banked_ticks_ += amount;
 }
+
+// Increase (or decrease) the amount of blood on this Mobile's feet.
+void Mobile::add_bloody_feet(float blood) { bloody_feet_ += blood; }
 
 // Returns the total armour modifier from this Mobile and their equipped gear.
 int Mobile::armour()
@@ -69,6 +75,9 @@ float Mobile::banked_ticks() const { return banked_ticks_; }
 // Checks if this Mobile blocks a specified tile.
 bool Mobile::blocks_tile(int x_tile, int y_tile) const
 { return (x_tile == x() && y_tile == y()); }
+
+// Checks how bloodied this Mobile's feet are.
+float Mobile::bloody_feet() const { return bloody_feet_; }
 
 // Erase all banked ticks on this Mobile.
 void Mobile::clear_banked_ticks() { banked_ticks_ = 0; }
@@ -119,7 +128,7 @@ void Mobile::close_door(int dx, int dy)
 void Mobile::die()
 {
     const bool unliving = tag(EntityTag::Unliving);
-    const bool can_bleed = tag(EntityTag::ImmunityBleed);
+    const bool can_bleed = !tag(EntityTag::ImmunityBleed);
 
     if (!tag(EntityTag::NoDeathMessage))
     {
@@ -131,8 +140,9 @@ void Mobile::die()
 
     hp_[0] = 0;
     set_ascii(ASCII_CORPSE);
-    if (!can_bleed) set_colour(Colour::RED);
+    if (can_bleed) set_colour(Colour::RED);
     set_name(name(NAME_FLAG_POSSESSIVE) + (unliving ? " remains" : " corpse"));
+    if (can_bleed) Gore::splash(x(), y(), GORE_ON_MOBILE_DEATH);
 }
 
 // Returns this Mobile's dodge score.
@@ -353,6 +363,25 @@ bool Mobile::move_or_attack(std::shared_ptr<Mobile> self, int dx, int dy)
                 StrX::find_and_replace(door_name, " (open)", "");
                 core()->message("You pass through an open " + door_name + ".");
             }
+        }
+
+        // Check to see if this Actor's feet get covered in blood.
+        if (area->tile(self->x(), self->y())->tag(TileTag::Bloodied))
+        {
+            const int gore_level = Gore::gore_level(x(), y());
+            if (bloody_feet() < gore_level)
+            {
+                add_bloody_feet(Random::rng_float(0, (gore_level > GORE_BLOODY_FEET_MAX ? GORE_BLOODY_FEET_MAX : gore_level)));
+                if (bloody_feet() > gore_level) add_bloody_feet(-(bloody_feet() - gore_level));
+            }
+        }
+
+        // Check to see if we're going to be tracking blood and gore around.
+        else
+        {
+            float gore_dropped = Random::rng_float(0, bloody_feet());
+            add_bloody_feet(-gore_dropped);
+            if (gore_dropped >= 1) Gore::set_gore(x(), y(), std::round(gore_dropped));
         }
 
         timed_action(movement_cost);

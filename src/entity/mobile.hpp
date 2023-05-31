@@ -22,10 +22,12 @@ class Mobile : public Entity
 public:
                     Mobile();   // Constructor.
     virtual void    add_banked_ticks(float amount); // Adds or removes banked ticks to this Mobile.
+    void            add_bloody_feet(float blood);   // Increase (or decrease) the amount of blood on this Mobile's feet.
     int             armour();   // Returns the total armour modifier from this Mobile and their equipped gear.
     float           attack_speed(); // Returns the number of ticks needed for this Mobile to make an attack.
     virtual float   banked_ticks() const;   // Retrieves the amount of ticks banked by this Mobile.
     bool            blocks_tile(int x_tile, int y_tile) const override; // Checks if this Mobile blocks a specified tile.
+    float           bloody_feet() const;    // Checks how bloodied this Mobile's feet are.
     virtual void    clear_banked_ticks();   // Erase all banked ticks on this Mobile.
     void            close_door(int dx, int dy); // Attempts to close a door.
     void            die();      // Causes this Mobile to die!
@@ -60,6 +62,7 @@ public:
 private:
     bool        awake_; // Is this Mobile active?
     float       banked_ticks_;  // The amount of time this Mobile has 'banked'; it can 'spend' this time to move or attack.
+    float       bloody_feet_;   // How bloodied are this Mobile's feet?
     std::vector<std::shared_ptr<Item>>  equipment_; // Items equipped by this Mobile.
     int8_t      finesse_;       // How agile and precise this Mobile is. This affects using finesse weapons, and dodge bonus to armour.
     uint16_t    hp_[2];         // The current and maximum hit points of this Mobile.
