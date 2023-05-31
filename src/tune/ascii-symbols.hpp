@@ -212,6 +212,7 @@ constexpr char  ASCII_EDGED_WEAPON =    '|';     // Edged weapons such as swords
 // } (125, closed curly brace)
 
 // ~ (126, tilde)
+constexpr char  ASCII_CORPSE =          '~';    // Corpses of slain Mobiles.
 
 }       // namespace invictus
 #endif  // TUNE_ASCII_SYMBOLS_HPP_

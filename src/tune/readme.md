@@ -17,4 +17,6 @@ tweaked to make sweeping changes to large parts of the game code at once.
 
 * **nearby-bar.hpp** -- Tune values for the 'nearby' sidebar, which shows players what the various visible ASCII symbols represent.
 
+* **resting.hpp** -- Preset values involving resting, and noises that are loud enough to wake the player.
+
 * **timing.hpp** - All definitions for timing in the game (i.e. how long actions take to perform).

@@ -28,6 +28,7 @@ public:
     bool            blocks_tile(int x_tile, int y_tile) const override; // Checks if this Mobile blocks a specified tile.
     virtual void    clear_banked_ticks();   // Erase all banked ticks on this Mobile.
     void            close_door(int dx, int dy); // Attempts to close a door.
+    void            die();      // Causes this Mobile to die!
     int             dodge();    // Returns this Mobile's dodge score.
     void            drop_item(uint32_t id); // Drops a carried item.
     std::vector<std::shared_ptr<Item>>* equ();  // Retrieves a pointer to the equipment vector.
@@ -47,6 +48,7 @@ public:
     void            set_intellect(int8_t new_int);  // Sets this Mobile's Intellect attribute.
     void            set_might(int8_t new_mig);      // Sets this Mobile's Might attribute.
     uint16_t        sp(bool max = false) const; // Retrieves the current or maximum stamina points of this Mobile.
+    void            take_damage(int damage);    // Takes damage!
     void            take_item(uint32_t id); // Picks up a specified item.
     void            tick(std::shared_ptr<Entity> self) override;    // Processes AI for this Mobile each turn.
     void            tick10(std::shared_ptr<Entity> self) override;  // Process slower state-change events that happen less often, such as buffs/debuffs ticking.

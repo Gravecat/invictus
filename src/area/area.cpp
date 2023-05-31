@@ -220,6 +220,15 @@ void Area::render()
     // We'll render Actors in several passes, to ensure more important things are on top.
 
     // First pass: Corpses.
+    for (auto entity : entities_)
+    {
+        if (entity->type() != EntityType::MOBILE || !entity->is_in_fov()) continue;
+        const int ox = entity->x() - offset_x(), oy = entity->y() - offset_y();
+        if (ox < 0 || oy < 0 || ox >= visible_x || oy >= visible_y) continue;
+        auto mob = std::dynamic_pointer_cast<Mobile>(entity);
+        if (!mob->is_dead()) continue;
+        terminal->put(mob->ascii(), ox, oy, mob->colour(), 0, dungeon_view);
+    }
 
     // Second pass: Items.
     for (auto entity : entities_)

@@ -11,6 +11,7 @@
 #include "entity/item.hpp"
 #include "entity/mobile.hpp"
 #include "tune/combat.hpp"
+#include "tune/resting.hpp"
 #include "util/random.hpp"
 #include "util/strx.hpp"
 
@@ -350,15 +351,17 @@ void Combat::perform_attack(std::shared_ptr<Mobile> attacker, std::shared_ptr<Mo
             std::string threshold_string = threshold_str(defender, damage, good_colour_attacker, bad_colour_defender);
             std::string damage_colour = good_colour_attacker;
             std::string death_str;
+            int awaken_chance = AWAKEN_CHANCE_MOBS_FIGHTING_NEAR;
             if (damage >= defender->hp())
             {
                 if (defender_is_player) death_str = " {m}You are slain!";
-                else death_str = " {b}" + defender_name_c + (defender->tag(EntityTag::Unliving) ? " is destroyed!" : " is slain!");
-                //defender->set_tag(ActorTag::NoDeathMessage);   
+                else death_str = " {u}" + defender_name_c + (defender->tag(EntityTag::Unliving) ? " is destroyed!" : " is slain!");
+                defender->set_tag(EntityTag::NoDeathMessage);
+                awaken_chance = AWAKEN_CHANCE_MOB_DEATH_NEAR;
             }
             core()->message(damage_colour + attacker_your_string_c + " " + weapon_name + " " + damage_word + " " + damage_colour + defender_name + "! " +
-                damage_number_str(damage, damage_blocked, critical_hit, bleed, poison) + threshold_string + death_str);
-            //defender->take_damage(damage);
+                damage_number_str(damage, damage_blocked, critical_hit, bleed, poison) + threshold_string + death_str, awaken_chance);
+            defender->take_damage(damage);
         }
     }
 }

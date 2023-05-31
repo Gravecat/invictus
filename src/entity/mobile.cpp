@@ -10,9 +10,11 @@
 #include "core/game-manager.hpp"
 #include "core/guru.hpp"
 #include "entity/item.hpp"
-#include "entity/mobile.hpp"
+#include "entity/player.hpp"
+#include "terminal/terminal-shared-defs.hpp"
 #include "tune/ascii-symbols.hpp"
 #include "tune/combat.hpp"
+#include "tune/resting.hpp"
 #include "tune/timing.hpp"
 #include "util/strx.hpp"
 
@@ -111,6 +113,26 @@ void Mobile::close_door(int dx, int dy)
     the_tile->clear_tags({TileTag::Closeable, TileTag::Open});
     area->need_fov_recalc();
     timed_action(TIME_CLOSE_DOOR);
+}
+
+// Causes the Mobile to die!
+void Mobile::die()
+{
+    const bool unliving = tag(EntityTag::Unliving);
+    const bool can_bleed = tag(EntityTag::ImmunityBleed);
+
+    if (!tag(EntityTag::NoDeathMessage))
+    {
+        if (is_in_fov()) core()->message("{u}" + name(NAME_FLAG_THE | NAME_FLAG_CAPITALIZE_FIRST) + (unliving ? "is destroyed!" : " dies!"),
+            AWAKEN_CHANCE_MOB_DEATH_NEAR);
+        else if (distance_from(core()->game()->player()) < DEATH_SCREAM_DISTANCE) core()->message("{u}You hear something die nearby!",
+            AWAKEN_CHANCE_MOB_DEATH_FAR);
+    }
+
+    hp_[0] = 0;
+    set_ascii(ASCII_CORPSE);
+    if (!can_bleed) set_colour(Colour::RED);
+    set_name(name(NAME_FLAG_POSSESSIVE) + (unliving ? " remains" : " corpse"));
 }
 
 // Returns this Mobile's dodge score.
@@ -385,6 +407,18 @@ void Mobile::set_might(int8_t new_mig) { might_ = new_mig; }
 
 // Retrieves the current or maximum stamina points of this Mobile.
 uint16_t Mobile::sp(bool max) const { return sp_[max ? 1 : 0]; }
+
+// Takes damage!
+void Mobile::take_damage(int damage)
+{
+    if (damage <= 0) return;
+    if (damage >= hp_[0])
+    {
+        hp_[0] = 0;
+        die();
+    }
+    else hp_[0] -= damage;
+}
 
 // Picks up a specified item.
 void Mobile::take_item(uint32_t id)
