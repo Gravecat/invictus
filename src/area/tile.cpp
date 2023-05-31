@@ -45,22 +45,13 @@ Colour Tile::colour(bool ignore_scars) const
 TileID Tile::id() const { return id_; }
 
 // Checks if this Tile is identical to another.
-bool Tile::is_identical_to(Tile* tile, bool ignore_scars)
+bool Tile::is_identical_to(Tile* tile)
 {
     if (id_ != tile->id_ || ascii_ != tile->ascii_ || colour_ != tile->colour_ || name_.compare(tile->name_)) return false;
-    if (!ignore_scars && (ascii_scars_ != tile->ascii_scars_ || colour_scars_ != tile->colour_scars_)) return false;
     for (auto the_tag : tags_)
-    {
-        if (the_tag == TileTag::Changed) continue;
-        if (ignore_scars && the_tag == TileTag::Bloodied) continue;
         if (!tile->tag(the_tag)) return false;
-    }
     for (auto the_tag : tile->tags_)
-    {
-        if (the_tag == TileTag::Changed) continue;
-        if (ignore_scars && the_tag == TileTag::Bloodied) continue;
         if (!tag(the_tag)) return false;
-    }
     return true;
 }
 

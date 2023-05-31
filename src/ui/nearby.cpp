@@ -142,7 +142,6 @@ void Nearby::render()
 
     std::vector<Tile*> tiles;
     int visible_x = ui->dungeon_view()->get_width(), visible_y = ui->dungeon_view()->get_height();
-    uint8_t viscera_symbols = 0;
     for (int x = 0; x < area->width(); x++)
     {
         int ox = x - area->offset_x();
@@ -166,22 +165,10 @@ void Nearby::render()
             }
             if (!is_visible) continue;
 
-            if (tile->tag(TileTag::Bloodied))
-            {
-                switch (tile->ascii())
-                {
-                    case ASCII_GORE_1: viscera_symbols |= 1; break;
-                    case ASCII_GORE_2: viscera_symbols |= 2; break;
-                    case ASCII_GORE_3: viscera_symbols |= 4; break;
-                    case ASCII_GORE_4: viscera_symbols |= 8; break;
-                    case ASCII_GORE_5: viscera_symbols |= 16; break;
-                }
-            }
-
             bool found = false;
             for (auto tc : tiles)
             {
-                if (tc->is_identical_to(tile, true))
+                if (tc->is_identical_to(tile))
                 {
                     found = true;
                     break;
@@ -221,28 +208,16 @@ void Nearby::render()
     for (auto tile : tiles)
     {
         if (current_y >= window_h - 1) return;
-        terminal->put(tile->ascii(true), 2, current_y, tile->colour(true), 0, nearby_window);
+        terminal->put(tile->ascii(), 2, current_y, tile->colour(), 0, nearby_window);
         
-        std::vector<std::string> name_str = StrX::string_explode_colour("{w}" + tile->name(), 16);
+        std::string tile_name = tile->name();
+        if (tile->tag(TileTag::Bloodied)) tile_name += " (bloody)";
+        std::vector<std::string> name_str = StrX::string_explode_colour("{w}" + tile_name, 16);
         for (auto l : name_str)
         {
             terminal->print(l, 4, current_y, Colour::WHITE, 0, nearby_window);
             current_y++;
         }
-    }
-
-    std::string viscera_string = "{r}";
-    if (viscera_symbols & 1) viscera_string += std::string(1, ASCII_GORE_1);
-    if (viscera_symbols & 2) viscera_string += std::string(1, ASCII_GORE_2);
-    if (viscera_symbols & 4) viscera_string += std::string(1, ASCII_GORE_3);
-    if (viscera_symbols & 8) viscera_string += std::string(1, ASCII_GORE_4);
-    if (viscera_symbols & 16) viscera_string += std::string(1, ASCII_GORE_5);
-    viscera_string += " {w}blood";
-    std::vector<std::string> viscera_vec = StrX::string_explode_colour(viscera_string, 16);
-    for (auto l : viscera_vec)
-    {
-        terminal->print(l, 2, current_y, Colour::WHITE, 0, nearby_window);
-        current_y++;
     }
 }
 

@@ -47,7 +47,7 @@ public:
     char        ascii(bool ignore_scars = false) const;     // Get the ASCII character for this Tile.
     Colour      colour(bool ignore_scars = false) const;    // Gets the colour of this Tile.
     TileID      id() const;     // Retrieves the ID of this Tile.
-    bool        is_identical_to(Tile* tile, bool ignore_scars = false); // Checks if this Tile is identical to another.
+    bool        is_identical_to(Tile* tile);    // Checks if this Tile is identical to another.
     std::string name() const;   // Gets the name of this Tile.
     void        set_ascii(char new_ascii);      // Sets this Tile's ASCII character.
     void        set_colour(Colour new_colour);  // Sets this Tile's colour.
