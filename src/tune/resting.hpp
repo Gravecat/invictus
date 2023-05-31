@@ -9,9 +9,15 @@
 namespace invictus
 {
 
-constexpr int   AWAKEN_CHANCE_MOB_DEATH_FAR =       40; // The % chance of waking up due to a mobile dying outside of line-of-sight.
-constexpr int   AWAKEN_CHANCE_MOB_DEATH_NEAR =      80; // The % chance of waking up due to a mobile dying within line-of-sight.
-constexpr int   AWAKEN_CHANCE_MOBS_FIGHTING_NEAR =  80; // The % chance of waking up from mobiles fighting each other nearby.
+// The % chance of waking up...
+constexpr int   AWAKEN_CHANCE_DROP_ITEM =           20;     // ...due to the player dropping an item.
+constexpr int   AWAKEN_CHANCE_MOB_CLOSE_DOOR =      40;     // ...when a mobile within line-of-sight closes a door.
+constexpr int   AWAKEN_CHANCE_MOB_DEATH_FAR =       40;     // ...due to a mobile dying outside of line-of-sight.
+constexpr int   AWAKEN_CHANCE_MOB_DEATH_NEAR =      80;     // ...due to a mobile dying within line-of-sight.
+constexpr int   AWAKEN_CHANCE_MOB_DROP_ITEM =       2;      // ...when a mobile within line-of-sight drops an item.
+constexpr int   AWAKEN_CHANCE_MOB_OPEN_DOOR =       30;     // ...when a mobile within line-of-sight opens a door.
+constexpr int   AWAKEN_CHANCE_MOB_TAKE_ITEM =       1;      // ...when a mobile within line-of-sight picks up an item.
+constexpr int   AWAKEN_CHANCE_MOBS_FIGHTING_NEAR =  80;     // ...from mobiles fighting each other nearby.
 
 }       // namespace invictus
 #endif  // TUNE_RESTING_HPP_

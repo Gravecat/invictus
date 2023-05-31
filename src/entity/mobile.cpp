@@ -103,8 +103,8 @@ void Mobile::close_door(int dx, int dy)
     {
         if (area->is_in_fov(dx, dy))
         {
-            if (is_in_fov()) core()->message("{u}You see " + name(NAME_FLAG_A) + " {u}close a " + door_name + "{u}.");
-            else core()->message("{u}You see a " + door_name + " close.");
+            if (is_in_fov()) core()->message("{u}You see " + name(NAME_FLAG_A) + " {u}close a " + door_name + "{u}.", AWAKEN_CHANCE_MOB_CLOSE_DOOR);
+            else core()->message("{u}You see a " + door_name + " close.", AWAKEN_CHANCE_MOB_CLOSE_DOOR);
         }
     }
     
@@ -157,9 +157,9 @@ void Mobile::drop_item(uint32_t id)
     inv()->erase(inv()->begin() + id);
     item->set_pos(x(), y());
 
-    if (type() == EntityType::PLAYER) core()->message("You drop {c}" + item->name(NAME_FLAG_THE) + " {w}on the ground.");
+    if (type() == EntityType::PLAYER) core()->message("You drop {c}" + item->name(NAME_FLAG_THE) + " {w}on the ground.", AWAKEN_CHANCE_DROP_ITEM);
     else if (is_in_fov()) core()->message("{u}" + name(NAME_FLAG_THE | NAME_FLAG_CAPITALIZE_FIRST) + " {u}drops " + item->name(NAME_FLAG_A) +
-        " {u}on the ground.");
+        " {u}on the ground.", AWAKEN_CHANCE_MOB_DROP_ITEM);
     timed_action(TIME_DROP_ITEM);
 }
 
@@ -318,8 +318,9 @@ bool Mobile::move_or_attack(std::shared_ptr<Mobile> self, int dx, int dy)
             if (is_player) core()->message("You open the " + the_tile->name() + ".");
             else if (area->is_in_fov(xdx, ydy))
             {
-                if (is_in_fov()) core()->message("{u}You see " + name(NAME_FLAG_THE) + " {u}open a " + the_tile->name() + "{u}.");
-                else core()->message("{u}You see a " + the_tile->name() + " {u}open.");
+                if (is_in_fov()) core()->message("{u}You see " + name(NAME_FLAG_THE) + " {u}open a " + the_tile->name() + "{u}.",
+                    AWAKEN_CHANCE_MOB_OPEN_DOOR);
+                else core()->message("{u}You see a " + the_tile->name() + " {u}open.", AWAKEN_CHANCE_MOB_OPEN_DOOR);
             }
             auto tile = area->tile(xdx, ydy);
             tile->set_ascii(ASCII_DOOR_OPEN);
@@ -433,7 +434,7 @@ void Mobile::take_item(uint32_t id)
     inventory_add(entity);
     entities->erase(entities->begin() + id);
     if (type() == EntityType::PLAYER) core()->message("You pick up {c}" + entity->name(NAME_FLAG_A) + "{w}.");
-    else if (is_in_fov()) core()->message("{u}" + name() + " {u}picks up " + entity->name(NAME_FLAG_A) + "{u}.");
+    else if (is_in_fov()) core()->message("{u}" + name() + " {u}picks up " + entity->name(NAME_FLAG_A) + "{u}.", AWAKEN_CHANCE_MOB_TAKE_ITEM);
     timed_action(TIME_TAKE_ITEM);
 }
 
