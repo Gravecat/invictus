@@ -175,8 +175,6 @@ void Nearby::render()
                     case ASCII_GORE_3: viscera_symbols |= 4; break;
                     case ASCII_GORE_4: viscera_symbols |= 8; break;
                     case ASCII_GORE_5: viscera_symbols |= 16; break;
-                    case ASCII_GORE_6A: viscera_symbols |= 32; break;
-                    case ASCII_GORE_6B: viscera_symbols |= 64; break;
                 }
             }
 
@@ -239,8 +237,6 @@ void Nearby::render()
     if (viscera_symbols & 4) viscera_string += std::string(1, ASCII_GORE_3);
     if (viscera_symbols & 8) viscera_string += std::string(1, ASCII_GORE_4);
     if (viscera_symbols & 16) viscera_string += std::string(1, ASCII_GORE_5);
-    if (viscera_symbols & 32) viscera_string += std::string(1, ASCII_GORE_6A);
-    if (viscera_symbols & 64) viscera_string += std::string(1, ASCII_GORE_6B);
     viscera_string += " {w}blood";
     std::vector<std::string> viscera_vec = StrX::string_explode_colour(viscera_string, 16);
     for (auto l : viscera_vec)

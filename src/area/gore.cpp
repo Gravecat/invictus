@@ -24,7 +24,6 @@ void Gore::do_splash(int x, int y)
     if (x < 0 || y < 0 || x >= area->width() || y >= area->height()) return;
 
     Tile* tile = area->tile(x, y);
-    if (tile->tag(TileTag::BlocksMovement)) return;
     int level = gore_level(x, y);
     unsigned int spread_chance = (level - 1) * GORE_SPREAD_CHANCE_MULTI;
     if (level == 1) spread_chance = GORE_SPREAD_CHANCE_LOW;
@@ -45,6 +44,9 @@ void Gore::do_splash(int x, int y)
     {
         int dx = (Random::rng(2) == 1 ? -1 : 1);
         int dy = static_cast<int>(Random::rng(3)) - 2;
+        if (dx < 0 || dy < 0 || dx >= area->width() || dy >= area->height()) return;
+        Tile* new_tile = area->tile(x + dx, y + dy);
+        if (tile->tag(TileTag::BlocksMovement) && new_tile->tag(TileTag::BlocksMovement)) return;
         do_splash(x + dx, y + dy);
     }
 }
@@ -54,6 +56,7 @@ int Gore::gore_level(int x, int y)
 {
     const Tile* tile = core()->game()->area()->tile(x, y);
     if (!tile->tag(TileTag::Bloodied)) return 0;
+    if (tile->ascii(true) != ASCII_GROUND) return 1;
 
     switch(tile->ascii())
     {
@@ -62,7 +65,6 @@ int Gore::gore_level(int x, int y)
         case ASCII_GORE_3: return 3;
         case ASCII_GORE_4: return 4;
         case ASCII_GORE_5: return 5;
-        case ASCII_GORE_6A: case ASCII_GORE_6B: return 6;
         default: return 1;
     }
 
@@ -76,15 +78,19 @@ void Gore::set_gore(int x, int y, int level)
     if (tile->tag(TileTag::Immutable)) return;
     tile->set_tag(TileTag::Bloodied);
     Colour col = Colour::RED;
+    char ascii = tile->ascii(true);
+
     switch(level)
     {
-        case 1: tile->set_scars(ASCII_GORE_1, col); break;
-        case 2: tile->set_scars(ASCII_GORE_2, col); break;
-        case 3: tile->set_scars(ASCII_GORE_3, col); break;
-        case 4: tile->set_scars(ASCII_GORE_4, col); break;
-        case 5: tile->set_scars(ASCII_GORE_5, col); break;
-        default: if (Random::rng(GORE_ALT_CHAR_CHANCE) == 1) tile->set_scars(ASCII_GORE_6B, col); else tile->set_scars(ASCII_GORE_6A, col); break;
+        case 1: ascii = ASCII_GORE_1; break;
+        case 2: ascii = ASCII_GORE_2; break;
+        case 3: ascii = ASCII_GORE_3; break;
+        case 4: ascii = ASCII_GORE_4; break;
+        case 5: ascii = ASCII_GORE_5; break;
     }
+
+    if (tile->ascii(true) == ASCII_GROUND) tile->set_scars(ascii, col);
+    else tile->set_scars(tile->ascii(true), col);
 }
 
 // Splashes blood and gore on a given tile.

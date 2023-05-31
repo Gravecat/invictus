@@ -15,13 +15,11 @@ constexpr char  ASCII_NOTHING =         ' ';    // Used for representing... noth
 // " (34, double quote)
 
 // # (35, hash)
-constexpr char  ASCII_GORE_6B =         '#';    // Ground/floor tiles covered in blood/gore.
 constexpr char  ASCII_WALL =            '#';    // Walls.
 
 // $ (36, dollar sign)
 
 // % (37, percent)
-constexpr char  ASCII_GORE_6A =         '%';    // Ground/floor tiles covered in blood/gore.
 constexpr char  ASCII_TOMB =            '%';    // Tombs, coffins, etc.
 
 // & (38, ampersand)
