@@ -32,9 +32,6 @@ Player::Player() : Mobile(), finesse_(2), intellect_(1), might_(2)
     wake();
 }
 
-// Don't use this on a Player.
-void Player::add_banked_ticks(float) { core()->guru()->halt("Invalid call to add_banked_ticks on Player."); }
-
 // Returns the total armour modifier from this Player and their equipped gear.
 int Player::armour()
 {
@@ -48,12 +45,6 @@ int Player::armour()
     }
     else return armour_value_might;
 }
-
-// Don't use this on a Player.
-float Player::banked_ticks() const { core()->guru()->halt("Invalid call to banked_ticks on Player."); return 0; }
-
-// Don't use this on a Player.
-void Player::clear_banked_ticks() { core()->guru()->halt("Invalid call to clear_banked_ticks on Player."); }
 
 // Attempts to close a nearby door.
 void Player::close_a_door()
@@ -386,5 +377,8 @@ void Player::set_intellect(int8_t new_int) { intellect_ = new_int; }
 
 // Sets this Player's Might attribute.
 void Player::set_might(int8_t new_mig) { might_ = new_mig; }
+
+// This Player has made an action which takes time.
+void Player::timed_action(float time_taken) { core()->game()->pass_time(time_taken); }
 
 }   // namespace invictus

@@ -45,9 +45,9 @@ void Nearby::render()
     {
         if (!entity->is_in_fov() || entity->is_at(player->x(), player->y())) continue;
         auto entity_type = entity->type();
-        if (entity_type != EntityType::ITEM && entity_type != EntityType::MOBILE) continue;
+        if (entity_type != EntityType::ITEM && entity_type != EntityType::MONSTER) continue;
         bool is_item = false;
-        if (entity_type == EntityType::MOBILE && std::dynamic_pointer_cast<Mobile>(entity)->is_dead()) is_item = true;
+        if (entity_type == EntityType::MONSTER && std::dynamic_pointer_cast<Mobile>(entity)->is_dead()) is_item = true;
         else if (entity_type == EntityType::ITEM) is_item = true;
         if (is_item)
         {

@@ -16,10 +16,7 @@ class Player : public Mobile
 {
 public:
                 Player();   // Constructor.
-    void        add_banked_ticks(float) override;   // Don't use this on a Player.
     int         armour() override;  // Returns the total armour modifier from this Player and their equipped gear.
-    float       banked_ticks() const override;      // Don't use this on a Player.
-    void        clear_banked_ticks() override;      // Don't use this on a Player.
     void        close_a_door(); // Attempts to close a nearby door.
     int         dodge() override;   // Returns this Player's dodge score.
     int8_t      finesse() const;    // Retrieves this Player's finesse attribute.
@@ -36,7 +33,8 @@ public:
     void        set_intellect(int8_t new_int);  // Sets this Player's Intellect attribute.
     void        set_might(int8_t new_mig);      // Sets this Player's Might attribute.
     void        take_inventory(bool equipment = false);     // Interact with carried items.
-    EntityType  type() const { return EntityType::PLAYER; } // Self-identifier function.
+    void        timed_action(float time_taken) override;    // This Player has made an action which takes time.
+    EntityType  type() const override { return EntityType::PLAYER; }    // Self-identifier function.
 
 private:
     int8_t      finesse_;   // How agile and precise this Player is. This affects using finesse weapons, and dodge bonus to armour.

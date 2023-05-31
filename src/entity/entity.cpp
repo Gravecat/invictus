@@ -7,7 +7,6 @@
 #include "core/core.hpp"
 #include "core/game-manager.hpp"
 #include "core/guru.hpp"
-#include "entity/entity.hpp"
 #include "entity/item.hpp"
 #include "terminal/terminal.hpp"
 #include "terminal/window.hpp"

@@ -5,7 +5,6 @@
 
 #include "area/area.hpp"
 #include "area/gore.hpp"
-#include "area/pathfind.hpp"
 #include "area/tile.hpp"
 #include "codex/codex-tile.hpp"
 #include "combat/combat.hpp"
@@ -13,9 +12,9 @@
 #include "core/game-manager.hpp"
 #include "core/guru.hpp"
 #include "entity/item.hpp"
+#include "entity/monster.hpp"
 #include "entity/player.hpp"
 #include "terminal/terminal-shared-defs.hpp"
-#include "tune/ai.hpp"
 #include "tune/ascii-symbols.hpp"
 #include "tune/combat.hpp"
 #include "tune/gore.hpp"
@@ -34,8 +33,7 @@ std::shared_ptr<Item> Mobile::blank_item_ = std::make_shared<Item>();
 
 
 // Constructor.
-Mobile::Mobile() : Entity(), awake_(false), bloody_feet_(0), hp_{1, 1}, last_dir_(0), mp_{0, 0},  sp_{0, 0}, banked_ticks_(0), dodge_(10),
-    player_last_seen_x_(-1), player_last_seen_y_(-1), to_damage_bonus_(0), to_hit_bonus_(0), tracking_turns_(0)
+Mobile::Mobile() : Entity(), awake_(false), bloody_feet_(0), hp_{1, 1}, mp_{0, 0},  sp_{0, 0}
 {
     set_name("mobile");
     set_prop_f(EntityProp::SPEED, TIME_BASE_MOVEMENT);
@@ -43,13 +41,6 @@ Mobile::Mobile() : Entity(), awake_(false), bloody_feet_(0), hp_{1, 1}, last_dir
     // Populates the equipment vector with blank items.
     for (unsigned int i = 0; i < static_cast<unsigned int>(EquipSlot::_END); i++)
         equipment_.push_back(blank_item_);
-}
-
-// Adds or removes banked ticks to this Mobile.
-void Mobile::add_banked_ticks(float amount)
-{
-    if (amount < 0) core()->guru()->halt("Attempt to add negative banked ticks to " + name(), static_cast<int>(amount));
-    else banked_ticks_ += amount;
 }
 
 // Increase (or decrease) the amount of blood on this Mobile's feet.
@@ -61,9 +52,6 @@ int Mobile::armour() { return equipment(EquipSlot::BODY)->armour(); }
 // Returns the number of ticks needed for this Mobile to make an attack.
 float Mobile::attack_speed() { return 1.0f; }
 
-// Retrieves the amount of ticks banked by this Mobile.
-float Mobile::banked_ticks() const { return banked_ticks_; }
-
 // Checks if this Mobile blocks a specified tile.
 bool Mobile::blocks_tile(int x_tile, int y_tile) const
 { return (!is_dead() && x_tile == x() && y_tile == y()); }
@@ -71,16 +59,15 @@ bool Mobile::blocks_tile(int x_tile, int y_tile) const
 // Checks how bloodied this Mobile's feet are.
 float Mobile::bloody_feet() const { return bloody_feet_; }
 
-// Erase all banked ticks on this Mobile.
-void Mobile::clear_banked_ticks() { banked_ticks_ = 0; }
-
 // Attempts to close a door.
 void Mobile::close_door(int dx, int dy)
 {
     auto area = core()->game()->area();
     bool success = true;
     const bool is_player = (type() == EntityType::PLAYER);
-    if (!is_player && banked_ticks() < TIME_CLOSE_DOOR) return;
+    auto monster = (type() == EntityType::MONSTER ? dynamic_cast<Monster*>(this) : nullptr);
+
+    if (!is_player && monster->banked_ticks() < TIME_CLOSE_DOOR) return;
     for (auto mobile : *area->entities())
     {
         if (mobile->is_at(dx, dy))
@@ -137,14 +124,13 @@ void Mobile::die()
     if (can_bleed) Gore::splash(x(), y(), GORE_ON_MOBILE_DEATH);
 }
 
-// Returns this Mobile's dodge score.
-int Mobile::dodge() {  return dodge_; }
-
 // Drops a carried item.
 void Mobile::drop_item(uint32_t id)
 {
+    auto monster = (type() == EntityType::MONSTER ? dynamic_cast<Monster*>(this) : nullptr);
+
     if (id >= inv()->size()) core()->guru()->halt("Invalid item ID for drop", id, inv()->size());
-    if (type() != EntityType::PLAYER && banked_ticks() < TIME_DROP_ITEM) return;
+    if (type() == EntityType::MONSTER && monster->banked_ticks() < TIME_DROP_ITEM) return;
     std::shared_ptr<Entity> item = inv()->at(id);
     core()->game()->area()->entities()->push_back(item);
     inv()->erase(inv()->begin() + id);
@@ -282,6 +268,7 @@ bool Mobile::move_or_attack(std::shared_ptr<Mobile> self, int dx, int dy)
 {
     auto game = core()->game();
     auto player = game->player();
+    auto monster = (type() == EntityType::MONSTER ? std::dynamic_pointer_cast<Monster>(self) : nullptr);
 
     if (!dx && !dy)
     {
@@ -296,7 +283,7 @@ bool Mobile::move_or_attack(std::shared_ptr<Mobile> self, int dx, int dy)
         auto the_tile = area->tile(xdx, ydy);
         const bool openable = (the_tile->tag(TileTag::Openable));
         const float movement_cost = (openable ? TIME_OPEN_DOOR : self->movement_speed());
-        if (!is_player && banked_ticks() < movement_cost) return false;
+        if (!is_player && monster->banked_ticks() < movement_cost) return false;
 
         if (openable)
         {
@@ -317,7 +304,7 @@ bool Mobile::move_or_attack(std::shared_ptr<Mobile> self, int dx, int dy)
         }
 
         set_pos(xdx, ydy);
-        last_dir_ = ((dx + 2) << 4) + (dy + 2);
+        if (monster) monster->set_last_dir(((dx + 2) << 4) + (dy + 2));
         area->need_fov_recalc();
         game->ui()->redraw_dungeon();
 
@@ -363,14 +350,14 @@ bool Mobile::move_or_attack(std::shared_ptr<Mobile> self, int dx, int dy)
         timed_action(movement_cost);
         return true;
     }
-    if (!is_player && banked_ticks() < attack_speed()) return false;
+    if (!is_player && monster->banked_ticks() < attack_speed()) return false;
     for (auto entity : *core()->game()->area()->entities())
     {
         if (entity.get() == this) continue; // Ignore ourselves on the list.
         if (!entity->is_at(xdx, ydy)) continue; // Ignore anything not in the target tile.
-        if (entity->type() != EntityType::MOBILE && entity->type() != EntityType::PLAYER) continue; // Ignore anything that isn't a Mobile (or the player).
+        if (entity->type() != EntityType::MONSTER && entity->type() != EntityType::PLAYER) continue;    // Ignore anything that isn't a Monster (or the player).
 
-        // This is safe -- we just checked above, only Mobile and Player (a derived class of Mobile) can continue to this point in the loop.
+        // This is safe -- we just checked above, only Monster and Player (derived classes of Mobile) can continue to this point in the loop.
         // In case anything could possibly go wrong, dynamic_pointer_cast will either throw an exception or return a null pointer.
         auto mob = std::dynamic_pointer_cast<Mobile>(entity);
         // The dead can't fight back. Okay, that's not strictly true, zombies and skeletons can be pretty feisty, but you know what I mean.
@@ -381,7 +368,7 @@ bool Mobile::move_or_attack(std::shared_ptr<Mobile> self, int dx, int dy)
     }
 
     // We're not taking an action right now.
-    if (!is_player) clear_banked_ticks();
+    if (!is_player) monster->clear_banked_ticks();
     return false;
 }
 
@@ -412,13 +399,6 @@ void Mobile::set_sp(uint16_t current, uint16_t max)
     if (max < UINT16_MAX) sp_[1] = max;
 }
 
-// Sets this Mobile's number of tracking turns.
-void Mobile::set_tracking_turns(int16_t turns)
-{
-    if (turns < 0) tracking_turns_ += turns;
-    else tracking_turns_ = turns;
-}
-
 // Retrieves the current or maximum stamina points of this Mobile.
 uint16_t Mobile::sp(bool max) const { return sp_[max ? 1 : 0]; }
 
@@ -440,10 +420,12 @@ void Mobile::take_item(uint32_t id)
 {
     auto area = core()->game()->area();
     auto entities = area->entities();
+    auto monster = (type() == EntityType::MONSTER ? dynamic_cast<Monster*>(this) : nullptr);
+
     if (entities->size() <= id) core()->guru()->halt("Attempt to pick up invalid item ID.", id);
     std::shared_ptr<Entity> entity = entities->at(id);
     if (entity->type() != EntityType::ITEM) core()->guru()->halt("Attempt to pick up non-item entity.", id);
-    if (type() != EntityType::PLAYER && banked_ticks() < TIME_TAKE_ITEM) return;
+    if (type() != EntityType::PLAYER && monster->banked_ticks() < TIME_TAKE_ITEM) return;
 
     inventory_add(entity);
     entities->erase(entities->begin() + id);
@@ -457,134 +439,6 @@ void Mobile::tick(std::shared_ptr<Entity> self)
 {
     Entity::tick(self);
     if (is_dead()) return;
-
-    if (type() == EntityType::PLAYER) return;
-
-    if (!is_awake())
-    {
-        clear_banked_ticks();
-        return;
-    }
-    add_banked_ticks(TICK_SPEED);
-    auto self_mob = std::dynamic_pointer_cast<Mobile>(self);
-    auto area = core()->game()->area();
-
-    if (tag(EntityTag::Passive))    // Passive Mobiles have no wish to attack the player.
-    {
-        clear_banked_ticks();
-        return;
-    }
-
-    // If there aren't enough banked ticks to act, do nothing.
-    if (banked_ticks_ < movement_speed() && banked_ticks_ < attack_speed()) return;
-
-    if (!tag(EntityTag::Blind) && is_in_fov()) // Non-blind Mobiles will hunt the player by sight.
-    {
-        auto player = core()->game()->player();
-        set_tracking_turns(AI_TRACKING_TURNS);
-        player_last_seen_x_ = player->x();
-        player_last_seen_y_ = player->y();
-        auto pathfind = std::make_shared<Pathfind>(PathfindMode::PATHFIND_MOBILE, x(), y(), player_last_seen_x_, player_last_seen_y_);
-        auto result = pathfind->pathfind();
-        if (!result.size())
-        {
-            clear_banked_ticks();   // Can't find any route, so just do nothing.
-            return;
-        }
-
-        // Find the next step in the path.
-        int next_x = result.at(0).first, next_y = result.at(0).second;
-
-        // Check to see if anything is blocking the way.
-        for (auto entity : *core()->game()->area()->entities())
-        {
-            if (entity == self || entity->type() == EntityType::PLAYER) continue;
-            if (entity->blocks_tile(next_x, next_y))
-            {
-                clear_banked_ticks();
-                return; // We're waiting patiently.
-            }
-        }
-
-        // Looks like we're good to go!
-        move_or_attack(self_mob, next_x - x(), next_y - y());
-        return;
-    }
-
-    // The player is out of sight, but we're still going to try to find them.
-    if (tracking_turns())
-    {
-        if (banked_ticks() < movement_speed()) return;  // Do nothing if we don't have enough banked ticks.
-        set_tracking_turns(-1);
-
-        int dx = 0, dy = 0;
-
-        // If possible, move to the last place we saw the player.
-        if (player_last_seen_x_ >= 0 && player_last_seen_y_ >= 0)
-        {
-            // If we've reached the last-seen location, erase it.
-            if (player_last_seen_x_ == x() && player_last_seen_y_ == y())
-                player_last_seen_x_ = player_last_seen_y_ = -1;
-            else
-            {
-                // Pathfind to the player's last seen location.
-                auto pathfind = std::make_shared<Pathfind>(PathfindMode::PATHFIND_MOBILE, x(), y(), player_last_seen_x_, player_last_seen_y_);
-                auto result = pathfind->pathfind();
-                if (result.size())
-                {
-                    // Find the next step in the path.
-                    int next_x = result.at(0).first, next_y = result.at(0).second;
-                    dx = next_x - x();
-                    dy = next_y - y();
-                }
-                else
-                {
-                    // If the path is no longer viable, forget about it.
-                    player_last_seen_x_ = player_last_seen_y_ = 0;
-                }
-            }
-        }
-
-        // We've been unable to pathfind to the player's last location, or have reached that location and the player is not in sight.
-        if (dx == 0 && dy == 0)
-        {
-            // First, determine which directions are viable to search. This includes any direction BUT the one we just came from.
-            std::vector<int> viable_directions;
-            for (int vx = -1; vx <= 1; vx++)
-            {
-                for (int vy = -1; vy <= 1; vy++)
-                {
-                    if (vx == 0 && vy == 0) continue;
-                    int vc = ((vx + 2) << 4) + (vy + 2);
-                    if (vc == self_mob->last_dir_) continue;
-                    if (area->can_walk(x() + vx, y() + vy)) viable_directions.push_back(vc);
-                }
-            }
-            if (!viable_directions.size())
-            {
-                // See if the way we came from is acceptable.
-                int old_dy = (self_mob->last_dir_ & 0xF) - 2;
-                int old_dx = ((self_mob->last_dir_ & 0xF0) >> 4) - 2;
-                if (area->can_walk(x() + old_dx, y() + old_dy)) viable_directions.push_back(self_mob->last_dir_);
-                else
-                {
-                    clear_banked_ticks();
-                    return;
-                }
-            }
-
-            // There's now at least one viable option. Let's choose one randomly from the available list.
-            int choice = Random::rng(0, viable_directions.size() - 1);
-            dy = (viable_directions.at(choice) & 0xF) - 2;
-            dx = ((viable_directions.at(choice) & 0xF0) >> 4) - 2;
-        }
-
-        move_or_attack(self_mob, dx, dy);
-        return;
-    }
-
-    // There's nothing more to do.
-    clear_banked_ticks();
 }
 
 // Process slower state-change events that happen less often, such as buffs/debuffs ticking.
@@ -623,22 +477,6 @@ void Mobile::tick10(std::shared_ptr<Entity> self)
         }
     }
 }
-
-// This Mobile has made an action which takes time. Handles both Mobile and Player differences internally.
-void Mobile::timed_action(float time_taken)
-{
-    if (type() == EntityType::PLAYER) core()->game()->pass_time(time_taken);
-    else banked_ticks_ -= time_taken;
-}
-
-// Retrieves this Mobile's to-damage bonus.
-int8_t Mobile::to_damage_bonus() const { return to_damage_bonus_; }
-
-// Retrieves this Mobile's to-hit bonus.
-int8_t Mobile::to_hit_bonus() const { return to_hit_bonus_; }
-
-// Checks how many tracking turns this Mobile has left.
-int16_t Mobile::tracking_turns() const { return tracking_turns_; }
 
 // Unequips a specified Item.
 void Mobile::unequip_item(EquipSlot slot)

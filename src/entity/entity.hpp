@@ -91,7 +91,7 @@ enum class EntityTag : uint16_t
 };
 
 // Types of Entity and derived classes.
-enum class EntityType : uint8_t { ENTITY, MOBILE, PLAYER, ITEM };
+enum class EntityType : uint8_t { ENTITY, PLAYER, MONSTER, ITEM };
 
 
 constexpr int   NAME_FLAG_THE =                 1;  // Prepends 'the' to the name, if appropriate.
@@ -121,7 +121,7 @@ public:
     bool                is_at(std::shared_ptr<Entity> entity) const;    // As above, but checks against another Entity's position.
     bool                is_in_fov() const;              // Can this Entity be seen by the player?
     int32_t             light_power() const;            // Returns the power of this Entity's light source, if any.
-    std::string name(int flags = 0) const;              // Retrieves this Entity's name.
+    std::string         name(int flags = 0) const;      // Retrieves this Entity's name.
     void                set_ascii(char new_ascii);      // Sets this Entity's ASCII character.
     void                set_colour(Colour new_colour);  // Sets this Entity's colour.
     void                set_light_power(int new_power); // Sets the power of this Entity's light source.
@@ -156,7 +156,7 @@ private:
     uint16_t    x_, y_;         // Position on the map.
 
 friend class CodexItem;
-friend class CodexMobile;
+friend class CodexMonster;
 friend class SaveLoad;
 };
 

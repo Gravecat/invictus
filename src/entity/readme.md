@@ -9,4 +9,6 @@ Entity has multiple derived classes, which represent more specialized forms.
 
 * **mobile.cpp** - The Mobile class is a kind of Entity that can move around and fight. This includes monsters and the player character.
 
+* **monster.cpp** - Derived from Mobile, Monster has extra stats and code that are unique to NPCs, and do not apply to the player.
+
 * **player.cpp** - The Player class is a kind of Entity that belongs to the player. It derives from Mobile, so that we can use some of the same code.

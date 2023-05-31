@@ -118,8 +118,8 @@ std::vector<std::pair<int, int>> Pathfind::pathfind()
                 {
                     if (entity->blocks_tile(coord_x, coord_y))
                     {
-                        if (mode_ == PathfindMode::PATHFIND_MOBILE && entity->type() == EntityType::PLAYER) continue;
-                        if (mode_ == PathfindMode::PATHFIND_MOBILE && entity->type() == EntityType::MOBILE)
+                        if (mode_ == PathfindMode::PATHFIND_MONSTER && entity->type() == EntityType::PLAYER) continue;
+                        if (mode_ == PathfindMode::PATHFIND_MONSTER && entity->type() == EntityType::MONSTER)
                         {
                             possible_tile->set_tile_cost(current_cost + travel_cost + PATHFIND_ALLY_BLOCKER_COST);
                             continue;

@@ -8,11 +8,11 @@
 #include "area/area.hpp"
 #include "area/gen-dungeon.hpp"
 #include "area/tile.hpp"
-#include "codex/codex-mobile.hpp"
+#include "codex/codex-monster.hpp"
 #include "codex/codex-tile.hpp"
 #include "core/core.hpp"
 #include "core/guru.hpp"
-#include "entity/mobile.hpp"
+#include "entity/monster.hpp"
 #include "tune/area-generation.hpp"
 #include "util/random.hpp"
 
@@ -391,7 +391,7 @@ void DungeonGenerator::generate()
                 case TileID::DRUJ_TOMB:
                 {
                     chosen_tile = TileID::DRUJ_TOMB;
-                    auto new_mob = CodexMobile::generate(MobileID::DRUJ_WALKER);
+                    auto new_mob = CodexMonster::generate(MonsterID::DRUJ_WALKER);
                     new_mob->set_pos(x, y);
                     area_->entities()->push_back(new_mob);
                     break;

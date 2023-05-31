@@ -12,7 +12,7 @@
 namespace invictus
 {
 
-enum class PathfindMode : uint8_t { PATHFIND_PLAYER, PATHFIND_MOBILE };
+enum class PathfindMode : uint8_t { PATHFIND_PLAYER, PATHFIND_MONSTER };
 
 
 // Data struct used with A* pathfinding calculations.

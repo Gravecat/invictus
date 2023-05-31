@@ -12,6 +12,7 @@
 #include "core/guru.hpp"
 #include "core/save-load.hpp"
 #include "entity/item.hpp"
+#include "entity/monster.hpp"
 #include "entity/player.hpp"
 #include "ui/msglog.hpp"
 #include "ui/ui.hpp"
@@ -92,9 +93,9 @@ std::shared_ptr<Entity> SaveLoad::load_entity(std::ifstream &save_file)
     std::shared_ptr<Entity> entity = nullptr;
     switch(type)
     {
-        case EntityType::MOBILE: entity = std::make_shared<Mobile>(); break;
         case EntityType::PLAYER: entity = std::make_shared<Player>(); break;
         case EntityType::ITEM: entity = std::make_shared<Item>(); break;
+        case EntityType::MONSTER: entity = std::make_shared<Monster>(); break;
         default: incompatible(SAVE_ERROR_ENTITY, static_cast<uint8_t>(type)); break;
     }
 
@@ -138,8 +139,14 @@ std::shared_ptr<Entity> SaveLoad::load_entity(std::ifstream &save_file)
     switch(type)
     {
         case EntityType::ITEM: load_item(save_file, std::dynamic_pointer_cast<Item>(entity)); break;
-        case EntityType::PLAYER: load_player(save_file, std::dynamic_pointer_cast<Player>(entity)); [[fallthrough]];
-        case EntityType::MOBILE: load_mobile(save_file, std::dynamic_pointer_cast<Mobile>(entity)); break;
+        case EntityType::PLAYER:
+            load_player(save_file, std::dynamic_pointer_cast<Player>(entity));
+            load_mobile(save_file, std::dynamic_pointer_cast<Mobile>(entity));
+            break;
+        case EntityType::MONSTER:
+            load_monster(save_file, std::dynamic_pointer_cast<Monster>(entity));
+            load_mobile(save_file, std::dynamic_pointer_cast<Mobile>(entity));
+            break;
         default: incompatible(SAVE_ERROR_ENTITY, static_cast<uint32_t>(type));
     }
 
@@ -191,8 +198,6 @@ void SaveLoad::load_mobile(std::ifstream &save_file, std::shared_ptr<Mobile> mob
     check_tag(save_file, SaveTag::MOBILE);
 
     // Load the basic data.
-    mob->banked_ticks_ = load_data<float>(save_file);
-    mob->last_dir_ = load_data<uint8_t>(save_file);
     mob->hp_[0] = load_data<uint16_t>(save_file);
     mob->hp_[1] = load_data<uint16_t>(save_file);
     mob->mp_[0] = load_data<uint16_t>(save_file);
@@ -200,13 +205,7 @@ void SaveLoad::load_mobile(std::ifstream &save_file, std::shared_ptr<Mobile> mob
     mob->sp_[0] = load_data<uint16_t>(save_file);
     mob->sp_[1] = load_data<uint16_t>(save_file);
     mob->bloody_feet_ = load_data<float>(save_file);
-    mob->tracking_turns_ = load_data<int16_t>(save_file);
-    mob->player_last_seen_x_ = load_data<int>(save_file);
-    mob->player_last_seen_y_ = load_data<int>(save_file);
     mob->awake_ = load_data<bool>(save_file);
-    mob->dodge_ = load_data<uint8_t>(save_file);
-    mob->to_hit_bonus_ = load_data<int8_t>(save_file);
-    mob->to_damage_bonus_ = load_data<int8_t>(save_file);
 
     // Load the equipment.
     uint8_t equ_size = load_data<uint8_t>(save_file);
@@ -216,6 +215,21 @@ void SaveLoad::load_mobile(std::ifstream &save_file, std::shared_ptr<Mobile> mob
         uint8_t gear_exists = load_data<uint8_t>(save_file);
         if (gear_exists) mob->equipment_.at(i) = std::dynamic_pointer_cast<Item>(load_entity(save_file));
     }
+}
+
+// Loads a Monster from disk.
+void SaveLoad::load_monster(std::ifstream &save_file, std::shared_ptr<Monster> monster)
+{
+    check_tag(save_file, SaveTag::MONSTER);
+
+    monster->banked_ticks_ = load_data<float>(save_file);
+    monster->last_dir_ = load_data<uint8_t>(save_file);
+    monster->player_last_seen_x_ = load_data<int>(save_file);
+    monster->player_last_seen_y_ = load_data<int>(save_file);
+    monster->dodge_ = load_data<uint8_t>(save_file);
+    monster->to_damage_bonus_ = load_data<int8_t>(save_file);
+    monster->to_hit_bonus_ = load_data<int8_t>(save_file);
+    monster->tracking_turns_ = load_data<int16_t>(save_file);
 }
 
 // Loads the message log from disk.
@@ -382,8 +396,14 @@ void SaveLoad::save_entity(std::ofstream &save_file, std::shared_ptr<Entity> ent
     switch(entity->type())
     {
         case EntityType::ITEM: save_item(save_file, std::dynamic_pointer_cast<Item>(entity)); break;
-        case EntityType::PLAYER: save_player(save_file, std::dynamic_pointer_cast<Player>(entity)); [[fallthrough]];
-        case EntityType::MOBILE: save_mobile(save_file, std::dynamic_pointer_cast<Mobile>(entity)); break;
+        case EntityType::PLAYER:
+            save_player(save_file, std::dynamic_pointer_cast<Player>(entity));
+            save_mobile(save_file, std::dynamic_pointer_cast<Mobile>(entity));
+            break;
+        case EntityType::MONSTER:
+            save_monster(save_file, std::dynamic_pointer_cast<Monster>(entity));
+            save_mobile(save_file, std::dynamic_pointer_cast<Monster>(entity));
+            break;
         default: core()->guru()->halt("Unknwon entity type!", static_cast<uint32_t>(entity->type()));
     }
 }
@@ -431,8 +451,6 @@ void SaveLoad::save_mobile(std::ofstream &save_file, std::shared_ptr<Mobile> mob
     write_tag(save_file, SaveTag::MOBILE);
 
     // Save the basic data.
-    save_data<float>(save_file, mob->banked_ticks_);
-    save_data<uint8_t>(save_file, mob->last_dir_);
     save_data<uint16_t>(save_file, mob->hp_[0]);
     save_data<uint16_t>(save_file, mob->hp_[1]);
     save_data<uint16_t>(save_file, mob->mp_[0]);
@@ -440,13 +458,7 @@ void SaveLoad::save_mobile(std::ofstream &save_file, std::shared_ptr<Mobile> mob
     save_data<uint16_t>(save_file, mob->sp_[0]);
     save_data<uint16_t>(save_file, mob->sp_[1]);
     save_data<float>(save_file, mob->bloody_feet_);
-    save_data<int16_t>(save_file, mob->tracking_turns_);
-    save_data<int>(save_file, mob->player_last_seen_x_);
-    save_data<int>(save_file, mob->player_last_seen_y_);
     save_data<bool>(save_file, mob->awake_);
-    save_data<uint8_t>(save_file, mob->dodge_);
-    save_data<int8_t>(save_file, mob->to_hit_bonus_);
-    save_data<int8_t>(save_file, mob->to_damage_bonus_);
 
     // Saves the equipment.
     save_data<uint8_t>(save_file, static_cast<uint8_t>(EquipSlot::_END));
@@ -459,6 +471,21 @@ void SaveLoad::save_mobile(std::ofstream &save_file, std::shared_ptr<Mobile> mob
             save_entity(save_file, eq);
         }
     }
+}
+
+// Saves a Monster to disk.
+void SaveLoad::save_monster(std::ofstream &save_file, std::shared_ptr<Monster> monster)
+{
+    write_tag(save_file, SaveTag::MONSTER);
+
+    save_data<float>(save_file, monster->banked_ticks_);
+    save_data<uint8_t>(save_file, monster->last_dir_);
+    save_data<int>(save_file, monster->player_last_seen_x_);
+    save_data<int>(save_file, monster->player_last_seen_y_);
+    save_data<uint8_t>(save_file, monster->dodge_);
+    save_data<int8_t>(save_file, monster->to_damage_bonus_);
+    save_data<int8_t>(save_file, monster->to_hit_bonus_);
+    save_data<int16_t>(save_file, monster->tracking_turns_);
 }
 
 // Saves the message log to disk.

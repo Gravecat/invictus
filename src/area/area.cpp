@@ -11,6 +11,7 @@
 #include "core/core.hpp"
 #include "core/game-manager.hpp"
 #include "core/guru.hpp"
+#include "entity/monster.hpp"
 #include "entity/player.hpp"
 #include "terminal/terminal.hpp"
 #include "terminal/window.hpp"
@@ -127,7 +128,7 @@ bool Area::is_item_stack(int x, int y)
     for (auto entity : entities_)
     {
         if (!entity->is_at(x, y)) continue;
-        if (entity->type() == EntityType::ITEM || (entity->type() == EntityType::MOBILE && std::dynamic_pointer_cast<Mobile>(entity)->is_dead()))
+        if (entity->type() == EntityType::ITEM || (entity->type() == EntityType::MONSTER && std::dynamic_pointer_cast<Mobile>(entity)->is_dead()))
         {
             if (something_here) return true;
             else something_here = true;
@@ -223,7 +224,7 @@ void Area::render()
     // First pass: Corpses.
     for (auto entity : entities_)
     {
-        if (entity->type() != EntityType::MOBILE || !entity->is_in_fov()) continue;
+        if (entity->type() != EntityType::MONSTER || !entity->is_in_fov()) continue;
         const int ox = entity->x() - offset_x(), oy = entity->y() - offset_y();
         if (ox < 0 || oy < 0 || ox >= visible_x || oy >= visible_y) continue;
         auto mob = std::dynamic_pointer_cast<Mobile>(entity);
@@ -247,13 +248,13 @@ void Area::render()
         terminal->put(ascii, ox, oy, colour, 0, dungeon_view);
     }
 
-    // Third pass: Mobiles.
+    // Third pass: Monsters.
     for (auto entity : entities_)
     {
-        if (entity->type() != EntityType::MOBILE || !entity->is_in_fov()) continue;
+        if (entity->type() != EntityType::MONSTER || !entity->is_in_fov()) continue;
         const int ox = entity->x() - offset_x(), oy = entity->y() - offset_y();
         if (ox < 0 || oy < 0 || ox >= visible_x || oy >= visible_y) continue;
-        auto mob = std::dynamic_pointer_cast<Mobile>(entity);
+        auto mob = std::dynamic_pointer_cast<Monster>(entity);
         if (mob->is_dead()) continue;
         terminal->put(mob->ascii(), ox, oy, mob->colour(), 0, dungeon_view);
     }

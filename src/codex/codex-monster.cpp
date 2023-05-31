@@ -1,9 +1,9 @@
-// codex/codex-mobile.cpp -- Factory class, generating preset types of Mobiles that occupy the game world.
+// codex/codex-monster.cpp -- Factory class, generating preset types of Monsters that occupy the game world.
 // Copyright © 2023 Raine "Gravecat" Simmons. Licensed under the GNU Affero General Public License v3 or any later version.
 
 #include "codex/codex-item.hpp"
-#include "codex/codex-mobile.hpp"
-#include "entity/mobile.hpp"
+#include "codex/codex-monster.hpp"
+#include "entity/monster.hpp"
 #include "terminal/terminal-shared-defs.hpp"
 #include "tune/ascii-symbols.hpp"
 
@@ -11,15 +11,15 @@
 namespace invictus
 {
 
-// Generates a new Mobile from a template.
-std::shared_ptr<Mobile> CodexMobile::generate(MobileID id)
+// Generates a new Monster from a template.
+std::shared_ptr<Monster> CodexMonster::generate(MonsterID id)
 {
-    std::shared_ptr<Mobile> mob = std::make_shared<Mobile>();
+    std::shared_ptr<Monster> mob = std::make_shared<Monster>();
     switch(id)
     {
-        case MobileID::NONE: break;
+        case MonsterID::NONE: break;
 
-        case MobileID::DRUJ_WALKER:
+        case MonsterID::DRUJ_WALKER:
             mob->name_ = "druj walker";
             mob->ascii_ = ASCII_ZOMBIE;
             mob->colour_ = Colour::CYAN;

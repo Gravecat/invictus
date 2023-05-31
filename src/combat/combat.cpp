@@ -9,6 +9,7 @@
 #include "combat/combat.hpp"
 #include "core/core.hpp"
 #include "entity/item.hpp"
+#include "entity/monster.hpp"
 #include "entity/player.hpp"
 #include "tune/combat.hpp"
 #include "tune/resting.hpp"
@@ -240,8 +241,9 @@ void Combat::perform_attack(std::shared_ptr<Mobile> attacker, std::shared_ptr<Mo
     }
     else
     {
-        hit_bonus = attacker->to_hit_bonus();
-        damage_bonus = attacker->to_damage_bonus();
+        auto monster = std::dynamic_pointer_cast<Monster>(attacker);
+        hit_bonus = monster->to_hit_bonus();
+        damage_bonus = monster->to_damage_bonus();
     }
 
     // Special to-hit modifiers for certain weapon styles.

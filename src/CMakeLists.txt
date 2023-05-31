@@ -67,7 +67,7 @@ set(INVICTUS_CPPS
   area/shadowcast.cpp
   area/tile.cpp
   codex/codex-item.cpp
-  codex/codex-mobile.cpp
+  codex/codex-monster.cpp
   codex/codex-tile.cpp
   combat/combat.cpp
   core/core.cpp
@@ -80,6 +80,7 @@ set(INVICTUS_CPPS
   entity/entity.cpp
   entity/item.cpp
   entity/mobile.cpp
+  entity/monster.cpp
   entity/player.cpp
   terminal/escape-code-index.cpp
   terminal/terminal.cpp
