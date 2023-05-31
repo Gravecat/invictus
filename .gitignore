@@ -1,5 +1,5 @@
-# Basic .gitignore to filter out temporary files, binaries, local IDE settings, and the primary build folder.
-# Copyright (c) 2023 Raine "Gravecat" Simmons. Licensed under the GNU Affero General Public License v3 or any later version.
+# Basic .gitignore to filter out temporary files, binaries, personal scripts unrelated to the project, and the primary build folder.
+# Copyright © 2023 Raine "Gravecat" Simmons. Licensed under the GNU Affero General Public License v3 or any later version.
 
 ~$*
 *.exe
@@ -7,3 +7,4 @@
 *.o
 *.tmp
 build/*
+scripts/*
