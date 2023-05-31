@@ -10,6 +10,9 @@
 namespace invictus
 {
 
+// Messages that are shown when certain enemy types 'wake up'.
+enum class EnemyWakeMsg : uint16_t { NONE, DRUJ_TOMB };
+
 // Slots that can be used to equip items. _END is important, so we know how large to make the equipment vector.
 enum class EquipSlot : uint8_t { HAND_MAIN, HAND_OFF, BODY, HEAD, HANDS, FEET, _END };
 
@@ -60,6 +63,7 @@ public:
     EntityType      type() const { return EntityType::MOBILE; } // Self-identifier function.
     void            unequip_item(EquipSlot slot);   // Unequips a specified Item.
     void            wake(); // Awakens this Mobile, if it's not already.
+    void            wake_message(EnemyWakeMsg type, bool warning = false);  // Displays a message when an enemy awakes, or begins to awake.
 
 private:
     bool        awake_;             // Is this Mobile active?

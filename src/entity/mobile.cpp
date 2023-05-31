@@ -7,6 +7,7 @@
 #include "area/gore.hpp"
 #include "area/pathfind.hpp"
 #include "area/tile.hpp"
+#include "codex/codex-tile.hpp"
 #include "combat/combat.hpp"
 #include "core/core.hpp"
 #include "core/game-manager.hpp"
@@ -621,6 +622,36 @@ void Mobile::tick10(std::shared_ptr<Entity> self)
 {
     Entity::tick10(self);
     if (is_dead()) return;
+
+    // Check to see if this Mobile can wake up.
+    if (!is_awake() && type() != EntityType::PLAYER)
+    {
+        auto game = core()->game();
+        const bool player_in_los = is_in_fov();
+        const float player_distance = game->player()->distance_from(self);
+        const Tile* tile = game->area()->tile(x(), y());
+
+        if (tile->id() == TileID::DRUJ_TOMB)
+        {
+            if (!player_in_los) return; // Druj don't awaken until the player can see them.
+            if (Random::rng(1, player_distance) == 1)   // The closer the player gets, the higher the awaken chance.
+            {
+                wake_message(EnemyWakeMsg::DRUJ_TOMB, false);
+                wake();
+            }
+            // If the first check fails, we'll run another check to give the player a warning that the druj is awakening.
+            else if (Random::rng(1, player_distance) == 1) wake_message(EnemyWakeMsg::DRUJ_TOMB, true);
+        }
+        else
+        {
+            // Other awakening types are not coded yet. We'll just use a simple wake-on-visual system for a fallback.
+            if (player_in_los)
+            {
+                wake_message(EnemyWakeMsg::NONE, false);
+                wake();
+            }
+        }
+    }
 }
 
 // This Mobile has made an action which takes time. Handles both Mobile and Player differences internally.
@@ -666,5 +697,47 @@ void Mobile::unequip_item(EquipSlot slot)
 
 // Awakens this Mobile, if it's not already.
 void Mobile::wake() { awake_ = true; }
+
+// Displays a message when an enemy awakes, or begins to awake.
+void Mobile::wake_message(EnemyWakeMsg type, bool warning)
+{
+    std::string msg;
+    switch(type)
+    {
+        case EnemyWakeMsg::NONE:
+            if (!warning) msg = "{r}" + name(NAME_FLAG_CAPITALIZE_FIRST | NAME_FLAG_THE) + " has noticed your presence!";
+            break;
+
+        case EnemyWakeMsg::DRUJ_TOMB:
+        {
+            if (warning)
+            {
+                switch(Random::rng(5))
+                {
+                    case 1: msg = "{y}One of the desiccated corpses in its stone tomb starts to slowly move."; break;
+                    case 2: msg = "{y}You hear the faint scrape of fingernails against stone."; break;
+                    case 3: msg = "{y}Somewhere nearby, parched lungs take in a wheezing breath."; break;
+                    case 4: msg = "{y}You hear the creak of ancient bones as something stirs in the darkness."; break;
+                    case 5: msg = "{y}For a moment, you thought you saw something move out of the corner of your eye."; break;
+                }
+            }
+            else
+            {
+                switch(Random::rng(6))
+                {
+                    case 1: msg = "{r}A bony hand reaches out from the tomb as " + name(NAME_FLAG_THE) + " awakens."; break;
+                    case 2: msg = "{r}" + name(NAME_FLAG_THE | NAME_FLAG_CAPITALIZE_FIRST) + " hisses with desiccated lungs as it crawls out of its tomb.";
+                        break;
+                    case 3: msg = "{r}" + name(NAME_FLAG_THE | NAME_FLAG_CAPITALIZE_FIRST) + " slowly begins to stir, its hollow eyes staring at you."; break;
+                    case 4: msg = "{r}With a dull scrape of ancient stone, " + name(NAME_FLAG_THE) + " emerges from its tomb."; break;
+                    case 5: msg = "{r}You hear the creaking of parched flesh as " + name(NAME_FLAG_THE) + " begins to move once more."; break;
+                    case 6: msg = "{r}" + name(NAME_FLAG_THE | NAME_FLAG_CAPITALIZE_FIRST | NAME_FLAG_POSSESSIVE) + " empty eye sockets suddenly snap open!";
+                        break;
+                }
+            }
+        }   // DRUJ_TOMB
+    }
+    if (msg.size()) core()->message(msg);
+}
 
 }   // namespace invictus
