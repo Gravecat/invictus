@@ -315,7 +315,7 @@ void Combat::perform_attack(std::shared_ptr<Mobile> attacker, std::shared_ptr<Mo
                 if ((defender_armour > defender_dodge && hit_roll < defender_dodge) || defender_dodge > defender_armour) dodged = true;
                 if (dodged) core()->message(good_colour_defender + attacker_your_string_c + " " + weapon_name + " misses " + defender_name + ".");
                 else core()->message(good_colour_defender + attacker_your_string_c + " " + weapon_name + " is deflected by " + defender_name_s +
-                    defender->equipment(EquipSlot::BODY)->name() + ".");
+                    " " + defender->equipment(EquipSlot::BODY)->name() + ".");
             }
         }
     }
