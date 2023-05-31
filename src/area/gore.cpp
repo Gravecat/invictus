@@ -76,7 +76,6 @@ void Gore::set_gore(int x, int y, int level)
     if (tile->tag(TileTag::Immutable)) return;
     tile->set_tag(TileTag::Bloodied);
     Colour col = Colour::RED;
-    if (Random::rng(GORE_BOLD_CHANCE) == 1) col = Colour::RED_BOLD;
     switch(level)
     {
         case 1: tile->set_scars(ASCII_GORE_1, col); break;
