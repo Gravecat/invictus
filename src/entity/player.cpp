@@ -11,6 +11,7 @@
 #include "entity/item.hpp"
 #include "entity/player.hpp"
 #include "tune/ascii-symbols.hpp"
+#include "tune/combat.hpp"
 #include "terminal/terminal.hpp"
 #include "tune/fov-lighting.hpp"
 #include "ui/menu.hpp"
@@ -21,21 +22,32 @@ namespace invictus
 {
 
 // Constructor.
-Player::Player() : Mobile()
+Player::Player() : Mobile(), finesse_(2), intellect_(1), might_(2)
 {
     set_ascii(ASCII_PLAYER);
     set_colour(Colour::WHITE_BOLD);
     set_light_power(4);
     set_name("player");
-    set_finesse(2);
-    set_intellect(1);
-    set_might(2);
     recalc_max_hp_mp_sp();
     wake();
 }
 
 // Don't use this on a Player.
 void Player::add_banked_ticks(float) { core()->guru()->halt("Invalid call to add_banked_ticks on Player."); }
+
+// Returns the total armour modifier from this Player and their equipped gear.
+int Player::armour()
+{
+    auto armour_item = equipment(EquipSlot::BODY);
+    int armour_value = armour_item->armour();
+    int armour_value_might = std::max(10, armour_value) + (might_ * ARMOUR_PER_MIGHT);
+    if (armour_item->tag(EntityTag::ArmourLight))
+    {
+        int armour_value_finesse = armour_value + (finesse_ * DODGE_PER_FINESSE);
+        return std::max(armour_value_finesse, armour_value_might);
+    }
+    else return armour_value_might;
+}
 
 // Don't use this on a Player.
 float Player::banked_ticks() const { core()->guru()->halt("Invalid call to banked_ticks on Player."); return 0; }
@@ -82,6 +94,21 @@ void Player::close_a_door()
     close_door(x() + dx, y() + dy);
     core()->game()->ui()->redraw_dungeon();
 }
+
+// Returns this Player's dodge score.
+int Player::dodge()
+{
+    const int base_dodge = 10 + (finesse_ * DODGE_PER_FINESSE);
+    auto armour_item = equipment(EquipSlot::BODY);
+
+    if (armour_item->item_type() == ItemType::NONE || armour_item->tag(EntityTag::ArmourLight)) return base_dodge;
+    else if (armour_item->tag(EntityTag::ArmourHeavy)) return std::min(base_dodge, 10);
+    else if (armour_item->tag(EntityTag::ArmourMedium)) return std::min(armour_item->max_finesse(), base_dodge);
+    else throw std::runtime_error("Unable to determine armour type for " + name());
+}
+
+// Retrieves this Player's finesse attribute.
+int8_t Player::finesse() const { return finesse_; }
 
 // Calculates the player's field-of-view radius.
 uint16_t Player::fov_radius() const
@@ -163,6 +190,9 @@ void Player::ground_items()
     if (result >= 0 && result < static_cast<int>(items_nearby.size())) item_interaction(items_nearby.at(result), ItemLocation::GROUND);
 }
 
+// Retrieves this Player's intellect attribute.
+int8_t Player::intellect() const { return intellect_; }
+
 // Interacts with an item.
 void Player::item_interaction(uint32_t id, ItemLocation loc)
 {
@@ -232,6 +262,9 @@ void Player::item_interaction(uint32_t id, ItemLocation loc)
     }
 }
 
+// Retrieves this Player's might attribute.
+int8_t Player::might() const { return might_; }
+
 // Attempts to open a nearby door.
 void Player::open_a_door()
 {
@@ -271,6 +304,21 @@ void Player::open_a_door()
     move_or_attack(core()->game()->player(), dx, dy);
     core()->game()->ui()->redraw_dungeon();
 }
+
+// Recalculates the maximum HP/SP/MP values, based on Strength, Finesse and Intellect.
+void Player::recalc_max_hp_mp_sp()
+{
+    const int new_hp = BASE_HIT_POINTS + (might_ * HIT_POINTS_PER_MIGHT);
+    const int new_sp = BASE_STAMINA_POINTS + (finesse_ * STAMINA_PER_FINESSE) + (might_ * STAMINA_PER_MIGHT);
+    const int new_mp = BASE_MANA_POINTS + (intellect_ * MANA_PER_INTELLECT);
+
+    set_hp(new_hp, new_hp);
+    set_sp(new_sp, new_sp);
+    set_mp(new_mp, new_mp);
+}
+
+// Sets this Mobile's Finesse level.
+void Player::set_finesse(int8_t new_fin) { finesse_ = new_fin; }
 
 // Interact with carried items.
 void Player::take_inventory(bool equipment)
@@ -332,5 +380,11 @@ void Player::take_inventory(bool equipment)
         if (result >= 0) item_interaction(result, ItemLocation::INVENTORY);
     }
 }
+
+// Sets this Player's Intellect attribute.
+void Player::set_intellect(int8_t new_int) { intellect_ = new_int; }
+
+// Sets this Player's Might attribute.
+void Player::set_might(int8_t new_mig) { might_ = new_mig; }
 
 }   // namespace invictus

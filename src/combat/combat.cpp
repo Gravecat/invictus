@@ -9,7 +9,7 @@
 #include "combat/combat.hpp"
 #include "core/core.hpp"
 #include "entity/item.hpp"
-#include "entity/mobile.hpp"
+#include "entity/player.hpp"
 #include "tune/combat.hpp"
 #include "tune/resting.hpp"
 #include "util/random.hpp"
@@ -215,24 +215,33 @@ void Combat::perform_attack(std::shared_ptr<Mobile> attacker, std::shared_ptr<Mo
     const bool ranged_attack = (wield_type_attacker == WieldType::RANGED_ATTACK);
     const bool finesse_weapon = (weapon_ptr->tag(EntityTag::WeaponFinesse));
 
-    const int might_hit_bonus = (attacker->might() * MIGHT_HIT_BONUS);
-    const int might_damage_bonus = (attacker->might() * MIGHT_DAMAGE_BONUS);
-    const int finesse_hit_bonus = (attacker->finesse() * FINESSE_HIT_BONUS);
-    const int finesse_damage_bonus = (attacker->finesse() * FINESSE_DAMAGE_BONUS);
-    if (ranged_attack)
+    if (attacker_is_player)
     {
-        hit_bonus = finesse_hit_bonus;
-        damage_bonus = finesse_damage_bonus;
-    }
-    else if (finesse_weapon)
-    {
-        hit_bonus = std::max(finesse_hit_bonus, might_hit_bonus);
-        damage_bonus = std::max(finesse_damage_bonus, might_damage_bonus);
+        auto player = std::dynamic_pointer_cast<Player>(attacker);
+        const int might_hit_bonus = (player->might() * MIGHT_HIT_BONUS);
+        const int might_damage_bonus = (player->might() * MIGHT_DAMAGE_BONUS);
+        const int finesse_hit_bonus = (player->finesse() * FINESSE_HIT_BONUS);
+        const int finesse_damage_bonus = (player->finesse() * FINESSE_DAMAGE_BONUS);
+        if (ranged_attack)
+        {
+            hit_bonus = finesse_hit_bonus;
+            damage_bonus = finesse_damage_bonus;
+        }
+        else if (finesse_weapon)
+        {
+            hit_bonus = std::max(finesse_hit_bonus, might_hit_bonus);
+            damage_bonus = std::max(finesse_damage_bonus, might_damage_bonus);
+        }
+        else
+        {
+            hit_bonus = might_hit_bonus;
+            damage_bonus = might_damage_bonus;
+        }
     }
     else
     {
-        hit_bonus = might_hit_bonus;
-        damage_bonus = might_damage_bonus;
+        hit_bonus = attacker->to_hit_bonus();
+        damage_bonus = attacker->to_damage_bonus();
     }
 
     // Special to-hit modifiers for certain weapon styles.
@@ -240,7 +249,8 @@ void Combat::perform_attack(std::shared_ptr<Mobile> attacker, std::shared_ptr<Mo
     {
         weapon_ptr = CodexItem::generate(ItemID::UNARMED_ATTACK);
         weapon_name = weapon_ptr->name();
-        damage_bonus = hit_bonus = 0;
+        damage_bonus = std::min(0, damage_bonus);
+        hit_bonus = std::min(0, hit_bonus);
     }
     else if (wield_type_attacker == WieldType::DUAL_WIELD)
     {
@@ -321,7 +331,8 @@ void Combat::perform_attack(std::shared_ptr<Mobile> attacker, std::shared_ptr<Mo
     else
     {
         defender->wake();   // Being attacked would wake anyone up.
-        int damage = weapon_ptr->damage_roll() + damage_bonus;
+        const int damage_roll = weapon_ptr->damage_roll();
+        int damage = damage_roll + damage_bonus;
         //if (wield_type_attacker == WieldType::RANGED_ATTACK) damage *= ammo_ptr->power();
         bool critical_hit = (raw_hit_roll == 20), bleed = false, poison = false;   // todo: add bleed and poison chance to weapons.
         if (wield_type_attacker == WieldType::SINGLE_WIELD) critical_hit = (raw_hit_roll >= 19);    // Single-wielding gives crits on 19-20.

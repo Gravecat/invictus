@@ -34,13 +34,11 @@ std::shared_ptr<Item> Mobile::blank_item_ = std::make_shared<Item>();
 
 
 // Constructor.
-Mobile::Mobile() : Entity(), awake_(false), banked_ticks_(0), bloody_feet_(0), finesse_(0), hp_{BASE_HIT_POINTS, BASE_HIT_POINTS}, intellect_(0), last_dir_(0),
-    might_(0), mp_{BASE_MANA_POINTS, BASE_MANA_POINTS}, player_last_seen_x_(-1), player_last_seen_y_(-1), sp_{BASE_STAMINA_POINTS, BASE_STAMINA_POINTS},
-    tracking_turns_(0)
+Mobile::Mobile() : Entity(), awake_(false), bloody_feet_(0), hp_{1, 1}, last_dir_(0), mp_{0, 0},  sp_{0, 0}, banked_ticks_(0), dodge_(10),
+    player_last_seen_x_(-1), player_last_seen_y_(-1), to_damage_bonus_(0), to_hit_bonus_(0), tracking_turns_(0)
 {
     set_name("mobile");
     set_prop_f(EntityProp::SPEED, TIME_BASE_MOVEMENT);
-    recalc_max_hp_mp_sp();
 
     // Populates the equipment vector with blank items.
     for (unsigned int i = 0; i < static_cast<unsigned int>(EquipSlot::_END); i++)
@@ -58,18 +56,7 @@ void Mobile::add_banked_ticks(float amount)
 void Mobile::add_bloody_feet(float blood) { bloody_feet_ += blood; }
 
 // Returns the total armour modifier from this Mobile and their equipped gear.
-int Mobile::armour()
-{
-    auto armour_item = equipment(EquipSlot::BODY);
-    int armour_value = armour_item->armour();
-    int armour_value_might = std::max(10, armour_value) + (might_ * ARMOUR_PER_MIGHT);
-    if (armour_item->tag(EntityTag::ArmourLight))
-    {
-        int armour_value_finesse = armour_value + (finesse_ * DODGE_PER_FINESSE);
-        return std::max(armour_value_finesse, armour_value_might);
-    }
-    else return armour_value_might;
-}
+int Mobile::armour() { return equipment(EquipSlot::BODY)->armour(); }
 
 // Returns the number of ticks needed for this Mobile to make an attack.
 float Mobile::attack_speed() { return 1.0f; }
@@ -151,18 +138,7 @@ void Mobile::die()
 }
 
 // Returns this Mobile's dodge score.
-int Mobile::dodge()
-{
-    if (tag(EntityTag::CannotDodge)) return 0;
-
-    const int base_dodge = 10 + (finesse_ * DODGE_PER_FINESSE);
-    auto armour_item = equipment(EquipSlot::BODY);
-
-    if (armour_item->item_type() == ItemType::NONE || armour_item->tag(EntityTag::ArmourLight)) return base_dodge;
-    else if (armour_item->tag(EntityTag::ArmourHeavy)) return std::min(base_dodge, 10);
-    else if (armour_item->tag(EntityTag::ArmourMedium)) return std::min(armour_item->max_finesse(), base_dodge);
-    else throw std::runtime_error("Unable to determine armour type for " + name());
-}
+int Mobile::dodge() {  return dodge_; }
 
 // Drops a carried item.
 void Mobile::drop_item(uint32_t id)
@@ -292,23 +268,14 @@ std::shared_ptr<Item> Mobile::equipment(EquipSlot slot)
     return equ()->at(slot_id);
 }
 
-// Retrieves this Mobile's finesse attribute.
-int8_t Mobile::finesse() const { return finesse_; }
-
 // Retrieves the current or maximum hit points of this Mobile.
 uint16_t Mobile::hp(bool max) const { return hp_[max ? 1 : 0]; }
-
-// Retrieves this Mobile's intellect attribute.
-int8_t Mobile::intellect() const { return intellect_; }
 
 // Check if this Mobile is awake and active.
 bool Mobile::is_awake() const { return awake_; }
 
 // Checks if this Mobile is dead.
 bool Mobile::is_dead() const { return !hp(); }
-
-// Retrieves this Mobile's might attribute.
-int8_t Mobile::might() const { return might_; }
 
 // Moves in a given direction, or attacks something in the destination tile
 bool Mobile::move_or_attack(std::shared_ptr<Mobile> self, int dx, int dy)
@@ -424,25 +391,26 @@ float Mobile::movement_speed() const { return get_prop_f(EntityProp::SPEED); }
 // Retrieves the current or maximum mana points of this Mobile.
 uint16_t Mobile::mp(bool max) const { return mp_[max ? 1 : 0]; }
 
-// Recalculates the maximum HP/SP/MP values, based on Strength, Finesse and Intellect.
-void Mobile::recalc_max_hp_mp_sp()
+// Sets this Mobile's HP directly.
+void Mobile::set_hp(uint16_t current, uint16_t max)
 {
-    hp_[0] = hp_[1] = BASE_HIT_POINTS + (might_ * HIT_POINTS_PER_MIGHT);
-    sp_[0] = sp_[1] = BASE_STAMINA_POINTS + (finesse_ * STAMINA_PER_FINESSE) + (might_ * STAMINA_PER_MIGHT);
-    mp_[0] = mp_[1] = BASE_MANA_POINTS + (intellect_ * MANA_PER_INTELLECT);
-
-    int hp_override = get_prop(EntityProp::HP_OVERRIDE);
-    if (hp_override) hp_[0] = hp_[1] = hp_override;
+    hp_[0] = current;
+    if (max < UINT16_MAX) hp_[1] = max;
 }
 
-// Sets this Mobile's Finesse level.
-void Mobile::set_finesse(int8_t new_fin) { finesse_ = new_fin; }
+// Sets this Mobile's MP directly.
+void Mobile::set_mp(uint16_t current, uint16_t max)
+{
+    mp_[0] = current;
+    if (max < UINT16_MAX) mp_[1] = max;
+}
 
-// Sets this Mobile's Intellect attribute.
-void Mobile::set_intellect(int8_t new_int) { intellect_ = new_int; }
-
-// Sets this Mobile's Might attribute.
-void Mobile::set_might(int8_t new_mig) { might_ = new_mig; }
+// Sets this Mobile's SP directly.
+void Mobile::set_sp(uint16_t current, uint16_t max)
+{
+    sp_[0] = current;
+    if (max < UINT16_MAX) sp_[1] = max;
+}
 
 // Sets this Mobile's number of tracking turns.
 void Mobile::set_tracking_turns(int16_t turns)
@@ -662,6 +630,12 @@ void Mobile::timed_action(float time_taken)
     if (type() == EntityType::PLAYER) core()->game()->pass_time(time_taken);
     else banked_ticks_ -= time_taken;
 }
+
+// Retrieves this Mobile's to-damage bonus.
+int8_t Mobile::to_damage_bonus() const { return to_damage_bonus_; }
+
+// Retrieves this Mobile's to-hit bonus.
+int8_t Mobile::to_hit_bonus() const { return to_hit_bonus_; }
 
 // Checks how many tracking turns this Mobile has left.
 int16_t Mobile::tracking_turns() const { return tracking_turns_; }

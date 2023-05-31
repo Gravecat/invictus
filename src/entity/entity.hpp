@@ -28,7 +28,6 @@ enum class EntityProp : uint16_t
     ARMOUR,         // The defensive value of a piece of worn armour.
     DAMAGE_DICE_A,  // The amount of damage dice to roll.
     DAMAGE_DICE_B,  // The number of faces on each damage die.
-    HP_OVERRIDE,    // Overrides the automatically-calculated HP value with something else.
     LIGHT_POWER,    // The power of a light source.
     MAX_FINESSE,    // The maximum amount of finesse bonus that can be used when this Item is equipped.
     SPEED,          // The movement speed of a Mobile, or the speed at which an Item can be used.
@@ -64,7 +63,6 @@ enum class EntityTag : uint16_t
 
     // 21000 - 21999 -- Combat-related tags.
     CannotBlock = 21000,    // This Mobile cannot use a shield to block in combat.
-    CannotDodge,            // This Mobile is unable to dodge attacks.
     CannotParry,            // This Mobile is unable to parry attacks.
     Passive,                // This Mobile will not attack the player unless the player strikes first.
     Blind,                  // If this tag is NOT set, the Mobile will hunt the player by sight.

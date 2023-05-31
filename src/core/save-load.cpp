@@ -199,14 +199,14 @@ void SaveLoad::load_mobile(std::ifstream &save_file, std::shared_ptr<Mobile> mob
     mob->mp_[1] = load_data<uint16_t>(save_file);
     mob->sp_[0] = load_data<uint16_t>(save_file);
     mob->sp_[1] = load_data<uint16_t>(save_file);
-    mob->finesse_ = load_data<int8_t>(save_file);
-    mob->intellect_ = load_data<int8_t>(save_file);
-    mob->might_ = load_data<int8_t>(save_file);
     mob->bloody_feet_ = load_data<float>(save_file);
     mob->tracking_turns_ = load_data<int16_t>(save_file);
     mob->player_last_seen_x_ = load_data<int>(save_file);
     mob->player_last_seen_y_ = load_data<int>(save_file);
     mob->awake_ = load_data<bool>(save_file);
+    mob->dodge_ = load_data<uint8_t>(save_file);
+    mob->to_hit_bonus_ = load_data<int8_t>(save_file);
+    mob->to_damage_bonus_ = load_data<int8_t>(save_file);
 
     // Load the equipment.
     uint8_t equ_size = load_data<uint8_t>(save_file);
@@ -238,6 +238,10 @@ void SaveLoad::load_player(std::ifstream &save_file, std::shared_ptr<Player> pla
 {
     check_tag(save_file, SaveTag::PLAYER);
     core()->game()->player_ = player;
+
+    player->finesse_ = load_data<int8_t>(save_file);
+    player->intellect_ = load_data<int8_t>(save_file);
+    player->might_ = load_data<int8_t>(save_file);
 }
 
 // Loads a string from the save game file.
@@ -435,14 +439,14 @@ void SaveLoad::save_mobile(std::ofstream &save_file, std::shared_ptr<Mobile> mob
     save_data<uint16_t>(save_file, mob->mp_[1]);
     save_data<uint16_t>(save_file, mob->sp_[0]);
     save_data<uint16_t>(save_file, mob->sp_[1]);
-    save_data<int8_t>(save_file, mob->finesse_);
-    save_data<int8_t>(save_file, mob->intellect_);
-    save_data<int8_t>(save_file, mob->might_);
     save_data<float>(save_file, mob->bloody_feet_);
     save_data<int16_t>(save_file, mob->tracking_turns_);
     save_data<int>(save_file, mob->player_last_seen_x_);
     save_data<int>(save_file, mob->player_last_seen_y_);
     save_data<bool>(save_file, mob->awake_);
+    save_data<uint8_t>(save_file, mob->dodge_);
+    save_data<int8_t>(save_file, mob->to_hit_bonus_);
+    save_data<int8_t>(save_file, mob->to_damage_bonus_);
 
     // Saves the equipment.
     save_data<uint8_t>(save_file, static_cast<uint8_t>(EquipSlot::_END));
@@ -470,8 +474,14 @@ void SaveLoad::save_msglog(std::ofstream &save_file)
     }
 }
 
-void SaveLoad::save_player(std::ofstream &save_file, std::shared_ptr<Player>)
-{ write_tag(save_file, SaveTag::PLAYER); }
+void SaveLoad::save_player(std::ofstream &save_file, std::shared_ptr<Player> player)
+{
+    write_tag(save_file, SaveTag::PLAYER);
+
+    save_data<int8_t>(save_file, player->finesse_);
+    save_data<int8_t>(save_file, player->intellect_);
+    save_data<int8_t>(save_file, player->might_);
+}
 
 // Saves a string to the save game file.
 void SaveLoad::save_string(std::ofstream &save_file, const std::string &str)
