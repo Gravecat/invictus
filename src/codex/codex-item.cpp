@@ -18,6 +18,10 @@ std::shared_ptr<Item> CodexItem::generate(ItemID id)
     {
         case ItemID::NOTHING: break;
 
+        /****************************
+         * BODY ARMOUR AND CLOTHING *
+         ****************************/
+
         case ItemID::LEATHER_ARMOUR:    // The most basic tier of armour, adds protection but has no downsides.
             new_item->name_ = "leather armour";
             new_item->ascii_ = ASCII_ARMOUR;
@@ -27,6 +31,20 @@ std::shared_ptr<Item> CodexItem::generate(ItemID id)
             new_item->set_tags({EntityTag::NoA, EntityTag::ProperNoun, EntityTag::ArmourLight});
             new_item->set_prop(EntityProp::ARMOUR, 11);
             break;
+
+        case ItemID::RAGGED_ARMOUR: // Worn by zombies and such.
+            new_item->name_ = "ragged armour";
+            new_item->ascii_ = ASCII_ARMOUR;
+            new_item->colour_ = Colour::YELLOW;
+            new_item->item_type_ = ItemType::ARMOUR;
+            new_item->item_subtype_ = ItemSub::BODY;
+            new_item->set_tags({EntityTag::NoA, EntityTag::ProperNoun, EntityTag::ArmourLight});
+            new_item->set_prop(EntityProp::ARMOUR, 8);
+            break;
+
+        /*****************
+         * MELEE WEAPONS *
+         *****************/
 
         case ItemID::SHORTSWORD:    // A simple one-handed blade.
             new_item->name_ = "shortsword";
@@ -57,6 +75,11 @@ std::shared_ptr<Item> CodexItem::generate(ItemID id)
             new_item->set_damage(2, 6);
             new_item->set_tag(EntityTag::TwoHanded);
             break;
+
+
+        /*******************
+         * SPECIAL WEAPONS *
+         *******************/
 
         case ItemID::UNARMED_ATTACK:    // Used for unarmed attacks, when the Mobile has no weapon equipped.
             new_item->name_ = "meaty fist";
