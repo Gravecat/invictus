@@ -463,4 +463,7 @@ void Mobile::unequip_item(EquipSlot slot)
     timed_action(time_taken);
 }
 
+// Awakens this Mobile, if it's not already.
+void Mobile::wake() { awake_ = true; }
+
 }   // namespace invictus

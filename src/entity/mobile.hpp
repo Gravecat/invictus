@@ -53,13 +53,12 @@ public:
     void            timed_action(float time_taken); // This Mobile has made an action which takes time. Handles both Mobile and Player differences internally.
     EntityType      type() const { return EntityType::MOBILE; } // Self-identifier function.
     void            unequip_item(EquipSlot slot);   // Unequips a specified Item.
-
-protected:
-    bool        awake_; // Is this Mobile active?
-    std::vector<std::shared_ptr<Item>>  equipment_; // Items equipped by this Mobile.
+    void            wake(); // Awakens this Mobile, if it's not already.
 
 private:
+    bool        awake_; // Is this Mobile active?
     float       banked_ticks_;  // The amount of time this Mobile has 'banked'; it can 'spend' this time to move or attack.
+    std::vector<std::shared_ptr<Item>>  equipment_; // Items equipped by this Mobile.
     int8_t      finesse_;       // How agile and precise this Mobile is. This affects using finesse weapons, and dodge bonus to armour.
     uint16_t    hp_[2];         // The current and maximum hit points of this Mobile.
     int8_t      intellect_;     // How smart and well-attuned with magic this Mobile is.

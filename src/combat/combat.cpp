@@ -188,7 +188,7 @@ void Combat::perform_attack(std::shared_ptr<Mobile> attacker, std::shared_ptr<Mo
     const std::string attacker_your_string = (attacker_is_player ? "your" : StrX::possessive_string(attacker_name));
     const std::string attacker_your_string_c = StrX::capitalize_first_letter(attacker_your_string);
     //const std::string weapon_name = (ammo_ptr ? ammo_ptr->name() : weapon_ptr->name());
-    const std::string weapon_name = weapon_ptr->name();
+    std::string weapon_name = weapon_ptr->name();
 
     // For combat message colours.
     std::string bad_colour_attacker = "{u}", bad_colour_defender = "{u}", good_colour_attacker = "{u}", good_colour_defender = "{u}";
@@ -236,6 +236,7 @@ void Combat::perform_attack(std::shared_ptr<Mobile> attacker, std::shared_ptr<Mo
     if (wield_type_attacker == WieldType::UNARMED)
     {
         weapon_ptr = CodexItem::generate(ItemID::UNARMED_ATTACK);
+        weapon_name = weapon_ptr->name();
         damage_bonus = hit_bonus = 0;
     }
     else if (wield_type_attacker == WieldType::DUAL_WIELD)
@@ -317,7 +318,7 @@ void Combat::perform_attack(std::shared_ptr<Mobile> attacker, std::shared_ptr<Mo
     }
     else
     {
-        //defender->wake(); // Being attacked would wake anyone up.
+        defender->wake();   // Being attacked would wake anyone up.
         int damage = weapon_ptr->damage_roll() + damage_bonus;
         //if (wield_type_attacker == WieldType::RANGED_ATTACK) damage *= ammo_ptr->power();
         bool critical_hit = (raw_hit_roll == 20), bleed = false, poison = false;   // todo: add bleed and poison chance to weapons.

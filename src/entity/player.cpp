@@ -31,7 +31,7 @@ Player::Player() : Mobile()
     set_intellect(1);
     set_might(2);
     recalc_max_hp_mp_sp();
-    awake_ = true;
+    wake();
 }
 
 // Don't use this on a Player.
@@ -318,7 +318,7 @@ void Player::take_inventory(bool equipment)
         }
         if (!has_gear) equ_menu->set_highlight(false);
         int result = equ_menu->render();
-        if (has_gear && result >= 0 && result < static_cast<int>(EquipSlot::_END) && equipment_.at(result)->item_type() != ItemType::NONE)
+        if (has_gear && result >= 0 && result < static_cast<int>(EquipSlot::_END) && equ()->at(result)->item_type() != ItemType::NONE)
             item_interaction(result, ItemLocation::EQUIPMENT);
     }
     else
