@@ -153,6 +153,8 @@ void Mobile::die()
 // Returns this Mobile's dodge score.
 int Mobile::dodge()
 {
+    if (tag(EntityTag::CannotDodge)) return 0;
+
     const int base_dodge = 10 + (finesse_ * DODGE_PER_FINESSE);
     auto armour_item = equipment(EquipSlot::BODY);
 

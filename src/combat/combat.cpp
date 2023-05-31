@@ -264,9 +264,8 @@ void Combat::perform_attack(std::shared_ptr<Mobile> attacker, std::shared_ptr<Mo
     const bool can_parry = (!ranged_attack && defender->is_awake() && (wield_type_defender != WieldType::UNARMED && wield_type_defender !=
         WieldType::SHIELD_ONLY && !defender->tag(EntityTag::CannotParry)));
 
-    // Defenders that cannot dodge, or are not awake, always get hit.
-    // Ranged attacks always hit; their accuracy is determined by the actual path of the projectile.
-    const bool guaranteed_hit = (defender->tag(EntityTag::CannotDodge) || !defender->is_awake() || ranged_attack);
+    // Defenders that are not awake always get hit. Ranged attacks always hit; their accuracy is determined by the actual path of the projectile.
+    const bool guaranteed_hit = (!defender->is_awake() || ranged_attack);
 
     bool parried = false, blocked = false, evaded = false;
     const int defender_armour = defender->armour();
