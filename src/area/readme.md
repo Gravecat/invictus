@@ -9,6 +9,8 @@ class (Tiles are the component blocks that make up an Area), and anything direct
 
 * **gore.cpp** - Handles splashes of blood and other viscera from combat.
 
+* **pathfind.cpp** - Fairly simple implementation of A* pathfinding, with Manhattan/Euclidean methods.
+
 * **shadowcast.cpp** - Shadowcasting code, for calculating line-of-sight.
 
 * **tile.cpp** - The Tile class, defining floors, walls, and other semi-permanent obstacles in the game.

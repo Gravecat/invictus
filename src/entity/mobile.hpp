@@ -49,28 +49,32 @@ public:
     void            set_finesse(int8_t new_fin);    // Sets this Mobile's Finesse attribute.
     void            set_intellect(int8_t new_int);  // Sets this Mobile's Intellect attribute.
     void            set_might(int8_t new_mig);      // Sets this Mobile's Might attribute.
+    void            set_tracking_turns(int16_t turns);  // Sets this Mobile's number of tracking turns.
     uint16_t        sp(bool max = false) const; // Retrieves the current or maximum stamina points of this Mobile.
     void            take_damage(int damage);    // Takes damage!
     void            take_item(uint32_t id); // Picks up a specified item.
     void            tick(std::shared_ptr<Entity> self) override;    // Processes AI for this Mobile each turn.
     void            tick10(std::shared_ptr<Entity> self) override;  // Process slower state-change events that happen less often, such as buffs/debuffs ticking.
     void            timed_action(float time_taken); // This Mobile has made an action which takes time. Handles both Mobile and Player differences internally.
+    int16_t         tracking_turns() const; // Checks how many tracking turns this Mobile has left.
     EntityType      type() const { return EntityType::MOBILE; } // Self-identifier function.
     void            unequip_item(EquipSlot slot);   // Unequips a specified Item.
     void            wake(); // Awakens this Mobile, if it's not already.
 
 private:
-    bool        awake_; // Is this Mobile active?
-    float       banked_ticks_;  // The amount of time this Mobile has 'banked'; it can 'spend' this time to move or attack.
-    float       bloody_feet_;   // How bloodied are this Mobile's feet?
+    bool        awake_;             // Is this Mobile active?
+    float       banked_ticks_;      // The amount of time this Mobile has 'banked'; it can 'spend' this time to move or attack.
+    float       bloody_feet_;       // How bloodied are this Mobile's feet?
     std::vector<std::shared_ptr<Item>>  equipment_; // Items equipped by this Mobile.
-    int8_t      finesse_;       // How agile and precise this Mobile is. This affects using finesse weapons, and dodge bonus to armour.
-    uint16_t    hp_[2];         // The current and maximum hit points of this Mobile.
-    int8_t      intellect_;     // How smart and well-attuned with magic this Mobile is.
-    uint8_t     last_dir_;      // The last direction this Mobile moved in.
-    int8_t      might_;         // How physicaly strong and fit this Mobile is. This affects using most melee weapons, and gives a bonus to armour.
-    uint16_t    mp_[2];         // The current and maximum mana points of this Mobile.
-    uint16_t    sp_[2];         // The current and maximum stamina points of this Mobile.
+    int8_t      finesse_;           // How agile and precise this Mobile is. This affects using finesse weapons, and dodge bonus to armour.
+    uint16_t    hp_[2];             // The current and maximum hit points of this Mobile.
+    int8_t      intellect_;         // How smart and well-attuned with magic this Mobile is.
+    uint8_t     last_dir_;          // The last direction this Mobile moved in.
+    int8_t      might_;             // How physicaly strong and fit this Mobile is. This affects using most melee weapons, and gives a bonus to armour.
+    uint16_t    mp_[2];             // The current and maximum mana points of this Mobile.
+    int         player_last_seen_x_, player_last_seen_y_;   // The last x,Y coordinates we saw the player at.
+    uint16_t    sp_[2];             // The current and maximum stamina points of this Mobile.
+    int16_t     tracking_turns_;    // How many turns are we tracking the player while they are out of LoS?
 
     static std::shared_ptr<Item>    blank_item_;    // A blank item, shared amongst all Mobiles to use in their empty equipment slots.
 

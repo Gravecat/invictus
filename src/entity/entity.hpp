@@ -67,6 +67,8 @@ enum class EntityTag : uint16_t
 	CannotBlock = 21000,    // This Mobile cannot use a shield to block in combat.
 	CannotDodge,            // This Mobile is unable to dodge attacks.
 	CannotParry,            // This Mobile is unable to parry attacks.
+    Passive,                // This Mobile will not attack the player unless the player strikes first.
+    Blind,                  // If this tag is NOT set, the Mobile will hunt the player by sight.
 
     // 22000 - 22999 -- Temporary tags, which are set during gameplay.
     NoDeathMessage = 23000, // When this Mobile dies, it will not display a death message.

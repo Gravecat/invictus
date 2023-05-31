@@ -14,15 +14,17 @@ class Prefs
 {
 public:
             Prefs(std::string filename);    // Constructor, sets default values.
-    uint8_t acs_flags() const;  // Retrieves the ACS glyph usage flags.
-    void    load();             // Loads user prefs from a file, if it exists.
-    void    save();             // Saves user prefs to a file.
-    bool    use_colour() const; // Check if using colour is allowed.
+    uint8_t acs_flags() const;          // Retrieves the ACS glyph usage flags.
+    void    load();                     // Loads user prefs from a file, if it exists.
+    bool    pathfind_euclidean() const; // Is the pathfinding code using the Euclidean method (true) or the Manhattan method (false)?
+    void    save();                     // Saves user prefs to a file.
+    bool    use_colour() const;         // Check if using colour is allowed.
 
 private:
-    uint8_t     acs_flags_;     // The ACS glyph usage flags.
-    std::string filename_;      // The filename of the user prefs file.
-    bool        use_colour_;    // Is colour enabled?
+    uint8_t     acs_flags_;             // The ACS glyph usage flags.
+    std::string filename_;              // The filename of the user prefs file.
+    bool        pathfind_euclidean_;    // Does the pathfinding code use the Euclidean method (as opposed to the Manhattan method)?
+    bool        use_colour_;            // Is colour enabled?
 };
 
 }       // namespace invictus

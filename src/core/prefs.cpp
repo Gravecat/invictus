@@ -15,7 +15,7 @@ namespace invictus
 {
 
 // Constructor, sets default values.
-Prefs::Prefs(std::string filename) : filename_(filename), use_colour_(true)
+Prefs::Prefs(std::string filename) : filename_(filename), pathfind_euclidean_(true), use_colour_(true)
 {
 #ifdef INVICTUS_TARGET_WINDOWS
     acs_flags_ = 15;
@@ -55,20 +55,25 @@ void Prefs::load()
         {
             pref = StrX::str_tolower(pref_vec.at(0));
             pref_val = pref_vec.at(1);
-            if (!pref.compare("use_colour")) use_colour_ = StrX::str_to_bool(pref_val);
-            else if (!pref.compare("acs_flags")) acs_flags_ = std::stoi(pref_val);
+            if (!pref.compare("acs_flags")) acs_flags_ = std::stoi(pref_val);
+            else if (!pref.compare("pathfind_euclidean")) pathfind_euclidean_ = StrX::str_to_bool(pref_val);
+            else if (!pref.compare("use_colour")) use_colour_ = StrX::str_to_bool(pref_val);
             else guru->nonfatal("Invalid line in " + filename_ + ": " + line, GURU_WARN);
         }
     }
     prefs_file.close();
 }
 
+// Is the pathfinding code using the Euclidean method (true) or the Manhattan method (false)?
+bool Prefs::pathfind_euclidean() const { return pathfind_euclidean_; }
+
 // Saves user prefs to a file.
 void Prefs::save()
 {
     std::ofstream save_file(filename_);
-    save_file << "use_colour:" << StrX::bool_to_str(use_colour_) << std::endl;
     save_file << "acs_flags:" << std::to_string(acs_flags_) << std::endl;
+    save_file << "pathfind_euclidean:" << StrX::bool_to_str(pathfind_euclidean_) << std::endl;
+    save_file << "use_colour:" << StrX::bool_to_str(use_colour_) << std::endl;
     save_file.close();
 }
 

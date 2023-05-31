@@ -175,6 +175,8 @@ void Combat::determine_wield_type(std::shared_ptr<Mobile> mob, bool is_attacker,
 void Combat::perform_attack(std::shared_ptr<Mobile> attacker, std::shared_ptr<Mobile> defender, EquipSlot weapon, WieldType wield_type_attacker,
         WieldType wield_type_defender)
 {
+    defender->clear_tag(EntityTag::Passive);    // Even Passive Mobiles don't appreciate being attacked.
+
     std::shared_ptr<Item> weapon_ptr = attacker->equipment(weapon);
     //const std::shared_ptr<Item> ammo_ptr = (weapon_ptr->tag(EntityTag::WeaponRanged) ? attacker->inv()->at(attacker->ammo_pos(weapon_ptr)) : nullptr);
     const bool attacker_is_player = attacker->type() == EntityType::PLAYER;

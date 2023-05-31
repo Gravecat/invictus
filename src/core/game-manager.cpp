@@ -114,12 +114,11 @@ void GameManager::game_loop()
                 break;
         }
 
+        tick();
         ui_->render();
 
         key = terminal->get_key();
         if (key == Key::RESIZE) ui_->window_resized();
-
-        tick();
     }
 }
 

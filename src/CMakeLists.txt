@@ -63,6 +63,7 @@ set(INVICTUS_CPPS
   area/area.cpp
   area/gen-dungeon.cpp
   area/gore.cpp
+  area/pathfind.cpp
   area/shadowcast.cpp
   area/tile.cpp
   codex/codex-item.cpp
