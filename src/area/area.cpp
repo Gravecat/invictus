@@ -229,7 +229,14 @@ void Area::render()
         if (ox < 0 || oy < 0 || ox >= visible_x || oy >= visible_y) continue;
         auto mob = std::dynamic_pointer_cast<Mobile>(entity);
         if (!mob->is_dead()) continue;
-        terminal->put(mob->ascii(), ox, oy, mob->colour(), 0, dungeon_view);
+        int ascii = mob->ascii();
+        Colour colour = mob->colour();
+        if (is_item_stack(entity->x(), entity->y()))
+        {
+            ascii = ASCII_STACK;
+            colour = Colour::MAGENTA;
+        }
+        terminal->put(ascii, ox, oy, colour, 0, dungeon_view);
     }
 
     // Second pass: Items.
