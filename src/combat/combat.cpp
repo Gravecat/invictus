@@ -22,24 +22,24 @@ namespace invictus
 // The humble bump attack, a staple of roguelikes everywhere.
 bool Combat::bump_attack(std::shared_ptr<Mobile> attacker, std::shared_ptr<Mobile> defender)
 {
-	if (attacker->is_dead() || defender->is_dead()) return false;
+    if (attacker->is_dead() || defender->is_dead()) return false;
 
-	// We'll need to check the equipment for both attacker and defender, so we can determine how both are wielding their weapons.
-	std::shared_ptr<Item> main_hand[2], off_hand[2];
-	bool main_can_attack[2], off_can_attack[2];
-	WieldType wield_type[2];
+    // We'll need to check the equipment for both attacker and defender, so we can determine how both are wielding their weapons.
+    std::shared_ptr<Item> main_hand[2], off_hand[2];
+    bool main_can_attack[2], off_can_attack[2];
+    WieldType wield_type[2];
 
-	for (int i = 0; i < 2; i++)
-	{
-		std::shared_ptr<Mobile> mob = (i == 0 ? attacker : defender);
-		determine_wield_type(mob, (i == 0), &wield_type[i], &main_can_attack[i], &off_can_attack[i]);
-		if (wield_type[i] == WieldType::NONE) return false;	// Just give up here if the attacker can't attack.
-	}
+    for (int i = 0; i < 2; i++)
+    {
+        std::shared_ptr<Mobile> mob = (i == 0 ? attacker : defender);
+        determine_wield_type(mob, (i == 0), &wield_type[i], &main_can_attack[i], &off_can_attack[i]);
+        if (wield_type[i] == WieldType::NONE) return false; // Just give up here if the attacker can't attack.
+    }
 
-	if (main_can_attack[0]) perform_attack(attacker, defender, EquipSlot::HAND_MAIN, wield_type[0], wield_type[1]);
-	if (off_can_attack[0] && !attacker->is_dead() && !defender->is_dead()) perform_attack(attacker, defender, EquipSlot::HAND_OFF, wield_type[0],
+    if (main_can_attack[0]) perform_attack(attacker, defender, EquipSlot::HAND_MAIN, wield_type[0], wield_type[1]);
+    if (off_can_attack[0] && !attacker->is_dead() && !defender->is_dead()) perform_attack(attacker, defender, EquipSlot::HAND_OFF, wield_type[0],
         wield_type[1]);
-	return true;
+    return true;
 }
 
 // Generates a standard-format damage number string.

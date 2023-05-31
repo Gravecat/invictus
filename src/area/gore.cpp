@@ -72,20 +72,20 @@ int Gore::gore_level(int x, int y)
 // Sets a tile to a given gore level.
 void Gore::set_gore(int x, int y, int level)
 {
-	Tile* tile = core()->game()->area()->tile(x, y);
-	if (tile->tag(TileTag::Immutable)) return;
-	tile->set_tag(TileTag::Bloodied);
+    Tile* tile = core()->game()->area()->tile(x, y);
+    if (tile->tag(TileTag::Immutable)) return;
+    tile->set_tag(TileTag::Bloodied);
     Colour col = Colour::RED;
     if (Random::rng(GORE_BOLD_CHANCE) == 1) col = Colour::RED_BOLD;
-	switch(level)
-	{
-		case 1: tile->set_scars(ASCII_GORE_1, col); break;
-		case 2: tile->set_scars(ASCII_GORE_2, col); break;
-		case 3: tile->set_scars(ASCII_GORE_3, col); break;
-		case 4: tile->set_scars(ASCII_GORE_4, col); break;
-		case 5: tile->set_scars(ASCII_GORE_5, col); break;
-		default: if (Random::rng(GORE_ALT_CHAR_CHANCE) == 1) tile->set_scars(ASCII_GORE_6B, col); else tile->set_scars(ASCII_GORE_6A, col); break;
-	}
+    switch(level)
+    {
+        case 1: tile->set_scars(ASCII_GORE_1, col); break;
+        case 2: tile->set_scars(ASCII_GORE_2, col); break;
+        case 3: tile->set_scars(ASCII_GORE_3, col); break;
+        case 4: tile->set_scars(ASCII_GORE_4, col); break;
+        case 5: tile->set_scars(ASCII_GORE_5, col); break;
+        default: if (Random::rng(GORE_ALT_CHAR_CHANCE) == 1) tile->set_scars(ASCII_GORE_6B, col); else tile->set_scars(ASCII_GORE_6A, col); break;
+    }
 }
 
 // Splashes blood and gore on a given tile.

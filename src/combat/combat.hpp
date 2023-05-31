@@ -28,7 +28,7 @@ public:
     static void determine_wield_type(std::shared_ptr<Mobile> mob, bool is_attacker, WieldType *wield_type, bool *can_main_attack = nullptr,
         bool *can_off_attack = nullptr);    // Determines the type of weapons wielded by a Mobile.
     static void perform_attack(std::shared_ptr<Mobile> attacker, std::shared_ptr<Mobile> defender, EquipSlot weapon, WieldType wield_type_attacker,
-        WieldType wield_type_defender);	// Performs an attack with a single weapon.
+        WieldType wield_type_defender);     // Performs an attack with a single weapon.
 
 private:
     static std::string  damage_number_str(int damage, int blocked, bool crit, bool bleed, bool poison); // Generates a standard-format damage number string.

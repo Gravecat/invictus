@@ -59,14 +59,13 @@ enum class EntityTag : uint16_t
 
     // 20000 - 20999 -- General-purpose tags regarding this Mobile's state of being.
     Unliving = 20000,       // This Mobile is either undead or an unliving construct.
-	ImmunityBleed,          // This Mobile cannot bleed.
-	ImmunityPoison,         // This Mobile cannot be poisoned.
-
+    ImmunityBleed,          // This Mobile cannot bleed.
+    ImmunityPoison,         // This Mobile cannot be poisoned.
 
     // 21000 - 21999 -- Combat-related tags.
-	CannotBlock = 21000,    // This Mobile cannot use a shield to block in combat.
-	CannotDodge,            // This Mobile is unable to dodge attacks.
-	CannotParry,            // This Mobile is unable to parry attacks.
+    CannotBlock = 21000,    // This Mobile cannot use a shield to block in combat.
+    CannotDodge,            // This Mobile is unable to dodge attacks.
+    CannotParry,            // This Mobile is unable to parry attacks.
     Passive,                // This Mobile will not attack the player unless the player strikes first.
     Blind,                  // If this tag is NOT set, the Mobile will hunt the player by sight.
 
