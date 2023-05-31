@@ -507,7 +507,11 @@ void Mobile::unequip_item(EquipSlot slot)
 }
 
 // Awakens this Mobile, if it's not already.
-void Mobile::wake() { awake_ = true; }
+void Mobile::wake()
+{
+    awake_ = true;
+    if (core()->game() && core()->game()->ui()) core()->game()->ui()->redraw_nearby();
+}
 
 // Displays a message when an enemy awakes, or begins to awake.
 void Mobile::wake_message(EnemyWakeMsg type, bool warning)
