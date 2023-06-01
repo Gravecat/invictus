@@ -86,6 +86,9 @@ void GameManager::dungeon_input(int key)
     }
 }
 
+// Deletes the save files in the current save folder.
+void GameManager::erase_save_files() { FileX::delete_files_in_dir(save_folder_); }
+
 // Brøther, may I have some lööps?
 void GameManager::game_loop()
 {
@@ -132,7 +135,7 @@ GameState GameManager::game_state() const { return game_state_; }
 // Sets up for a new game.
 void GameManager::new_game()
 {
-    FileX::delete_files_in_dir(save_folder_);
+    erase_save_files();
     area_ = std::make_shared<Area>(50, 50);
     area_->set_level(1);
     area_->set_file("tfk");

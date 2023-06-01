@@ -24,6 +24,7 @@ public:
                 GameManager();      // Constructor, sets default values.
                 ~GameManager();     // Destructor, calls cleanup code.
     void        cleanup();          // Cleans up anything that needs cleaning up.
+    void        erase_save_files(); // Deletes the save files in the current save folder.
     void        game_loop();        // Brøther, may I have some lööps?
     GameState   game_state() const; // Retrieves the current state of the game.
     void        pass_time(float time);  // The player has taken an action which causes some time to pass.

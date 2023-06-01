@@ -20,10 +20,12 @@ uint8_t Death::skull_pattern[4] = { 0x70, 0xFA, 0xED, 0xFB };
 // The player has just died.
 void Death::die()
 {
-    GameState game_state = core()->game()->game_state();
+    auto game = core()->game();
+    GameState game_state = game->game_state();
     if (game_state == GameState::DUNGEON_DEAD || game_state == GameState::DEAD) return;
+    game->erase_save_files();
     core()->message("{m}You have died without honour! {r}Press the space bar to continue...");
-    core()->game()->set_game_state(GameState::DUNGEON_DEAD);
+    game->set_game_state(GameState::DUNGEON_DEAD);
 }
 
 // Renders the game over screen.
