@@ -34,6 +34,7 @@ private:
     static void     check_tag(std::ifstream &save_file, SaveTag expected_tag);  // Checks for an expected tag in the save file, and aborts if it isn't found.
     static void     incompatible(unsigned int error_a = 0, unsigned int error_b = 0);   // Aborts loading an incompatible save file.
     static std::shared_ptr<Area> load_area(std::ifstream &save_file);       // Loads an Area from disk.
+    static std::shared_ptr<Area> load_area_from_file(const std::string &filename);  // Loads an Area from a specified file.
     static void     load_blob_compressed(std::ifstream &save_file, char* blob, uint32_t blob_size); // Loads a block of memory from disk, decompressing it.
     static std::shared_ptr<Entity> load_entity(std::ifstream &save_file);   // Loads an Entity from disk.
     static void     load_game_manager(std::ifstream &save_file);    // Loads the GameManager class state.
@@ -46,6 +47,7 @@ private:
     static Tile     load_tile(std::ifstream &save_file);    // Loads a Tile from the save game file.
     static void     load_ui(std::ifstream &save_file);      // Loads the UI elements from the save game file.
     static void     save_area(std::ofstream &save_file, std::shared_ptr<Area> area);            // Saves an Area to disk.
+    static void     save_area_to_file(const std::string &filename, std::shared_ptr<Area> area); // Saves an Area to a specific file.
     static void     save_blob_compressed(std::ofstream &save_file, char* blob, uint32_t blob_size); // Saves a block of memory to disk, in a compressed form.
     static void     save_entity(std::ofstream &save_file, std::shared_ptr<Entity> entity);      // Saves an Entity to disk.
     static void     save_item(std::ofstream &save_file, std::shared_ptr<Item> item);            // Saves an Item to disk.
@@ -67,7 +69,7 @@ private:
     template<class T> static void save_data(std::ofstream &save_file, T data)
     { save_file.write((char*)&data, sizeof(T)); }
 
-    static const uint32_t   SAVE_VERSION =      14; // Increment this every time saved games are no longer compatible.
+    static const uint32_t   SAVE_VERSION =      15; // Increment this every time saved games are no longer compatible.
     static const uint32_t   SAVE_SUBVERSION =   0;  // The game is able to load saves of the same version, and any current or older subversion.
 
     static constexpr int    SAVE_ERROR_VERSION =    1;  // The save file version does not match.

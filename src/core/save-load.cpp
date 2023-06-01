@@ -16,6 +16,7 @@
 #include "entity/player.hpp"
 #include "ui/msglog.hpp"
 #include "ui/ui.hpp"
+#include "util/filex.hpp"
 
 
 namespace invictus
@@ -50,6 +51,7 @@ std::shared_ptr<Area> SaveLoad::load_area(std::ifstream &save_file)
     // Load the Entities in this Area.
     check_tag(save_file, SaveTag::ENTITIES);
     uint32_t entity_count = load_data<uint32_t>(save_file);
+    area->entities_.clear();
     for (unsigned int i = 0; i < entity_count; i++)
         area->entities_.push_back(load_entity(save_file));
 
@@ -63,6 +65,22 @@ std::shared_ptr<Area> SaveLoad::load_area(std::ifstream &save_file)
         area->tiles_[i] = load_tile(save_file);
 
     return area;
+}
+
+std::shared_ptr<Area> SaveLoad::load_area_from_file(const std::string &filename)
+{
+    std::ifstream area_file(filename, std::ios::in | std::ios::binary);
+    check_tag(area_file, SaveTag::HEADER_A);
+    check_tag(area_file, SaveTag::HEADER_B);
+    uint32_t file_version = load_data<uint32_t>(area_file);
+    uint32_t file_subversion = load_data<uint32_t>(area_file);
+    if (file_version != SAVE_VERSION) incompatible(SAVE_ERROR_VERSION, file_version);
+    else if (file_subversion > SAVE_SUBVERSION) incompatible(SAVE_ERROR_SUBVERSION, file_subversion);
+    auto new_area = load_area(area_file);
+    check_tag(area_file, SaveTag::SAVE_EOF);
+    area_file.close();
+    new_area->entities()->push_back(core()->game()->player_);
+    return new_area;
 }
 
 // Loads a block of memory from disk, decompressing it.
@@ -156,10 +174,10 @@ std::shared_ptr<Entity> SaveLoad::load_entity(std::ifstream &save_file)
 // Loads the game state from a specified file.
 void SaveLoad::load_game(const std::string &save_folder)
 {
-    core()->game()->save_folder_ = save_folder;
-    const std::string filename = save_folder + "/save.dat";
-    std::ifstream save_file(filename, std::ios::in | std::ios::binary);
+    auto game = core()->game();
+    game->save_folder_ = save_folder;
 
+    std::ifstream save_file(save_folder + "/game.dat", std::ios::in | std::ios::binary);
     check_tag(save_file, SaveTag::HEADER_A);
     check_tag(save_file, SaveTag::HEADER_B);
     uint32_t file_version = load_data<uint32_t>(save_file);
@@ -167,7 +185,11 @@ void SaveLoad::load_game(const std::string &save_folder)
     if (file_version != SAVE_VERSION) incompatible(SAVE_ERROR_VERSION, file_version);
     else if (file_subversion > SAVE_SUBVERSION) incompatible(SAVE_ERROR_SUBVERSION, file_subversion);
     load_game_manager(save_file);
+    game->player_ = std::dynamic_pointer_cast<Player>(load_entity(save_file));
     check_tag(save_file, SaveTag::SAVE_EOF);
+    save_file.close();
+
+    game->area_ = load_area_from_file(save_folder + "/area-0.dat");
 }
 
 // Loads the GameManager class state.
@@ -179,7 +201,6 @@ void SaveLoad::load_game_manager(std::ifstream &save_file)
     game_manager->game_state_ = static_cast<GameState>(load_data<uint8_t>(save_file));
     game_manager->heartbeat_ = load_data<float>(save_file);
     game_manager->heartbeat10_ = load_data<float>(save_file);
-    game_manager->area_ = load_area(save_file);
     load_ui(save_file);
 }
 
@@ -252,7 +273,6 @@ void SaveLoad::load_msglog(std::ifstream &save_file)
 void SaveLoad::load_player(std::ifstream &save_file, std::shared_ptr<Player> player)
 {
     check_tag(save_file, SaveTag::PLAYER);
-    core()->game()->player_ = player;
 
     player->finesse_ = load_data<int8_t>(save_file);
     player->intellect_ = load_data<int8_t>(save_file);
@@ -312,9 +332,9 @@ void SaveLoad::save_area(std::ofstream &save_file, std::shared_ptr<Area> area)
 
     // Save the Entities in this Area.
     write_tag(save_file, SaveTag::ENTITIES);
-    save_data<uint32_t>(save_file, area->entities_.size());
+    save_data<uint32_t>(save_file, area->entities_.size() - 1);
     for (auto entity : area->entities_)
-        save_entity(save_file, entity);
+        if (entity->type() != EntityType::PLAYER) save_entity(save_file, entity);
 
     // Save the tile memory. This could probably be compressed someday by storing the long sequences of spaces as some sort of integer tag, but not today.
     write_tag(save_file, SaveTag::TILE_MEMORY);
@@ -324,6 +344,19 @@ void SaveLoad::save_area(std::ofstream &save_file, std::shared_ptr<Area> area)
     write_tag(save_file, SaveTag::TILES);
     for (unsigned int i = 0; i < area->size_x_ * area->size_y_; i++)
         save_tile(save_file, area->tiles_[i]);
+}
+
+// Saves an Area to a specific file.
+void SaveLoad::save_area_to_file(const std::string &filename, std::shared_ptr<Area> area)
+{
+    std::ofstream area_file(filename, std::ios::out | std::ios::binary);
+    write_tag(area_file, SaveTag::HEADER_A);
+    write_tag(area_file, SaveTag::HEADER_B);
+    save_data<uint32_t>(area_file, SAVE_VERSION);
+    save_data<uint32_t>(area_file, SAVE_SUBVERSION);
+    save_area(area_file, area);
+    write_tag(area_file, SaveTag::SAVE_EOF);
+    area_file.close();
 }
 
 // Saves a block of memory to disk, in a compressed form.
@@ -412,15 +445,19 @@ void SaveLoad::save_entity(std::ofstream &save_file, std::shared_ptr<Entity> ent
 // Saves the game to a specified file.
 void SaveLoad::save_game()
 {
-    const std::string filename = core()->game()->save_folder() + "/save.dat";
-    std::ofstream save_file(filename, std::ios::out | std::ios::binary);
+    const std::string save_dir = core()->game()->save_folder();
+    FileX::delete_files_in_dir(save_dir);
+    std::ofstream save_file(save_dir + "/game.dat", std::ios::out | std::ios::binary);
     write_tag(save_file, SaveTag::HEADER_A);
     write_tag(save_file, SaveTag::HEADER_B);
     save_data<uint32_t>(save_file, SAVE_VERSION);
     save_data<uint32_t>(save_file, SAVE_SUBVERSION);
     save_game_manager(save_file);
+    save_entity(save_file, core()->game()->player());
     write_tag(save_file, SaveTag::SAVE_EOF);
     save_file.close();
+
+    save_area_to_file(save_dir + "/area-0.dat", core()->game()->area());
     core()->message("{c}Game saved.");
 }
 
@@ -433,7 +470,6 @@ void SaveLoad::save_game_manager(std::ofstream &save_file)
     save_data<uint8_t>(save_file, static_cast<uint8_t>(game_manager->game_state_));
     save_data<float>(save_file, game_manager->heartbeat_);
     save_data<float>(save_file, game_manager->heartbeat10_);
-    save_area(save_file, game_manager->area_);
     save_ui(save_file);
 }
 
