@@ -24,7 +24,8 @@ namespace invictus
 {
 
 // Constructor, creates a new empty Area.
-Area::Area(int width, int height) : cleanup_done_(false), needs_fov_recalc_(true), offset_x_(0), offset_y_(0), size_x_(width), size_y_(height)
+Area::Area(int width, int height) : cleanup_done_(false), file_("err"), level_(0), needs_fov_recalc_(true), offset_x_(0), offset_y_(0), size_x_(width),
+    size_y_(height)
 {
     if (width < 0 || height < 0) core()->guru()->halt("Invalid Area size", width, height);
     tiles_ = new Tile[width * height]();
@@ -269,6 +270,12 @@ void Area::render()
     // Fourth pass: the player. No need for off-screen checks here, the player should always be on the screen.
     terminal->put(player->ascii(), player->x() - offset_x_, player->y() - offset_y_, player->colour(), 0, dungeon_view);
 }
+
+// Sets the filename for this Area.
+void Area::set_file(const std::string &file) { file_ = file; }
+
+// Sets the vertical level of this Area.
+void Area::set_level(int level) { level_ = level; }
 
 // Sets a Tile to something else.
 void Area::set_tile(int x, int y, TileID tile_id)

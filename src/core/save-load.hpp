@@ -37,7 +37,7 @@ private:
     static std::shared_ptr<Area> load_area_from_file(const std::string &filename);  // Loads an Area from a specified file.
     static void     load_blob_compressed(std::ifstream &save_file, char* blob, uint32_t blob_size); // Loads a block of memory from disk, decompressing it.
     static std::shared_ptr<Entity> load_entity(std::ifstream &save_file);   // Loads an Entity from disk.
-    static void     load_game_manager(std::ifstream &save_file);    // Loads the GameManager class state.
+    static std::string  load_game_manager(std::ifstream &save_file);    // Loads the GameManager class state.
     static void     load_item(std::ifstream &save_file, std::shared_ptr<Item> item);    // Loads an Item from disk.
     static void     load_mobile(std::ifstream &save_file, std::shared_ptr<Mobile> mob); // Loads a Mobile from disk.
     static void     load_monster(std::ifstream &save_file, std::shared_ptr<Monster> monster);   // Loads a Monster from disk.
@@ -69,7 +69,7 @@ private:
     template<class T> static void save_data(std::ofstream &save_file, T data)
     { save_file.write((char*)&data, sizeof(T)); }
 
-    static const uint32_t   SAVE_VERSION =      15; // Increment this every time saved games are no longer compatible.
+    static const uint32_t   SAVE_VERSION =      16; // Increment this every time saved games are no longer compatible.
     static const uint32_t   SAVE_SUBVERSION =   0;  // The game is able to load saves of the same version, and any current or older subversion.
 
     static constexpr int    SAVE_ERROR_VERSION =    1;  // The save file version does not match.

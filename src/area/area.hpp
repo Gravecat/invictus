@@ -6,6 +6,7 @@
 
 #include <cstdint>
 #include <memory>
+#include <string>
 #include <utility>
 #include <vector>
 
@@ -40,6 +41,8 @@ public:
     int         offset_x() const;   // Retrieves the view offset on the X axis.
     int         offset_y() const;   // Retrieves the view offset on the Y axis.
     void        render();           // Renders this Area on the screen.
+    void        set_file(const std::string &file);  // Sets the filename for this Area.
+    void        set_level(int level);   // Sets the vertical level of this Area.
     void        set_tile(int x, int y, TileID tile_id); // Sets a Tile to something else.
     void        set_visible(int x, int y);  // Sets a specified Tile as visible.
     Tile*       tile(int x, int y); // Gets a specified Tile.
@@ -52,6 +55,8 @@ private:
 
     bool        cleanup_done_;      // Has the cleanup routine already run once?
     std::vector<std::shared_ptr<Entity>>    entities_;  // The Entities within this Area.
+    std::string file_;  // Part of the filename used to save this Area to disk.
+    int         level_; // The vertical level of this Area.
     bool        needs_fov_recalc_;  // Set this to TRUE to force a field-of-view recalculation on the next render.
     int         offset_x_, offset_y_;   // Screen rendering offsets.
     uint16_t    size_x_, size_y_;   // The X/Y dimensions of this Area.

@@ -47,6 +47,8 @@ std::shared_ptr<Area> SaveLoad::load_area(std::ifstream &save_file)
     auto area = std::make_shared<Area>(size_x, size_y);
     area->offset_x_ = load_data<int>(save_file);
     area->offset_y_ = load_data<int>(save_file);
+    area->file_ = load_string(save_file);
+    area->level_ = load_data<int>(save_file);
 
     // Load the Entities in this Area.
     check_tag(save_file, SaveTag::ENTITIES);
@@ -184,16 +186,16 @@ void SaveLoad::load_game(const std::string &save_folder)
     uint32_t file_subversion = load_data<uint32_t>(save_file);
     if (file_version != SAVE_VERSION) incompatible(SAVE_ERROR_VERSION, file_version);
     else if (file_subversion > SAVE_SUBVERSION) incompatible(SAVE_ERROR_SUBVERSION, file_subversion);
-    load_game_manager(save_file);
+    std::string area_filename = load_game_manager(save_file);
     game->player_ = std::dynamic_pointer_cast<Player>(load_entity(save_file));
     check_tag(save_file, SaveTag::SAVE_EOF);
     save_file.close();
 
-    game->area_ = load_area_from_file(save_folder + "/area-0.dat");
+    game->area_ = load_area_from_file(save_folder + "/" + area_filename + ".dat");
 }
 
 // Loads the GameManager class state.
-void SaveLoad::load_game_manager(std::ifstream &save_file)
+std::string SaveLoad::load_game_manager(std::ifstream &save_file)
 {
     auto game_manager = core()->game();
 
@@ -201,7 +203,9 @@ void SaveLoad::load_game_manager(std::ifstream &save_file)
     game_manager->game_state_ = static_cast<GameState>(load_data<uint8_t>(save_file));
     game_manager->heartbeat_ = load_data<float>(save_file);
     game_manager->heartbeat10_ = load_data<float>(save_file);
+    std::string area_filename = load_string(save_file);
     load_ui(save_file);
+    return area_filename;
 }
 
 // Loads an Item from disk.
@@ -329,6 +333,8 @@ void SaveLoad::save_area(std::ofstream &save_file, std::shared_ptr<Area> area)
     save_data<uint16_t>(save_file, area->size_y_);
     save_data<int>(save_file, area->offset_x_);
     save_data<int>(save_file, area->offset_y_);
+    save_string(save_file, area->file_);
+    save_data<int>(save_file, area->level_);
 
     // Save the Entities in this Area.
     write_tag(save_file, SaveTag::ENTITIES);
@@ -457,7 +463,8 @@ void SaveLoad::save_game()
     write_tag(save_file, SaveTag::SAVE_EOF);
     save_file.close();
 
-    save_area_to_file(save_dir + "/area-0.dat", core()->game()->area());
+    auto area = core()->game()->area();
+    save_area_to_file(save_dir + "/" + area->file_ + std::to_string(area->level_) + ".dat", core()->game()->area());
     core()->message("{c}Game saved.");
 }
 
@@ -470,6 +477,7 @@ void SaveLoad::save_game_manager(std::ofstream &save_file)
     save_data<uint8_t>(save_file, static_cast<uint8_t>(game_manager->game_state_));
     save_data<float>(save_file, game_manager->heartbeat_);
     save_data<float>(save_file, game_manager->heartbeat10_);
+    save_string(save_file, game_manager->area_->file_ + std::to_string(game_manager->area_->level_));
     save_ui(save_file);
 }
 

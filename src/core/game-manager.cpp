@@ -133,6 +133,8 @@ GameState GameManager::game_state() const { return game_state_; }
 void GameManager::new_game()
 {
     area_ = std::make_shared<Area>(50, 50);
+    area_->set_level(1);
+    area_->set_file("tfk");
     auto generator = std::make_unique<DungeonGenerator>(area_);
     generator->generate();
     auto stair_coords = area_->find_tile_tag(TileTag::StairsUp);
