@@ -49,6 +49,8 @@ std::shared_ptr<Area> SaveLoad::load_area(std::ifstream &save_file)
     area->offset_y_ = load_data<int>(save_file);
     area->file_ = load_string(save_file);
     area->level_ = load_data<int>(save_file);
+    area->player_left_x_ = load_data<uint16_t>(save_file);
+    area->player_left_y_ = load_data<uint16_t>(save_file);
 
     // Load the Entities in this Area.
     check_tag(save_file, SaveTag::ENTITIES);
@@ -335,12 +337,14 @@ void SaveLoad::save_area(std::ofstream &save_file, std::shared_ptr<Area> area)
     save_data<int>(save_file, area->offset_y_);
     save_string(save_file, area->file_);
     save_data<int>(save_file, area->level_);
+    save_data<uint16_t>(save_file, area->player_left_x_);
+    save_data<uint16_t>(save_file, area->player_left_y_);
 
     // Save the Entities in this Area.
     write_tag(save_file, SaveTag::ENTITIES);
-    save_data<uint32_t>(save_file, area->entities_.size() - 1);
+    save_data<uint32_t>(save_file, area->entities_.size());
     for (auto entity : area->entities_)
-        if (entity->type() != EntityType::PLAYER) save_entity(save_file, entity);
+        save_entity(save_file, entity);
 
     // Save the tile memory. This could probably be compressed someday by storing the long sequences of spaces as some sort of integer tag, but not today.
     write_tag(save_file, SaveTag::TILE_MEMORY);
@@ -452,7 +456,6 @@ void SaveLoad::save_entity(std::ofstream &save_file, std::shared_ptr<Entity> ent
 void SaveLoad::save_game()
 {
     const std::string save_dir = core()->game()->save_folder();
-    FileX::delete_files_in_dir(save_dir);
     std::ofstream save_file(save_dir + "/game.dat", std::ios::out | std::ios::binary);
     write_tag(save_file, SaveTag::HEADER_A);
     write_tag(save_file, SaveTag::HEADER_B);
@@ -464,7 +467,9 @@ void SaveLoad::save_game()
     save_file.close();
 
     auto area = core()->game()->area();
-    save_area_to_file(save_dir + "/" + area->file_ + std::to_string(area->level_) + ".dat", core()->game()->area());
+    area->remove_player();
+    save_area_to_file(save_dir + "/" + area->filename() + ".dat", core()->game()->area());
+    area->entities()->push_back(core()->game()->player());
     core()->message("{c}Game saved.");
 }
 

@@ -24,8 +24,8 @@ namespace invictus
 {
 
 // Constructor, creates a new empty Area.
-Area::Area(int width, int height) : cleanup_done_(false), file_("err"), level_(0), needs_fov_recalc_(true), offset_x_(0), offset_y_(0), size_x_(width),
-    size_y_(height)
+Area::Area(int width, int height) : cleanup_done_(false), file_("err"), level_(0), needs_fov_recalc_(true), offset_x_(0), offset_y_(0),
+    player_left_x_(0), player_left_y_(0), size_x_(width), size_y_(height)
 {
     if (width < 0 || height < 0) core()->guru()->halt("Invalid Area size", width, height);
     tiles_ = new Tile[width * height]();
@@ -78,6 +78,12 @@ std::vector<std::shared_ptr<Entity>>* Area::entities() { return &entities_; }
 uint32_t Area::entity_index(std::shared_ptr<Entity> entity)
 { return std::distance(entities()->begin(), std::find(entities()->begin(), entities()->end(), entity)); }
 
+// Returns the filename section for this Area, without modificiation.
+std::string Area::file_str() const { return file_; }
+
+// Returns the full filename for this Area to be saved.
+std::string Area::filename() const { return file_ + std::to_string(level_); }
+
 // Finds a tile with the specified tag.
 std::pair<int, int> Area::find_tile_tag(TileTag tag)
 {
@@ -102,6 +108,9 @@ float Area::fov_distance(int x, int y, int x2, int y2)
 
     return grid_distance(x1, y1, x2, y2);
 }
+
+// Get the coordinates where the Player last left this area.
+std::pair<uint16_t, uint16_t> Area::get_player_left() { return {player_left_x_, player_left_y_}; }
 
 // Calculates the distance between two points, regardless of line of sight.
 float Area::grid_distance(int x, int y, int x2, int y2) const
@@ -145,6 +154,9 @@ bool Area::is_opaque(int x, int y)
     return false;
 }
 
+// Returns the vertical level of this Area.
+int Area::level() const { return level_; }
+
 // Marks the Area as needing a FoV recalc.
 void Area::need_fov_recalc() { needs_fov_recalc_ = true; }
 
@@ -165,6 +177,19 @@ void Area::recalc_fov()
     Shadowcast::calc_fov(this, player->x(), player->y(), player->fov_radius());
 
     needs_fov_recalc_ = false;
+}
+
+// Removes the Player object from the entities list.
+void Area::remove_player()
+{
+    for (unsigned int i = 0; i < entities_.size(); i++)
+    {
+        if (entities_.at(i)->type() == EntityType::PLAYER)
+        {
+            entities_.erase(entities_.begin() + i);
+            i--;
+        }
+    }
 }
 
 // Renders this Area on the screen.
@@ -276,6 +301,14 @@ void Area::set_file(const std::string &file) { file_ = file; }
 
 // Sets the vertical level of this Area.
 void Area::set_level(int level) { level_ = level; }
+
+// Sets the player-left X/Y coordinates.
+void Area::set_player_left(int x, int y)
+{
+    if (x < 0 || y < 0 || x >= width() || y >= height()) core()->guru()->halt("Invalid map coordinates!", x, y);
+    player_left_x_ = x;
+    player_left_y_ = y;
+}
 
 // Sets a Tile to something else.
 void Area::set_tile(int x, int y, TileID tile_id)

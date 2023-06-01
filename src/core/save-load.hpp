@@ -24,7 +24,9 @@ class Tile;     // defined in area/tile.hpp
 class SaveLoad
 {
 public:
+    static std::shared_ptr<Area> load_area_from_file(const std::string &filename);  // Loads an Area from a specified file.
     static void load_game(const std::string &save_folder);  // Loads the game state from a specified folder.
+    static void save_area_to_file(const std::string &filename, std::shared_ptr<Area> area); // Saves an Area to a specific file.
     static void save_game();    // Saves the game to a specified file.
 
 private:
@@ -34,7 +36,6 @@ private:
     static void     check_tag(std::ifstream &save_file, SaveTag expected_tag);  // Checks for an expected tag in the save file, and aborts if it isn't found.
     static void     incompatible(unsigned int error_a = 0, unsigned int error_b = 0);   // Aborts loading an incompatible save file.
     static std::shared_ptr<Area> load_area(std::ifstream &save_file);       // Loads an Area from disk.
-    static std::shared_ptr<Area> load_area_from_file(const std::string &filename);  // Loads an Area from a specified file.
     static void     load_blob_compressed(std::ifstream &save_file, char* blob, uint32_t blob_size); // Loads a block of memory from disk, decompressing it.
     static std::shared_ptr<Entity> load_entity(std::ifstream &save_file);   // Loads an Entity from disk.
     static std::string  load_game_manager(std::ifstream &save_file);    // Loads the GameManager class state.
@@ -47,7 +48,6 @@ private:
     static Tile     load_tile(std::ifstream &save_file);    // Loads a Tile from the save game file.
     static void     load_ui(std::ifstream &save_file);      // Loads the UI elements from the save game file.
     static void     save_area(std::ofstream &save_file, std::shared_ptr<Area> area);            // Saves an Area to disk.
-    static void     save_area_to_file(const std::string &filename, std::shared_ptr<Area> area); // Saves an Area to a specific file.
     static void     save_blob_compressed(std::ofstream &save_file, char* blob, uint32_t blob_size); // Saves a block of memory to disk, in a compressed form.
     static void     save_entity(std::ofstream &save_file, std::shared_ptr<Entity> entity);      // Saves an Entity to disk.
     static void     save_item(std::ofstream &save_file, std::shared_ptr<Item> item);            // Saves an Item to disk.

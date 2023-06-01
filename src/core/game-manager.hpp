@@ -37,7 +37,8 @@ public:
 
 private:
     void    dungeon_input(int key); // Handles the player's input, when in dungeon mode.
-    void    new_game(); // Sets up for a new game.
+    void    new_game();             // Sets up for a new game.
+    void    use_stairs(bool up);    // Attempts to go up or down stairs.
 
     std::shared_ptr<Area>   area_;  // The currently-loaded Area of the game world.
     bool        cleanup_done_;      // Has the cleanup routine already run once?

@@ -15,8 +15,7 @@
 #include "ui/death.hpp"
 #include "ui/system-menu.hpp"
 #include "ui/ui.hpp"
-
-#include "combat/combat.hpp"
+#include "util/filex.hpp"
 
 
 namespace invictus
@@ -69,14 +68,15 @@ void GameManager::dungeon_input(int key)
         case 'u': case Key::KP9: dx = 1; dy = -1; break;    // Move northeast
 
         case ',': case Key::KP5: pass_time(TIME_DO_NOTHING); break; // Do nothing.
-        case '.': player_->ground_items(); break;       // Interact with items on the ground.
-        case '=': SystemMenu::open(); break;            // Opens the system menu.
-        case 'c': player_->close_a_door(); break;       // Attempts to close something.
-        case 'e': player_->take_inventory(true); break; // Interact with equipped items.
-        case 'g': player_->get_item(); break;           // Picks something up.
-        case 'i': player_->take_inventory(); break;     // Interact with carried items.
-        case 'o': player_->open_a_door(); break;        // Attempts to open something.
-        case 'S': SaveLoad::save_game(); break;         // Saves the game!
+        case '.': player_->ground_items(); break;           // Interact with items on the ground.
+        case '=': SystemMenu::open(); break;                // Opens the system menu.
+        case '<': case '>': use_stairs(key == '<'); break;  // Goes up or down stairs.
+        case 'c': player_->close_a_door(); break;           // Attempts to close something.
+        case 'e': player_->take_inventory(true); break;     // Interact with equipped items.
+        case 'g': player_->get_item(); break;               // Picks something up.
+        case 'i': player_->take_inventory(); break;         // Interact with carried items.
+        case 'o': player_->open_a_door(); break;            // Attempts to open something.
+        case 'S': SaveLoad::save_game(); break;             // Saves the game!
     }
 
     if (dx || dy)
@@ -132,6 +132,7 @@ GameState GameManager::game_state() const { return game_state_; }
 // Sets up for a new game.
 void GameManager::new_game()
 {
+    FileX::delete_files_in_dir(save_folder_);
     area_ = std::make_shared<Area>(50, 50);
     area_->set_level(1);
     area_->set_file("tfk");
@@ -191,5 +192,56 @@ void GameManager::tick()
 
 // Returns a pointer to the user interface manager.
 const std::shared_ptr<UI> GameManager::ui() const { return ui_; }
+
+// Attempts to go up or down stairs.
+void GameManager::use_stairs(bool up)
+{
+    auto tile = area_->tile(player_->x(), player_->y());
+    const bool stairs_up = tile->tag(TileTag::StairsUp), stairs_down = tile->tag(TileTag::StairsDown);
+    if (up && !stairs_up)
+    {
+        if (stairs_down) core()->message("{y}You can only travel down from here.");
+        else core()->message("{y}There is nowhere to ascend here.");
+        return;
+    }
+    else if (!up && !stairs_down)
+    {
+        if (stairs_up) core()->message("{y}You can only travel up from here.");
+        else core()->message("{y}There is nowhere to descend here.");
+        return;
+    }
+
+    int current_level = area_->level();
+    int new_level = current_level + (up ? -1 : 1);
+    std::string current_area_string = area_->file_str();
+    area_->set_player_left(player_->x(), player_->y());
+    area_->remove_player();
+    SaveLoad::save_game();
+    std::string travel_string;
+    if (up) travel_string = "{c}You ascend the stairs to the previous level...";
+    else travel_string = "{c}You descend the stairs to the next level...";
+    core()->message(travel_string);
+
+    // Check if the new Area should be loaded from a file, or generated fresh.
+    std::string filename = save_folder_ + "/" + current_area_string + std::to_string(new_level) + ".dat";
+    core()->guru()->log(filename);
+    if (FileX::file_exists(filename))
+    {
+        area_ = SaveLoad::load_area_from_file(filename);
+        auto stair_coords = area_->get_player_left();
+        player_->set_pos(stair_coords.first, stair_coords.second);
+    }
+    else
+    {
+        area_ = std::make_shared<Area>(50, 50);
+        area_->set_level(new_level);
+        area_->set_file(current_area_string);
+        auto generator = std::make_unique<DungeonGenerator>(area_);
+        generator->generate();
+        auto stair_coords = area_->find_tile_tag(up ? TileTag::StairsDown : TileTag::StairsUp);
+        player_->set_pos(stair_coords.first, stair_coords.second);
+    }
+    core()->game()->ui()->full_redraw();
+}
 
 }   // namespace invictus
