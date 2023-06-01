@@ -233,6 +233,12 @@ void SaveLoad::load_mobile(std::ifstream &save_file, std::shared_ptr<Mobile> mob
     mob->bloody_feet_ = load_data<float>(save_file);
     mob->awake_ = load_data<bool>(save_file);
     mob->move_speed_ = load_data<float>(save_file);
+    mob->regen_speed_[0] = load_data<float>(save_file);
+    mob->regen_speed_[1] = load_data<float>(save_file);
+    mob->regen_speed_[2] = load_data<float>(save_file);
+    mob->regen_timer_[0] = load_data<float>(save_file);
+    mob->regen_timer_[1] = load_data<float>(save_file);
+    mob->regen_timer_[2] = load_data<float>(save_file);
 
     // Load the equipment.
     uint8_t equ_size = load_data<uint8_t>(save_file);
@@ -518,6 +524,12 @@ void SaveLoad::save_mobile(std::ofstream &save_file, std::shared_ptr<Mobile> mob
     save_data<float>(save_file, mob->bloody_feet_);
     save_data<bool>(save_file, mob->awake_);
     save_data<float>(save_file, mob->move_speed_);
+    save_data<float>(save_file, mob->regen_speed_[0]);
+    save_data<float>(save_file, mob->regen_speed_[1]);
+    save_data<float>(save_file, mob->regen_speed_[2]);
+    save_data<float>(save_file, mob->regen_timer_[0]);
+    save_data<float>(save_file, mob->regen_timer_[1]);
+    save_data<float>(save_file, mob->regen_timer_[2]);
 
     // Saves the equipment.
     save_data<uint8_t>(save_file, static_cast<uint8_t>(EquipSlot::_END));

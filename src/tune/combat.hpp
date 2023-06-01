@@ -24,6 +24,7 @@ constexpr int   HIT_POINTS_PER_MIGHT =          5;      // Bonus hit points per 
 constexpr int   MANA_PER_INTELLECT =            15;     // The bonus mana points per point of Intellect.
 constexpr int   MIGHT_DAMAGE_BONUS =            2;      // The bonus per point of Might to damage, when using melee weapons.
 constexpr int   MIGHT_HIT_BONUS =               2;      // The bonus per point of Might to to-hit chance, when using melee weapons.
+constexpr float PLAYER_HP_REGEN_SPEED =         0.1f;   // The speed at which the player regenerates HP over time. 1 = 1 HP per turn, lower = slower.
 constexpr int   SINGLE_WIELD_HIT_MOD =          2;      // The bonus to to-hit chance, when single-wielding a melee weapon.
 constexpr int   SINGLE_WIELD_HIT_MOD_FINESSE =  4;      // As above, but for finesse weapons.
 constexpr int   STAMINA_PER_FINESSE =           10;     // The bonus stamina points per point of Finesse.

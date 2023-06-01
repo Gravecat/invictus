@@ -29,6 +29,7 @@ Player::Player() : Mobile(), finesse_(2), intellect_(1), might_(2)
     set_light_power(4);
     set_name("player");
     recalc_max_hp_mp_sp();
+    set_hp_regen_speed(PLAYER_HP_REGEN_SPEED);
     wake();
 }
 

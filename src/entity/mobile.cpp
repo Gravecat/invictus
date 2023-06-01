@@ -35,7 +35,8 @@ std::shared_ptr<Item> Mobile::blank_item_ = std::make_shared<Item>();
 
 
 // Constructor.
-Mobile::Mobile() : Entity(), awake_(false), bloody_feet_(0), hp_{1, 1}, move_speed_(TIME_BASE_MOVEMENT), mp_{0, 0}, sp_{0, 0}
+Mobile::Mobile() : Entity(), awake_(false), bloody_feet_(0), hp_{1, 1}, move_speed_(TIME_BASE_MOVEMENT), mp_{0, 0}, regen_speed_{0, 0, 0},
+    regen_timer_{0, 0, 0}, sp_{0, 0}
 {
     // Populates the equipment vector with blank items.
     for (unsigned int i = 0; i < static_cast<unsigned int>(EquipSlot::_END); i++)
@@ -419,6 +420,9 @@ void Mobile::set_hp(uint16_t current, uint16_t max)
     if (max < UINT16_MAX) hp_[1] = max;
 }
 
+// Sets the HP regeneration speed for this Mobile.
+void Mobile::set_hp_regen_speed(float regen_speed) { regen_speed_[0] = regen_speed; }
+
 // Sets this Mobile's MP directly.
 void Mobile::set_mp(uint16_t current, uint16_t max)
 {
@@ -486,11 +490,16 @@ void Mobile::tick10(std::shared_ptr<Entity> self)
     tick_buffs(std::dynamic_pointer_cast<Mobile>(self));
     if (is_dead()) return;
 
-    // Regenerate hit points over time. Make this slower?
+    // Regenerate hit points over time.
     if (!has_buff(BuffType::PAIN) && hp_[0] < hp_[1])
     {
-        hp_[0]++;
-        if (type() == EntityType::PLAYER) core()->game()->ui()->redraw_stat_bars();
+        regen_timer_[0] += regen_speed_[0];
+        if (regen_timer_[0] >= 1.0f)
+        {
+            regen_timer_[0] -= 1.0f;
+            hp_[0]++;
+            if (type() == EntityType::PLAYER) core()->game()->ui()->redraw_stat_bars();
+        }
     }
 
     // Check to see if this Mobile can wake up.

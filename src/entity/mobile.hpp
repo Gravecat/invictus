@@ -53,6 +53,7 @@ public:
     void            set_equipment(EquipSlot slot, std::shared_ptr<Item> item);  // Manually equips an item.
     void            set_equipment(EquipSlot slot, ItemID id);   // As above, but generates a new Item from its ID.
     void            set_hp(uint16_t current, uint16_t max = UINT16_MAX);    // Sets this Mobile's HP directly.
+    void            set_hp_regen_speed(float regen_speed);  // Sets the HP regeneration speed for this Mobile.
     void            set_mp(uint16_t current, uint16_t max = UINT16_MAX);    // Sets this Mobile's MP directly.
     void            set_sp(uint16_t current, uint16_t max = UINT16_MAX);    // Sets this Mobile's SP directly.
     uint16_t        sp(bool max = false) const; // Retrieves the current or maximum stamina points of this Mobile.
@@ -76,6 +77,8 @@ private:
     uint16_t    hp_[2];             // The current and maximum hit points of this Mobile.
     float       move_speed_;        // The movement speed of this Mobile.
     uint16_t    mp_[2];             // The current and maximum mana points of this Mobile.
+    float       regen_speed_[3];    // HP, SP and MP regeneration speed.
+    float       regen_timer_[3];    // Builds up over time until the regeneration tick is triggered.
     uint16_t    sp_[2];             // The current and maximum stamina points of this Mobile.
 
 friend class CodexMonster;
