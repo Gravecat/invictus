@@ -87,7 +87,7 @@ void Guru::console_ready(bool is_ready) { console_ready_ = is_ready; }
 // Guru meditation error.
 void Guru::halt(std::string error, int a, int b)
 {
-    this->log("Software Failure, Halting Execution", GURU_CRITICAL);
+    this->log("Critical error occurred, halting execution.", GURU_CRITICAL);
     this->log(error, GURU_CRITICAL);
     if (dead_already_)
     {
@@ -96,6 +96,7 @@ void Guru::halt(std::string error, int a, int b)
     }
     else dead_already_ = true;
     std::string meditation_str = "Guru Meditation " + StrX::str_toupper(StrX::itoh(a, 8)) + "." + StrX::str_toupper(StrX::itoh(b, 8));
+    this->log(meditation_str, GURU_CRITICAL);
     if (!console_ready_)
     {
         std::cout << error << std::endl;
@@ -127,11 +128,7 @@ void Guru::halt(std::string error, int a, int b)
 }
 
 // As above, but with an exception instead of a string.
-void Guru::halt(std::exception &e)
-{
-    this->log(e.what(), GURU_CRITICAL);
-    throw e;
-}
+void Guru::halt(std::exception &e) { halt(e.what()); }
 
 // Tells Guru to hook system failure signals.
 void Guru::hook_signals()
