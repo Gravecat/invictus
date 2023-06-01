@@ -46,14 +46,14 @@ std::shared_ptr<Item> CodexItem::generate(ItemID id)
          * MELEE WEAPONS *
          *****************/
 
-        case ItemID::SHORTSWORD:    // A simple one-handed blade.
-            new_item->name_ = "shortsword";
+        case ItemID::GREATSWORD:    // A heavy sword that requires both hands to wield.
+            new_item->name_ = "greatsword";
             new_item->ascii_ = ASCII_EDGED_WEAPON;
             new_item->colour_ = Colour::WHITE;
             new_item->item_type_ = ItemType::WEAPON;
             new_item->item_subtype_ = ItemSub::SWORD;
-            new_item->set_tag(EntityTag::WeaponFinesse);
-            new_item->set_damage(1, 6);
+            new_item->set_damage(2, 6);
+            new_item->set_tag(EntityTag::TwoHanded);
             break;
 
         case ItemID::LONGSWORD: // A versatile blade that can be held in one or both hands.
@@ -66,14 +66,21 @@ std::shared_ptr<Item> CodexItem::generate(ItemID id)
             new_item->set_tag(EntityTag::HandAndAHalf);
             break;
 
-        case ItemID::GREATSWORD:    // A heavy sword that requires both hands to wield.
-            new_item->name_ = "greatsword";
+        case ItemID::SHORTSWORD:    // A simple one-handed blade.
+        case ItemID::SHORTSWORD_TARNISHED:  // A variant used by the undead.
+            new_item->name_ = "shortsword";
             new_item->ascii_ = ASCII_EDGED_WEAPON;
             new_item->colour_ = Colour::WHITE;
             new_item->item_type_ = ItemType::WEAPON;
             new_item->item_subtype_ = ItemSub::SWORD;
-            new_item->set_damage(2, 6);
-            new_item->set_tag(EntityTag::TwoHanded);
+            new_item->set_tag(EntityTag::WeaponFinesse);
+            new_item->set_damage(1, 6);
+
+            if (id == ItemID::SHORTSWORD_TARNISHED)
+            {
+                new_item->name_ = "tarnished shortsword";
+                new_item->colour_ = Colour::YELLOW;
+            }
             break;
 
 

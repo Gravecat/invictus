@@ -13,7 +13,7 @@ namespace invictus
 
 class Item; // defined in entity/item.hpp
 
-enum class ItemID : uint16_t { NOTHING = 0, LEATHER_ARMOUR, SHORTSWORD, LONGSWORD, GREATSWORD, UNARMED_ATTACK, RAGGED_ARMOUR };
+enum class ItemID : uint16_t { NOTHING = 0, LEATHER_ARMOUR, SHORTSWORD, LONGSWORD, GREATSWORD, UNARMED_ATTACK, RAGGED_ARMOUR, SHORTSWORD_TARNISHED };
 
 
 class CodexItem

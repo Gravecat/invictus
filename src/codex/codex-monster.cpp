@@ -28,7 +28,8 @@ std::shared_ptr<Monster> CodexMonster::generate(MonsterID id)
             mob->to_damage_bonus_ = -1;
             mob->set_hp(16, 16);
             mob->set_tags({EntityTag::Unliving, EntityTag::ImmunityPoison});
-            mob->equ()->at(static_cast<uint32_t>(EquipSlot::BODY)) = CodexItem::generate(ItemID::RAGGED_ARMOUR);
+            mob->set_equipment(EquipSlot::BODY, ItemID::RAGGED_ARMOUR);
+            mob->set_equipment(EquipSlot::HAND_MAIN, ItemID::SHORTSWORD_TARNISHED);
             break;
     }
 

@@ -6,6 +6,7 @@
 #include "area/area.hpp"
 #include "area/gore.hpp"
 #include "area/tile.hpp"
+#include "codex/codex-item.hpp"
 #include "codex/codex-tile.hpp"
 #include "combat/combat.hpp"
 #include "core/core.hpp"
@@ -374,6 +375,16 @@ float Mobile::movement_speed() const { return move_speed_; }
 
 // Retrieves the current or maximum mana points of this Mobile.
 uint16_t Mobile::mp(bool max) const { return mp_[max ? 1 : 0]; }
+
+// Manually equips an item.
+void Mobile::set_equipment(EquipSlot slot, std::shared_ptr<Item> item)
+{
+    if (slot >= EquipSlot::_END) throw std::runtime_error("Invalid equipment slot");
+    equipment_.at(static_cast<uint32_t>(slot)) = item;
+}
+
+// As above, but generates a new Item from its ID.
+void Mobile::set_equipment(EquipSlot slot, ItemID id) { set_equipment(slot, CodexItem::generate(id)); }
 
 // Sets this Mobile's HP directly.
 void Mobile::set_hp(uint16_t current, uint16_t max)

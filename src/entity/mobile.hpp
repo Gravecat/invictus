@@ -10,6 +10,7 @@
 namespace invictus
 {
 
+enum class ItemID : uint16_t;   // defined in codex/codex-item.hpp
 class Player;   // defined in entity/player.hpp
 
 
@@ -45,6 +46,8 @@ public:
     virtual bool    move_or_attack(std::shared_ptr<Mobile> self, int dx, int dy);   // Moves in a given direction, or attacks something in the destination tile.
     float           movement_speed() const; // Returns the amount of ticks needed for this Mobile to move one tile.
     uint16_t        mp(bool max = false) const; // Retrieves the current or maximum mana points of this Mobile.
+    void            set_equipment(EquipSlot slot, std::shared_ptr<Item> item);  // Manually equips an item.
+    void            set_equipment(EquipSlot slot, ItemID id);   // As above, but generates a new Item from its ID.
     void            set_hp(uint16_t current, uint16_t max = UINT16_MAX);    // Sets this Mobile's HP directly.
     void            set_mp(uint16_t current, uint16_t max = UINT16_MAX);    // Sets this Mobile's MP directly.
     void            set_sp(uint16_t current, uint16_t max = UINT16_MAX);    // Sets this Mobile's SP directly.
