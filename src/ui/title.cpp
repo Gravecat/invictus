@@ -51,7 +51,7 @@ void TitleScreen::render()
     terminal->print("{G}\\______(______{W};;; {G}__{W};;;", dragon_x + 2, dragon_y + 12);
 
     terminal->print("Copyright (c) 2023 Raine \"Gravecat\" Simmons", midcol - 21, copyright_y, Colour::BLUE_BOLD);
-    terminal->print("and the Morior Invictus project contributors.", midcol - 20, copyright_y + 1, Colour::BLUE_BOLD);
+    terminal->print("and the Morior Invictus project contributors.", midcol - 22, copyright_y + 1, Colour::BLUE_BOLD);
     terminal->print("github.com/Gravecat/invictus", midcol - 14, copyright_y + 3, Colour::BLUE_BOLD);
 
     terminal->print("Morior Invictus is free and open-source, licensed under the GNU AGPL v3.", midcol - 36, gpl_y, Colour::BLUE);
