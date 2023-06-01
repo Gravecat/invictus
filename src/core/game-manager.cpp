@@ -143,10 +143,8 @@ void GameManager::new_game()
     generator->generate();
     auto stair_coords = area_->find_tile_tag(TileTag::StairsUp);
     player_->set_pos(stair_coords.first, stair_coords.second);
-    player_->inventory_add(CodexItem::generate(ItemID::LEATHER_ARMOUR));
-    player_->inventory_add(CodexItem::generate(ItemID::SHORTSWORD));
-    player_->inventory_add(CodexItem::generate(ItemID::LONGSWORD));
-    player_->inventory_add(CodexItem::generate(ItemID::GREATSWORD));
+    player_->set_equipment(EquipSlot::BODY, ItemID::LEATHER_ARMOUR);
+    player_->set_equipment(EquipSlot::HAND_MAIN, ItemID::LONGSWORD);
     game_state_ = GameState::DUNGEON;
     ui_->dungeon_mode_ui(true);
 }
