@@ -249,9 +249,14 @@ seek out the long-lost {M}Crown of Kings{w}, then return to the surface with you
             redraw = false;
         }
         int key = terminal->get_key();
-        if (key == Key::RESIZE) redraw = true;
+        if (key == Key::RESIZE)
+        {
+            redraw = true;
+            core()->game()->ui()->window_resized();
+        }
         else if (key == ' ') break;
     }
+    terminal->cls();
 
     erase_save_files();
     area_ = std::make_shared<Area>(50, 50);

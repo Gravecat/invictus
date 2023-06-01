@@ -8,6 +8,7 @@
 #include "core/version.hpp"
 #include "terminal/terminal.hpp"
 #include "ui/title.hpp"
+#include "ui/ui.hpp"
 #include "util/filex.hpp"
 #include "util/strx.hpp"
 
@@ -84,7 +85,10 @@ void TitleScreen::title_screen()
         
         switch(key)
         {
-            case Key::RESIZE: redraw = true; break;
+            case Key::RESIZE:
+                game->ui()->window_resized();
+                redraw = true;
+                break;
             case 'k': case Key::ARROW_UP: case Key::KP8:
                 if (selected_ > 0)
                 {
@@ -104,11 +108,13 @@ void TitleScreen::title_screen()
                 {
                     case 0:
                         game->set_game_state(GameState::NEW_GAME);
+                        terminal->cls();
                         return;
                     case 1:
                         if (save_file_exists())
                         {
                             game->set_game_state(GameState::LOAD_GAME);
+                            terminal->cls();
                             return;
                         }
                         break;
