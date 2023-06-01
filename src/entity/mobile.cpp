@@ -115,10 +115,10 @@ void Mobile::die()
     }
 
     hp_[0] = 0;
-    set_ascii(ASCII_CORPSE);
+    if (type() != EntityType::PLAYER) set_ascii(ASCII_CORPSE);
     if (can_bleed) set_colour(Colour::RED);
     set_name(name(NAME_FLAG_POSSESSIVE) + (unliving ? " remains" : " corpse"));
-    if (can_bleed) Gore::splash(x(), y(), GORE_ON_MOBILE_DEATH);
+    if (can_bleed) Gore::splash(x(), y(), (type() == EntityType::PLAYER ? GORE_ON_PLAYER_DEATH : GORE_ON_MOBILE_DEATH));
 }
 
 // Drops a carried item.

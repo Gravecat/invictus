@@ -46,6 +46,9 @@ int Player::armour()
     else return armour_value_might;
 }
 
+// Checks if this Player blocks a specified tile.
+bool Player::blocks_tile(int x_tile, int y_tile) const { return (x_tile == x() && y_tile == y()); }
+
 // Attempts to close a nearby door.
 void Player::close_a_door()
 {

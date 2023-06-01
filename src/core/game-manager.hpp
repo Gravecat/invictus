@@ -16,7 +16,7 @@ class Player;   // defined in entity/player.hpp
 class UI;       // defined in ui/ui.hpp
 
 
-enum class GameState : uint8_t { INITIALIZING, NEW_GAME, LOAD_GAME, DUNGEON };
+enum class GameState : uint8_t { INITIALIZING, NEW_GAME, LOAD_GAME, DUNGEON, DUNGEON_DEAD, DEAD };
 
 class GameManager
 {

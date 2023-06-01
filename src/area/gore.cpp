@@ -9,6 +9,7 @@
 #include "terminal/terminal-shared-defs.hpp"
 #include "tune/ascii-symbols.hpp"
 #include "tune/gore.hpp"
+#include "ui/ui.hpp"
 #include "util/random.hpp"
 
 #include "core/guru.hpp"
@@ -103,6 +104,8 @@ void Gore::splash(int x, int y, int intensity)
     for (int i = 0; i < intensity; i++)
         do_splash(x, y);
     core()->game()->area()->need_fov_recalc();
+    core()->game()->ui()->redraw_dungeon();
+    core()->game()->ui()->redraw_nearby();
 }
 
 }   // namespace invictus

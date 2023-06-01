@@ -17,6 +17,7 @@ class Player : public Mobile
 public:
                 Player();   // Constructor.
     int         armour() override;  // Returns the total armour modifier from this Player and their equipped gear.
+    bool        blocks_tile(int x_tile, int y_tile) const override; // Checks if this Player blocks a specified tile.
     void        close_a_door(); // Attempts to close a nearby door.
     int         dodge() override;   // Returns this Player's dodge score.
     int8_t      finesse() const;    // Retrieves this Player's finesse attribute.

@@ -76,8 +76,9 @@ void UI::full_redraw() { dungeon_needs_redraw_ = message_log_needs_redraw_ = nea
 void UI::generate_dungeon_view()
 {
     auto terminal = core()->terminal();
+    GameState game_state = (core()->game() ? core()->game()->game_state() : GameState::INITIALIZING);
     dungeon_view_ = std::make_shared<Window>(terminal->get_cols() - NEARBY_BAR_WIDTH, terminal->get_rows() - MESSAGE_LOG_HEIGHT - 1, 0, 0);
-    if (core()->game() && core()->game()->game_state() == GameState::DUNGEON) dungeon_view_->set_visible(true);
+    if (game_state == GameState::DUNGEON || game_state == GameState::DUNGEON_DEAD) dungeon_view_->set_visible(true);
     else dungeon_view_->set_visible(false);
 }
 
@@ -85,9 +86,10 @@ void UI::generate_dungeon_view()
 void UI::generate_message_log()
 {
     auto terminal = core()->terminal();
+    GameState game_state = (core()->game() ? core()->game()->game_state() : GameState::INITIALIZING);
     message_log_window_ = std::make_shared<Window>(terminal->get_cols() - NEARBY_BAR_WIDTH + 1, MESSAGE_LOG_HEIGHT, 0, terminal->get_rows() -
         MESSAGE_LOG_HEIGHT);
-    if (core()->game() && core()->game()->game_state() == GameState::DUNGEON) message_log_window_->set_visible(true);
+    if (game_state == GameState::DUNGEON || game_state == GameState::DUNGEON_DEAD) message_log_window_->set_visible(true);
     else message_log_window_->set_visible(false);
 }
 
@@ -95,8 +97,9 @@ void UI::generate_message_log()
 void UI::generate_nearby_window()
 {
     auto terminal = core()->terminal();
+    GameState game_state = (core()->game() ? core()->game()->game_state() : GameState::INITIALIZING);
     nearby_window_ = std::make_shared<Window>(NEARBY_BAR_WIDTH, terminal->get_rows(), terminal->get_cols() - NEARBY_BAR_WIDTH, 0);
-    if (core()->game() && core()->game()->game_state() == GameState::DUNGEON) nearby_window_->set_visible(true);
+    if (game_state == GameState::DUNGEON || game_state == GameState::DUNGEON_DEAD) nearby_window_->set_visible(true);
     else nearby_window_->set_visible(false);
 }
 
@@ -104,8 +107,9 @@ void UI::generate_nearby_window()
 void UI::generate_stat_bars()
 {
     auto terminal = core()->terminal();
+    GameState game_state = (core()->game() ? core()->game()->game_state() : GameState::INITIALIZING);
     stat_bars_ = std::make_shared<Window>(terminal->get_cols() - NEARBY_BAR_WIDTH, 1, 0, terminal->get_rows() - MESSAGE_LOG_HEIGHT - 1);
-    if (core()->game() && core()->game()->game_state() == GameState::DUNGEON) stat_bars_->set_visible(true);
+    if (game_state == GameState::DUNGEON || game_state == GameState::DUNGEON_DEAD) stat_bars_->set_visible(true);
     else stat_bars_->set_visible(false);
 }
 

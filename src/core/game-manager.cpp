@@ -12,6 +12,7 @@
 #include "entity/player.hpp"
 #include "terminal/terminal.hpp"
 #include "tune/timing.hpp"
+#include "ui/death.hpp"
 #include "ui/system-menu.hpp"
 #include "ui/ui.hpp"
 
@@ -108,13 +109,16 @@ void GameManager::game_loop()
     {
         switch(game_state_)
         {
+            case GameState::DEAD: break;
             case GameState::DUNGEON: dungeon_input(key); break;
+            case GameState::DUNGEON_DEAD: if (key == ' ') Death::render_death_screen(); break;
             case GameState::INITIALIZING: case GameState::NEW_GAME: case GameState::LOAD_GAME:
                 guru->halt("Invalid game state!", static_cast<int>(game_state_));
                 break;
         }
 
         tick();
+        if (player_->is_dead()) Death::die();
         ui_->render();
 
         key = terminal->get_key();
