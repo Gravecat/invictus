@@ -55,7 +55,6 @@ std::shared_ptr<Area> SaveLoad::load_area(std::ifstream &save_file)
     // Load the Entities in this Area.
     check_tag(save_file, SaveTag::ENTITIES);
     uint32_t entity_count = load_data<uint32_t>(save_file);
-    area->entities_.clear();
     for (unsigned int i = 0; i < entity_count; i++)
         area->entities_.push_back(load_entity(save_file));
 
@@ -83,7 +82,6 @@ std::shared_ptr<Area> SaveLoad::load_area_from_file(const std::string &filename)
     auto new_area = load_area(area_file);
     check_tag(area_file, SaveTag::SAVE_EOF);
     area_file.close();
-    new_area->entities()->push_back(core()->game()->player_);
     return new_area;
 }
 
@@ -342,9 +340,9 @@ void SaveLoad::save_area(std::ofstream &save_file, std::shared_ptr<Area> area)
 
     // Save the Entities in this Area.
     write_tag(save_file, SaveTag::ENTITIES);
-    save_data<uint32_t>(save_file, area->entities_.size());
-    for (auto entity : area->entities_)
-        save_entity(save_file, entity);
+    save_data<uint32_t>(save_file, area->entities_.size() - 1);
+    for (unsigned int i = 1; i < area->entities_.size(); i++)
+        save_entity(save_file, area->entities_.at(i));
 
     // Save the tile memory. This could probably be compressed someday by storing the long sequences of spaces as some sort of integer tag, but not today.
     write_tag(save_file, SaveTag::TILE_MEMORY);
@@ -467,9 +465,7 @@ void SaveLoad::save_game()
     save_file.close();
 
     auto area = core()->game()->area();
-    area->remove_player();
     save_area_to_file(save_dir + "/" + area->filename() + ".dat", core()->game()->area());
-    area->entities()->push_back(core()->game()->player());
     core()->message("{c}Game saved.");
 }
 

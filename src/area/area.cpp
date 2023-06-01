@@ -179,19 +179,6 @@ void Area::recalc_fov()
     needs_fov_recalc_ = false;
 }
 
-// Removes the Player object from the entities list.
-void Area::remove_player()
-{
-    for (unsigned int i = 0; i < entities_.size(); i++)
-    {
-        if (entities_.at(i)->type() == EntityType::PLAYER)
-        {
-            entities_.erase(entities_.begin() + i);
-            i--;
-        }
-    }
-}
-
 // Renders this Area on the screen.
 void Area::render()
 {

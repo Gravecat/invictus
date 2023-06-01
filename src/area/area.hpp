@@ -44,7 +44,6 @@ public:
     void        need_fov_recalc();  // Marks the Area as needing a FoV recalc.
     int         offset_x() const;   // Retrieves the view offset on the X axis.
     int         offset_y() const;   // Retrieves the view offset on the Y axis.
-    void        remove_player();    // Removes the Player object from the entities list.
     void        render();           // Renders this Area on the screen.
     void        set_file(const std::string &file);  // Sets the filename for this Area.
     void        set_level(int level);   // Sets the vertical level of this Area.

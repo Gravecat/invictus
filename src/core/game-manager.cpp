@@ -215,7 +215,6 @@ void GameManager::use_stairs(bool up)
     int new_level = current_level + (up ? -1 : 1);
     std::string current_area_string = area_->file_str();
     area_->set_player_left(player_->x(), player_->y());
-    area_->remove_player();
     SaveLoad::save_game();
     std::string travel_string;
     if (up) travel_string = "{c}You ascend the stairs to the previous level...";
