@@ -14,7 +14,7 @@ public:
     static void render_death_screen();  // Renders the game over screen.
 
 private:
-    static uint8_t skull_pattern[7];    // The skull symbol to render on the game-over screen.
+    static uint8_t skull_pattern[4];    // The skull symbol to render on the game-over screen.
 };
 
 }       // namespace invictus

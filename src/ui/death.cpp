@@ -14,7 +14,7 @@ namespace invictus
 {
 
 // The skull symbol to render on the game-over screen.
-uint8_t Death::skull_pattern[7] = { 0x70, 0xFA, 0xED, 0xFB, 0xED, 0xFA, 0x70 };
+uint8_t Death::skull_pattern[4] = { 0x70, 0xFA, 0xED, 0xFB };
 
 
 // The player has just died.
@@ -47,7 +47,7 @@ void Death::render_death_screen()
             for (int x = 0; x < 7; x++)
             {
                 const int ax = midcol - 7 + (x * 2);
-                uint8_t line_code = skull_pattern[x];
+                uint8_t line_code = skull_pattern[x < 4 ? x : 6 - x ];
                 for (int y = 0; y < 8; y++)
                 {
                     const int ay = midrow - 5 + y;
