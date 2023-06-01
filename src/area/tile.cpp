@@ -73,7 +73,7 @@ std::string Tile::name() const
 // Sets this Tile's ASCII character.
 void Tile::set_ascii(char new_ascii)
 {
-    ascii_ = new_ascii;
+    ascii_ = ascii_scars_ = new_ascii;
     set_tag(TileTag::Changed);
 }
 
