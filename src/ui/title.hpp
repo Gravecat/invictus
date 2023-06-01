@@ -17,7 +17,8 @@ private:
     void    render();   // Renders the title screen.
     bool    save_file_exists() const;   // Check if a saved game exists.
 
-    int     selected_;  // The menu option currently selected.
+    bool    save_exists_;   // Does a saved game file exist?
+    int     selected_;      // The menu option currently selected.
 };
 
 }       // namespace invictus

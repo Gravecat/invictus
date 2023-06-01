@@ -17,7 +17,7 @@ namespace invictus
 {
 
 // Constructor.
-TitleScreen::TitleScreen() : selected_(0) { }
+TitleScreen::TitleScreen() : save_exists_(save_file_exists()), selected_(0) { }
 
 // Renders the title screen.
 void TitleScreen::render()
@@ -27,7 +27,7 @@ void TitleScreen::render()
 
     terminal->cls();
 
-    int dragon_x = midcol - 30, dragon_y = midrow - 10;
+    int dragon_x = midcol - 25, dragon_y = midrow - 10;
     int copyright_y = midrow + 5;
     int menu_x = dragon_x + 30, menu_y = dragon_y + 5;
     int gpl_y = terminal->get_rows() - 2;
@@ -58,8 +58,9 @@ void TitleScreen::render()
     terminal->print("Morior Invictus is free and open-source, licensed under the GNU AGPL v3.", midcol - 36, gpl_y, Colour::BLUE);
 
     terminal->print("  New Game  ", menu_x + 3, menu_y, Colour::YELLOW_BOLD, selected_ == 0 ? PRINT_FLAG_REVERSE : 0);
-    terminal->print("  Load Game  ", menu_x + 3, menu_y + 2, Colour::YELLOW_BOLD, selected_ == 1 ? PRINT_FLAG_REVERSE : 0);
-    terminal->print("  Hall of Legends  ", menu_x, menu_y + 4, Colour::YELLOW_BOLD, selected_ == 2 ? PRINT_FLAG_REVERSE : 0);
+    terminal->print("  Load Game  ", menu_x + 3, menu_y + 2, (save_exists_ ? Colour::YELLOW_BOLD : Colour::BLACK_BOLD), selected_ == 1 ?
+        PRINT_FLAG_REVERSE : 0);
+    terminal->print("  Hall of Legends  ", menu_x, menu_y + 4, Colour::BLACK_BOLD, selected_ == 2 ? PRINT_FLAG_REVERSE : 0);
     terminal->print("  Quit Game  ", menu_x + 3, menu_y + 6, Colour::YELLOW_BOLD, selected_ == 3 ? PRINT_FLAG_REVERSE : 0);
 
     terminal->flip();
@@ -111,7 +112,7 @@ void TitleScreen::title_screen()
                         terminal->cls();
                         return;
                     case 1:
-                        if (save_file_exists())
+                        if (save_exists_)
                         {
                             game->set_game_state(GameState::LOAD_GAME);
                             terminal->cls();
