@@ -38,10 +38,10 @@ public:
     const std::shared_ptr<UI>       ui() const;     // Returns a pointer to the user interface manager.
 
 private:
-    void    dungeon_input(int key); // Handles the player's input, when in dungeon mode.
-    void    new_game();             // Sets up for a new game.
-    void    render_death_screen();  // Renders the game over screen.
-    void    use_stairs(bool up);    // Attempts to go up or down stairs.
+    void    dungeon_input(int key);     // Handles the player's input, when in dungeon mode.
+    void    new_game();                 // Sets up for a new game.
+    void    render_death_screen(bool failure = false);  // Renders the death game-over screen.
+    void    use_stairs(bool up);        // Attempts to go up or down stairs.
 
     std::shared_ptr<Area>   area_;  // The currently-loaded Area of the game world.
     bool        cleanup_done_;      // Has the cleanup routine already run once?

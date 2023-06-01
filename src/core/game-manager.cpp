@@ -172,7 +172,7 @@ void GameManager::pass_time(float time)
 const std::shared_ptr<Player> GameManager::player() const { return player_; }
 
 // Renders the game over screen.
-void GameManager::render_death_screen()
+void GameManager::render_death_screen(bool failure)
 {
     auto terminal = core()->terminal();
     ui_->dungeon_mode_ui(false);
@@ -203,7 +203,8 @@ void GameManager::render_death_screen()
                     }
                 }
             }
-            terminal->print("YOU HAVE DIED... YOUR ADVENTURE HAS COME TO AN END", midcol - 25, midrow - 8, Colour::RED_BOLD);
+            if (failure) terminal->print("YOU HAVE ESCAPED WITH YOUR LIFE... BUT WITH NO GLORY", midcol - 26, midrow - 8, Colour::RED_BOLD);
+            else terminal->print("YOU HAVE DIED... YOUR ADVENTURE HAS COME TO AN END", midcol - 25, midrow - 8, Colour::RED_BOLD);
             terminal->print("{g}.~{r}* {R}THANKS FOR PLAYING MORIOR INVICTUS {r}*{g}~.", midcol - 21, midrow + 5);
             terminal->print("PRESS THE SPACE BAR WHEN YOU ARE READY TO MOVE ON", midcol - 25, midrow + 7, Colour::RED_BOLD);
             terminal->flip();
@@ -274,6 +275,17 @@ void GameManager::use_stairs(bool up)
 
     int current_level = area_->level();
     int new_level = current_level + (up ? -1 : 1);
+
+    if (new_level <= 0)
+    {
+        core()->message("{y}Are you sure you want to return to the surface?");
+        if (!UI::are_you_sure())
+        {
+            core()->message("{u}Wisely, you decide to remain.");
+            return;
+        }
+    }
+
     std::string current_area_string = area_->file_str();
     area_->set_player_left(player_->x(), player_->y());
     SaveLoad::save_area_to_file(save_folder_ + "/" + area_->filename() + ".dat", area_);
@@ -281,6 +293,12 @@ void GameManager::use_stairs(bool up)
     if (up) travel_string = "{c}You ascend the stairs to the previous level...";
     else travel_string = "{c}You descend the stairs to the next level...";
     core()->message(travel_string);
+
+    if (new_level <= 0)
+    {
+        erase_save_files();
+        render_death_screen(true);
+    }
 
     // Check if the new Area should be loaded from a file, or generated fresh.
     std::string filename = save_folder_ + "/" + current_area_string + std::to_string(new_level) + ".dat";
