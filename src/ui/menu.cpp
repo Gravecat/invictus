@@ -61,7 +61,8 @@ int Menu::render()
         {
             terminal->cls(window_);
             terminal->box(window_, Colour::WHITE);
-            terminal->print(" " + title_ + " ", (window_->get_width() / 2) - (title_.size() / 2) - 1, 0, Colour::WHITE, PRINT_FLAG_REVERSE, window_);
+            terminal->print(" " + title_ + "{w} ", (window_->get_width() / 2) - (StrX::strlen_colour(title_) / 2) - 1, 0, Colour::WHITE, PRINT_FLAG_REVERSE,
+                window_);
             const unsigned int start = offset_;
             unsigned int end = items_.size();
             if (end - offset_ > 20) end = 20 + offset_;
@@ -163,7 +164,7 @@ void Menu::reposition()
         if (left_aligned_) item_x_.at(i) = (item_chars_.at(i) == '\0' ? (has_item_chars_ ? 4 : 2) : 4);
         else item_x_.at(i) = (size_x_ / 2) - (StrX::strlen_colour(items_.at(i)) / 2) + (item_chars_.at(i) == '\0' ? 0 : 1);
     }
-    title_x_ = title_.size() / 2;
+    title_x_ = StrX::strlen_colour(title_) / 2;
 
     window_->move(pos_x_, pos_y_);
 }

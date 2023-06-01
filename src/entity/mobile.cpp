@@ -249,7 +249,7 @@ void Mobile::equip_item(uint32_t id)
     {
         if (item->item_type() == ItemType::WEAPON) core()->message("You wield {c}" + item->name(NAME_FLAG_THE) + " {w}" + target_slot_name + ".");
         else if (item->item_type() == ItemType::SHIELD) core()->message("You hold {c}" + item->name(NAME_FLAG_THE) + " {w}" + target_slot_name + ".");
-        else core()->message("You wear {c}" + item->name(NAME_FLAG_THE) + " " + target_slot_name + ".");
+        else core()->message("You wear {c}" + item->name(NAME_FLAG_THE) + "{w} " + target_slot_name + ".");
     }
     else if (is_in_fov())
     {
