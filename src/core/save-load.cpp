@@ -181,6 +181,7 @@ void SaveLoad::load_game(const std::string &save_folder)
     game->save_folder_ = save_folder;
 
     std::ifstream save_file(save_folder + "/game.dat", std::ios::in | std::ios::binary);
+    if (!save_file.good()) throw std::runtime_error("Cannot find saved game file");
     check_tag(save_file, SaveTag::HEADER_A);
     check_tag(save_file, SaveTag::HEADER_B);
     uint32_t file_version = load_data<uint32_t>(save_file);
