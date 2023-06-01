@@ -5,8 +5,6 @@ along with menus, popup boxes, and other UI-like things.
 
 * **bars.cpp** - UI code to render various forms of status bars.
 
-* **death.cpp** - The game-over death screen, and other associated code.
-
 * **menu.cpp** - Menu class definition, for a fairly generic scrollable menu of items.
 
 * **msglog.cpp** - The message log, which displays important information to the player.

@@ -25,6 +25,7 @@ public:
                 ~GameManager();     // Destructor, calls cleanup code.
     void        cleanup();          // Cleans up anything that needs cleaning up.
     void        erase_save_files(); // Deletes the save files in the current save folder.
+    void        die();              // The player has just died.
     void        game_loop();        // Brøther, may I have some lööps?
     GameState   game_state() const; // Retrieves the current state of the game.
     void        pass_time(float time);  // The player has taken an action which causes some time to pass.
@@ -39,6 +40,7 @@ public:
 private:
     void    dungeon_input(int key); // Handles the player's input, when in dungeon mode.
     void    new_game();             // Sets up for a new game.
+    void    render_death_screen();  // Renders the game over screen.
     void    use_stairs(bool up);    // Attempts to go up or down stairs.
 
     std::shared_ptr<Area>   area_;  // The currently-loaded Area of the game world.
@@ -49,6 +51,8 @@ private:
     std::shared_ptr<Player> player_;    // The player character object.
     std::string save_folder_;       // The saved game folder currently in use.
     std::shared_ptr<UI> ui_;        // The user interface manager.
+
+    static uint8_t skull_pattern[4];    // The skull symbol to render on the game-over screen.
 
 friend class SaveLoad;
 };

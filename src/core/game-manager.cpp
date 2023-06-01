@@ -12,7 +12,6 @@
 #include "entity/player.hpp"
 #include "terminal/terminal.hpp"
 #include "tune/timing.hpp"
-#include "ui/death.hpp"
 #include "ui/system-menu.hpp"
 #include "ui/ui.hpp"
 #include "util/filex.hpp"
@@ -20,6 +19,10 @@
 
 namespace invictus
 {
+
+// The skull symbol to render on the game-over screen.
+uint8_t GameManager::skull_pattern[4] = { 0x70, 0xFA, 0xED, 0xFB };
+
 
 // Constructor, sets default values.
 GameManager::GameManager() : area_(nullptr), cleanup_done_(false), game_state_(GameState::INITIALIZING), heartbeat_(0), heartbeat10_(0),
@@ -49,6 +52,15 @@ void GameManager::cleanup()
         area_ = nullptr;
     }
     if (player_) player_ = nullptr;
+}
+
+// The player has just died.
+void GameManager::die()
+{
+    if (game_state_ == GameState::DUNGEON_DEAD || game_state_ == GameState::DEAD) return;
+    erase_save_files();
+    core()->message("{m}You have died without honour! {r}Press the space bar to continue...");
+    game_state_ = GameState::DUNGEON_DEAD;
 }
 
 void GameManager::dungeon_input(int key)
@@ -114,14 +126,14 @@ void GameManager::game_loop()
         {
             case GameState::DEAD: break;
             case GameState::DUNGEON: dungeon_input(key); break;
-            case GameState::DUNGEON_DEAD: if (key == ' ') Death::render_death_screen(); break;
+            case GameState::DUNGEON_DEAD: if (key == ' ') render_death_screen(); break;
             case GameState::INITIALIZING: case GameState::NEW_GAME: case GameState::LOAD_GAME:
                 guru->halt("Invalid game state!", static_cast<int>(game_state_));
                 break;
         }
 
         tick();
-        if (player_->is_dead()) Death::die();
+        if (player_->is_dead()) die();
         ui_->render();
 
         key = terminal->get_key();
@@ -158,6 +170,54 @@ void GameManager::pass_time(float time)
 
 // Returns a pointer to the player character object.
 const std::shared_ptr<Player> GameManager::player() const { return player_; }
+
+// Renders the game over screen.
+void GameManager::render_death_screen()
+{
+    auto terminal = core()->terminal();
+    ui_->dungeon_mode_ui(false);
+    game_state_ = GameState::DEAD;
+    bool redraw = true;
+    int key = 0;
+
+    while(true)
+    {
+        const int midcol = terminal->get_midcol(), midrow = terminal->get_midrow();
+
+        if (redraw)
+        {
+            redraw = false;
+            terminal->cls();
+
+            for (int x = 0; x < 7; x++)
+            {
+                const int ax = midcol - 7 + (x * 2);
+                uint8_t line_code = skull_pattern[x < 4 ? x : 6 - x ];
+                for (int y = 0; y < 8; y++)
+                {
+                    const int ay = midrow - 5 + y;
+                    if (line_code & (1 << (7 - y)))
+                    {
+                        terminal->put(' ', ax, ay, Colour::RED, PRINT_FLAG_REVERSE);
+                        terminal->put(' ', ax + 1, ay, Colour::RED, PRINT_FLAG_REVERSE);
+                    }
+                }
+            }
+            terminal->print("YOU HAVE DIED... YOUR ADVENTURE HAS COME TO AN END", midcol - 25, midrow - 8, Colour::RED_BOLD);
+            terminal->print("{g}.~{r}* {R}THANKS FOR PLAYING MORIOR INVICTUS {r}*{g}~.", midcol - 21, midrow + 5);
+            terminal->print("PRESS THE SPACE BAR WHEN YOU ARE READY TO MOVE ON", midcol - 25, midrow + 7, Colour::RED_BOLD);
+            terminal->flip();
+        }
+
+        key = terminal->get_key();
+        if (key == Key::RESIZE) redraw = true;
+        else if (key == ' ')
+        {
+            core()->cleanup();
+            exit(EXIT_SUCCESS);
+        }
+    }
+}
 
 // Retrieves the name of the saved game folder currently in use.
 const std::string GameManager::save_folder() const { return save_folder_; }
