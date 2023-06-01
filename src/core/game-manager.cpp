@@ -367,9 +367,9 @@ void GameManager::use_stairs(bool up)
 
     if (new_level <= 0)
     {
+        erase_save_files();
         if (has_crown_of_kings) game_over_screen(GameOverType::SUCCESS);
         else game_over_screen(GameOverType::FAILED);
-        erase_save_files();
     }
 
     // Check if the new Area should be loaded from a file, or generated fresh.
