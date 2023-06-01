@@ -218,7 +218,7 @@ void GameManager::use_stairs(bool up)
     int new_level = current_level + (up ? -1 : 1);
     std::string current_area_string = area_->file_str();
     area_->set_player_left(player_->x(), player_->y());
-    SaveLoad::save_game();
+    SaveLoad::save_area_to_file(save_folder_ + "/" + area_->filename() + ".dat", area_);
     std::string travel_string;
     if (up) travel_string = "{c}You ascend the stairs to the previous level...";
     else travel_string = "{c}You descend the stairs to the next level...";
@@ -244,6 +244,7 @@ void GameManager::use_stairs(bool up)
         player_->set_pos(stair_coords.first, stair_coords.second);
     }
     core()->game()->ui()->full_redraw();
+    SaveLoad::save_game();
 }
 
 }   // namespace invictus
