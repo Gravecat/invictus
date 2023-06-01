@@ -77,6 +77,7 @@ set(INVICTUS_CPPS
   core/save-load.cpp
   dev/acs-display.cpp
   dev/keycode-check.cpp
+  entity/buff.cpp
   entity/entity.cpp
   entity/item.cpp
   entity/mobile.cpp

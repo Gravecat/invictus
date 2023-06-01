@@ -12,6 +12,7 @@
 #include "core/core.hpp"
 #include "core/game-manager.hpp"
 #include "core/guru.hpp"
+#include "entity/buff.hpp"
 #include "entity/item.hpp"
 #include "entity/monster.hpp"
 #include "entity/player.hpp"
@@ -455,6 +456,10 @@ void Mobile::tick10(std::shared_ptr<Entity> self)
     Entity::tick10(self);
     if (is_dead()) return;
 
+    // Ticks buffs/debuffs.
+    tick_buffs(std::dynamic_pointer_cast<Mobile>(self));
+    if (is_dead()) return;
+
     // Check to see if this Mobile can wake up.
     if (!is_awake() && type() != EntityType::PLAYER)
     {
@@ -482,6 +487,21 @@ void Mobile::tick10(std::shared_ptr<Entity> self)
                 wake_message(EnemyWakeMsg::NONE, false);
                 wake();
             }
+        }
+    }
+}
+
+// Ticks any buff/debuffs on this Mobile.
+void Mobile::tick_buffs(std::shared_ptr<Mobile>)
+{
+    for (unsigned int i = 0; i < buffs_.size(); i++)
+    {
+        auto buff = buffs_.at(i);
+        buff->tick();
+        if (buff->expired())
+        {
+            buffs_.erase(buffs_.begin() + i);
+            i--;
         }
     }
 }

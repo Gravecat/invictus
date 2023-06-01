@@ -3,6 +3,8 @@
 The entity source folder contains the Entity class, which defines all objects that inhabit the game world -- monsters, items, chests, and so on.
 Entity has multiple derived classes, which represent more specialized forms.
 
+* **buff.cpp** - Buff/debuff system, allowing temporary effects to be placed on Mobiles.
+
 * **entity.cpp** - The Entity class defines tangible ~things~ in the game world, including the player, items, and monsters.
 
 * **item.cpp** - The Item class is a type of Entity we can pick up and use.

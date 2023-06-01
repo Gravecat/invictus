@@ -11,6 +11,7 @@
 #include "core/game-manager.hpp"
 #include "core/guru.hpp"
 #include "core/save-load.hpp"
+#include "entity/buff.hpp"
 #include "entity/item.hpp"
 #include "entity/monster.hpp"
 #include "entity/player.hpp"
@@ -240,6 +241,17 @@ void SaveLoad::load_mobile(std::ifstream &save_file, std::shared_ptr<Mobile> mob
     {
         uint8_t gear_exists = load_data<uint8_t>(save_file);
         if (gear_exists) mob->equipment_.at(i) = std::dynamic_pointer_cast<Item>(load_entity(save_file));
+    }
+
+    // Load the buffs, if any.
+    check_tag(save_file, SaveTag::BUFFS);
+    const uint32_t buff_size = load_data<uint32_t>(save_file);
+    for (unsigned int i = 0; i < buff_size; i++)
+    {
+        BuffType type = static_cast<BuffType>(load_data<uint16_t>(save_file));
+        int power = load_data<int>(save_file);
+        int time_left = load_data<int>(save_file);
+        mob->buffs_.push_back(std::make_shared<Buff>(type, power, time_left));
     }
 }
 
@@ -517,6 +529,16 @@ void SaveLoad::save_mobile(std::ofstream &save_file, std::shared_ptr<Mobile> mob
             save_data<uint8_t>(save_file, 1);
             save_entity(save_file, eq);
         }
+    }
+
+    // Save the buffs, if any.
+    write_tag(save_file, SaveTag::BUFFS);
+    save_data<uint32_t>(save_file, mob->buffs_.size());
+    for (auto buff : mob->buffs_)
+    {
+        save_data<uint16_t>(save_file, static_cast<uint16_t>(buff->get_type()));
+        save_data<int>(save_file, buff->get_power());
+        save_data<int>(save_file, buff->get_time_left());
     }
 }
 

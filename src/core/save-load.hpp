@@ -31,7 +31,7 @@ public:
 
 private:
     enum class SaveTag : uint32_t { HEADER_A = 0x49564E49, HEADER_B = 0x53555443, SAVE_EOF = 0xCAFEB0BA, GAME_MANAGER = 1, ENTITY, INVENTORY, ITEM,
-        MOBILE, PLAYER, AREA, ENTITIES, TILE_MEMORY, TILES, UI, MSGLOG, COMPRESSED_BLOB, COMPRESSED_BLOB_END, MONSTER };
+        MOBILE, PLAYER, AREA, ENTITIES, TILE_MEMORY, TILES, UI, MSGLOG, COMPRESSED_BLOB, COMPRESSED_BLOB_END, MONSTER, BUFFS };
 
     static void     check_tag(std::ifstream &save_file, SaveTag expected_tag);  // Checks for an expected tag in the save file, and aborts if it isn't found.
     static void     incompatible(unsigned int error_a = 0, unsigned int error_b = 0);   // Aborts loading an incompatible save file.
@@ -69,8 +69,8 @@ private:
     template<class T> static void save_data(std::ofstream &save_file, T data)
     { save_file.write((char*)&data, sizeof(T)); }
 
-    static const uint32_t   SAVE_VERSION =      16; // Increment this every time saved games are no longer compatible.
-    static const uint32_t   SAVE_SUBVERSION =   1;  // The game is able to load saves of the same version, and any current or older subversion.
+    static const uint32_t   SAVE_VERSION =      17; // Increment this every time saved games are no longer compatible.
+    static const uint32_t   SAVE_SUBVERSION =   0;  // The game is able to load saves of the same version, and any current or older subversion.
 
     static constexpr int    SAVE_ERROR_VERSION =    1;  // The save file version does not match.
     static constexpr int    SAVE_ERROR_ENTITY =     2;  // Something went wrong trying to load an Entity.

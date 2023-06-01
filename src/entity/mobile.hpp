@@ -11,6 +11,7 @@ namespace invictus
 {
 
 enum class ItemID : uint16_t;   // defined in codex/codex-item.hpp
+class Buff;     // defined in entity/buff.hpp
 class Player;   // defined in entity/player.hpp
 
 
@@ -56,6 +57,7 @@ public:
     void            take_item(uint32_t id); // Picks up a specified item.
     virtual void    tick(std::shared_ptr<Entity> self) override;    // Processes AI for this Mobile each turn.
     void            tick10(std::shared_ptr<Entity> self) override;  // Process slower state-change events that happen less often, such as buffs/debuffs ticking.
+    void            tick_buffs(std::shared_ptr<Mobile> self);       // Ticks any buff/debuffs on this Mobile.
     virtual void    timed_action(float time_taken) = 0; // This Mobile has made an action which takes time.
     void            unequip_item(EquipSlot slot);   // Unequips a specified Item.
     void            wake(); // Awakens this Mobile, if it's not already.
@@ -66,6 +68,7 @@ private:
 
     bool        awake_;             // Is this Mobile active?
     float       bloody_feet_;       // How bloodied are this Mobile's feet?
+    std::vector<std::shared_ptr<Buff>>  buffs_;     // Any buffs/debuffs on this Mobile.
     std::vector<std::shared_ptr<Item>>  equipment_; // Items equipped by this Mobile.
     uint16_t    hp_[2];             // The current and maximum hit points of this Mobile.
     float       move_speed_;        // The movement speed of this Mobile.
