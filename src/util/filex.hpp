@@ -15,6 +15,7 @@ class FileX
 {
 public:
     static void delete_file(const std::string &filename);   // Deletes a specified file.
+    static void delete_files_in_dir(const std::string &dir);    // Deletes all files in a directory. USE WITH CAUTION!!
     static bool directory_exists(const std::string &dir);   // Check if a directory exists.
     static bool file_exists(const std::string &file);       // Checks if a file exists.
     static std::vector<std::string> files_in_dir(const std::string &directory, bool recursive = false); // Returns a list of files in a given directory.

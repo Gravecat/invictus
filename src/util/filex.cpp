@@ -19,6 +19,14 @@ namespace invictus
 // Deletes a specified file. Simple enough, but we'll keep this function around in case there's any platform-specific weirdness that needs to be worked in.
 void FileX::delete_file(const std::string &filename) { unlink(filename.c_str()); }
 
+// Deletes all files in a directory. USE WITH CAUTION!!
+void FileX::delete_files_in_dir(const std::string &dir)
+{
+    std::vector<std::string> files = files_in_dir(dir);
+    for (auto file : files)
+        delete_file(dir + "/" + file);
+}
+
 // Check if a directory exists.
 bool FileX::directory_exists(const std::string &dir)
 {
