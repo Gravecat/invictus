@@ -10,7 +10,7 @@
 namespace invictus
 {
 
-enum class BuffType : uint16_t { NONE, INJURED };
+enum class BuffType : uint16_t { NONE, PAIN };
 
 
 class Buff
@@ -21,6 +21,8 @@ public:
     int         get_power() const;      // Returns the power of this Buff.
     int         get_time_left() const;  // Returns the time left on this Buff, in tick10() ticks.
     BuffType    get_type() const;       // Returns the type of this Buff.
+    void        set_time(int time);     // Sets the time left on this Buff.
+    void        set_power(int power);   // Sets the power of this Buff.
     void        tick();     // Ticks this Buff, reducing its time left.
 
 private:

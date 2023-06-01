@@ -45,6 +45,23 @@ Mobile::Mobile() : Entity(), awake_(false), bloody_feet_(0), hp_{1, 1}, move_spe
 // Increase (or decrease) the amount of blood on this Mobile's feet.
 void Mobile::add_bloody_feet(float blood) { bloody_feet_ += blood; }
 
+// Adds or extends the length of a Buff on this Mobile.
+void Mobile::add_buff(BuffType type, int power, int duration, bool extend)
+{
+    // Look for an existing, identical Buff to update.
+    for (auto buff : buffs_)
+    {
+        if (buff->get_type() != type) continue;
+        if (buff->get_power() < power) buff->set_power(power);
+        if (extend) buff->set_time(buff->get_time_left() + duration);
+        else if (buff->get_time_left() < duration) buff->set_time(duration);
+        return;
+    }
+
+    // None found, make a new Buff.
+    buffs_.push_back(std::make_shared<Buff>(type, power, duration));
+}
+
 // Returns the total armour modifier from this Mobile and their equipped gear.
 int Mobile::armour() { return equipment(EquipSlot::BODY)->armour(); }
 
@@ -253,6 +270,14 @@ std::shared_ptr<Item> Mobile::equipment(EquipSlot slot)
     return equ()->at(slot_id);
 }
 
+// Checks if this Mobile has a specified buff/debuff.
+int Mobile::has_buff(BuffType type) const
+{
+    for (auto buff : buffs_)
+        if (buff->get_type() == type) return buff->get_power();
+    return 0;
+}
+
 // Retrieves the current or maximum hit points of this Mobile.
 uint16_t Mobile::hp(bool max) const { return hp_[max ? 1 : 0]; }
 
@@ -422,6 +447,7 @@ void Mobile::take_damage(int damage)
         die();
     }
     else hp_[0] -= damage;
+    add_buff(BuffType::PAIN, 1, damage + 1, true);
 }
 
 // Picks up a specified item.
@@ -460,6 +486,13 @@ void Mobile::tick10(std::shared_ptr<Entity> self)
     tick_buffs(std::dynamic_pointer_cast<Mobile>(self));
     if (is_dead()) return;
 
+    // Regenerate hit points over time. Make this slower?
+    if (!has_buff(BuffType::PAIN) && hp_[0] < hp_[1])
+    {
+        hp_[0]++;
+        if (type() == EntityType::PLAYER) core()->game()->ui()->redraw_stat_bars();
+    }
+
     // Check to see if this Mobile can wake up.
     if (!is_awake() && type() != EntityType::PLAYER)
     {
@@ -494,16 +527,19 @@ void Mobile::tick10(std::shared_ptr<Entity> self)
 // Ticks any buff/debuffs on this Mobile.
 void Mobile::tick_buffs(std::shared_ptr<Mobile>)
 {
+    bool expired = false;
     for (unsigned int i = 0; i < buffs_.size(); i++)
     {
         auto buff = buffs_.at(i);
         buff->tick();
         if (buff->expired())
         {
+            expired = true;
             buffs_.erase(buffs_.begin() + i);
             i--;
         }
     }
+    if (expired && type() == EntityType::PLAYER) core()->game()->ui()->redraw_stat_bars();
 }
 
 // Unequips a specified Item.

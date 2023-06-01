@@ -10,6 +10,7 @@
 namespace invictus
 {
 
+enum class BuffType : uint16_t; // defdined in entity/buff.hpp
 enum class ItemID : uint16_t;   // defined in codex/codex-item.hpp
 class Buff;     // defined in entity/buff.hpp
 class Player;   // defined in entity/player.hpp
@@ -30,6 +31,7 @@ class Mobile : public Entity
 public:
                     Mobile();   // Constructor.
     void            add_bloody_feet(float blood);   // Increase (or decrease) the amount of blood on this Mobile's feet.
+    void            add_buff(BuffType type, int power, int duration, bool extend = true);   // Adds or extends the length of a Buff on this Mobile.
     virtual int     armour();   // Returns the total armour modifier from this Mobile and their equipped gear.
     float           attack_speed(); // Returns the number of ticks needed for this Mobile to make an attack.
     bool            blocks_tile(int x_tile, int y_tile) const override; // Checks if this Mobile blocks a specified tile.
@@ -41,6 +43,7 @@ public:
     std::vector<std::shared_ptr<Item>>* equ();  // Retrieves a pointer to the equipment vector.
     void            equip_item(uint32_t id);    // Equips a specified Item.
     std::shared_ptr<Item>   equipment(EquipSlot slot);  // Retrieves equipment from a given slot.
+    int             has_buff(BuffType type) const;      // Checks if this Mobile has a specified buff/debuff.
     uint16_t        hp(bool max = false) const; // Retrieves the current or maximum hit points of this Mobile.
     bool            is_awake() const;   // Check if this Mobile is awake and active.
     bool            is_dead() const;    // Checks if this Mobile is dead.

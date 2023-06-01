@@ -5,6 +5,7 @@
 #include "core/core.hpp"
 #include "core/game-manager.hpp"
 #include "core/guru.hpp"
+#include "entity/buff.hpp"
 #include "entity/player.hpp"
 #include "terminal/terminal.hpp"
 #include "terminal/window.hpp"
@@ -77,7 +78,7 @@ void UI::generate_dungeon_view()
 {
     auto terminal = core()->terminal();
     GameState game_state = (core()->game() ? core()->game()->game_state() : GameState::INITIALIZING);
-    dungeon_view_ = std::make_shared<Window>(terminal->get_cols() - NEARBY_BAR_WIDTH, terminal->get_rows() - MESSAGE_LOG_HEIGHT - 1, 0, 0);
+    dungeon_view_ = std::make_shared<Window>(terminal->get_cols() - NEARBY_BAR_WIDTH, terminal->get_rows() - MESSAGE_LOG_HEIGHT - 2, 0, 0);
     if (game_state == GameState::DUNGEON || game_state == GameState::DUNGEON_DEAD) dungeon_view_->set_visible(true);
     else dungeon_view_->set_visible(false);
 }
@@ -108,7 +109,7 @@ void UI::generate_stat_bars()
 {
     auto terminal = core()->terminal();
     GameState game_state = (core()->game() ? core()->game()->game_state() : GameState::INITIALIZING);
-    stat_bars_ = std::make_shared<Window>(terminal->get_cols() - NEARBY_BAR_WIDTH, 1, 0, terminal->get_rows() - MESSAGE_LOG_HEIGHT - 1);
+    stat_bars_ = std::make_shared<Window>(terminal->get_cols() - NEARBY_BAR_WIDTH, 2, 0, terminal->get_rows() - MESSAGE_LOG_HEIGHT - 2);
     if (game_state == GameState::DUNGEON || game_state == GameState::DUNGEON_DEAD) stat_bars_->set_visible(true);
     else stat_bars_->set_visible(false);
 }
@@ -180,9 +181,14 @@ void UI::render_stat_bars()
     const int sp_bar_width = (window_w - hp_bar_width) / 2;
     const int mp_bar_width = window_w - hp_bar_width - sp_bar_width;
 
-    Bars::render_bar(0, 0, hp_bar_width, "HP", player->hp(), player->hp(true), Colour::RED_WHITE, BAR_FLAG_NUMBERS | BAR_FLAG_ROUND_UP, stat_bars_);
-    Bars::render_bar(hp_bar_width, 0, sp_bar_width, "SP", player->sp(), player->sp(true), Colour::GREEN_WHITE, BAR_FLAG_NUMBERS, stat_bars_);
-    Bars::render_bar(hp_bar_width + sp_bar_width, 0, mp_bar_width, "MP", player->mp(), player->mp(true), Colour::BLUE_WHITE, BAR_FLAG_NUMBERS, stat_bars_);
+    Bars::render_bar(0, 1, hp_bar_width, "HP", player->hp(), player->hp(true), Colour::RED_WHITE, BAR_FLAG_NUMBERS | BAR_FLAG_ROUND_UP, stat_bars_);
+    Bars::render_bar(hp_bar_width, 1, sp_bar_width, "SP", player->sp(), player->sp(true), Colour::GREEN_WHITE, BAR_FLAG_NUMBERS, stat_bars_);
+    Bars::render_bar(hp_bar_width + sp_bar_width, 1, mp_bar_width, "MP", player->mp(), player->mp(true), Colour::BLUE_WHITE, BAR_FLAG_NUMBERS, stat_bars_);
+
+    std::string status_messages;
+    if (player->has_buff(BuffType::PAIN)) status_messages += "{Y}[PAIN] ";
+
+    if (status_messages.size()) terminal->print(status_messages.substr(0, status_messages.size() - 1), 0, 0, Colour::WHITE, 0, stat_bars_);
 }
 
 // Gets a pointer to the stat bars window.
