@@ -13,4 +13,6 @@ along with menus, popup boxes, and other UI-like things.
 
 * **system-menu.cpp** - The main system menu, giving the player options such as saving or quitting the game.
 
+* **title.cpp** - The title screen, also handles main-menu options such as loading saved games.
+
 * **ui.cpp** - The UI overlay that displays additional information on top of the game's map, using other UI classes.

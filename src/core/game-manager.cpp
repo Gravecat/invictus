@@ -15,6 +15,7 @@
 #include "terminal/terminal.hpp"
 #include "tune/timing.hpp"
 #include "ui/system-menu.hpp"
+#include "ui/title.hpp"
 #include "ui/ui.hpp"
 #include "util/filex.hpp"
 #include "util/strx.hpp"
@@ -110,6 +111,14 @@ void GameManager::game_loop()
     auto terminal = core()->terminal();
     auto guru = core()->guru();
 
+    // The entry game state should be TITLE by this point.
+    if (game_state_ == GameState::TITLE)
+    {
+        auto title = std::make_unique<TitleScreen>();
+        title->title_screen();
+    }
+    else core()->guru()->halt("Unknown entry game state", static_cast<int>(game_state_));
+
     if (game_state_ == GameState::NEW_GAME)
     {
         core()->guru()->log("Setting up new game...");
@@ -120,6 +129,7 @@ void GameManager::game_loop()
         SaveLoad::load_game("userdata/save");
         ui_->window_resized();
     }
+    else core()->guru()->halt("Unknown entry game state", static_cast<int>(game_state_));
 
     core()->guru()->log("Starting main game lööp, brøther.");
     int key = 0;
@@ -127,10 +137,9 @@ void GameManager::game_loop()
     {
         switch(game_state_)
         {
-            case GameState::GAME_OVER: break;
             case GameState::DUNGEON: dungeon_input(key); break;
             case GameState::DUNGEON_DEAD: if (key == ' ') game_over_screen(GameOverType::DEAD); break;
-            case GameState::INITIALIZING: case GameState::NEW_GAME: case GameState::LOAD_GAME:
+            default:
                 guru->halt("Invalid game state!", static_cast<int>(game_state_));
                 break;
         }

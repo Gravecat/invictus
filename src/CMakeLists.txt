@@ -91,6 +91,7 @@ set(INVICTUS_CPPS
   ui/msglog.cpp
   ui/nearby.cpp
   ui/system-menu.cpp
+  ui/title.cpp
   ui/ui.cpp
   util/bresenham.cpp
   util/filex.cpp

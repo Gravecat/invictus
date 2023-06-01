@@ -70,7 +70,7 @@ private:
     { save_file.write((char*)&data, sizeof(T)); }
 
     static const uint32_t   SAVE_VERSION =      18; // Increment this every time saved games are no longer compatible.
-    static const uint32_t   SAVE_SUBVERSION =   1;  // The game is able to load saves of the same version, and any current or older subversion.
+    static const uint32_t   SAVE_SUBVERSION =   2;  // The game is able to load saves of the same version, and any current or older subversion.
 
     static constexpr int    SAVE_ERROR_VERSION =    1;  // The save file version does not match.
     static constexpr int    SAVE_ERROR_ENTITY =     2;  // Something went wrong trying to load an Entity.
