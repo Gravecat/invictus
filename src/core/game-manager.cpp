@@ -5,16 +5,19 @@
 #include "area/gen-dungeon.hpp"
 #include "area/tile.hpp"
 #include "codex/codex-item.hpp"
+#include "codex/codex-tile.hpp"
 #include "core/core.hpp"
 #include "core/game-manager.hpp"
 #include "core/guru.hpp"
 #include "core/save-load.hpp"
+#include "entity/item.hpp"
 #include "entity/player.hpp"
 #include "terminal/terminal.hpp"
 #include "tune/timing.hpp"
 #include "ui/system-menu.hpp"
 #include "ui/ui.hpp"
 #include "util/filex.hpp"
+#include "util/strx.hpp"
 
 
 namespace invictus
@@ -57,7 +60,7 @@ void GameManager::cleanup()
 // The player has just died.
 void GameManager::die()
 {
-    if (game_state_ == GameState::DUNGEON_DEAD || game_state_ == GameState::DEAD) return;
+    if (game_state_ == GameState::DUNGEON_DEAD || game_state_ == GameState::GAME_OVER) return;
     erase_save_files();
     core()->message("{m}You have died without honour! {r}Press the space bar to continue...");
     game_state_ = GameState::DUNGEON_DEAD;
@@ -124,9 +127,9 @@ void GameManager::game_loop()
     {
         switch(game_state_)
         {
-            case GameState::DEAD: break;
+            case GameState::GAME_OVER: break;
             case GameState::DUNGEON: dungeon_input(key); break;
-            case GameState::DUNGEON_DEAD: if (key == ' ') render_death_screen(); break;
+            case GameState::DUNGEON_DEAD: if (key == ' ') game_over_screen(GameOverType::DEAD); break;
             case GameState::INITIALIZING: case GameState::NEW_GAME: case GameState::LOAD_GAME:
                 guru->halt("Invalid game state!", static_cast<int>(game_state_));
                 break;
@@ -141,42 +144,12 @@ void GameManager::game_loop()
     }
 }
 
-// Retrieves the current state of the game.
-GameState GameManager::game_state() const { return game_state_; }
-
-// Sets up for a new game.
-void GameManager::new_game()
-{
-    erase_save_files();
-    area_ = std::make_shared<Area>(50, 50);
-    area_->set_level(1);
-    area_->set_file("tfk");
-    auto generator = std::make_unique<DungeonGenerator>(area_);
-    generator->generate();
-    auto stair_coords = area_->find_tile_tag(TileTag::StairsUp);
-    player_->set_pos(stair_coords.first, stair_coords.second);
-    player_->set_equipment(EquipSlot::BODY, ItemID::LEATHER_ARMOUR);
-    player_->set_equipment(EquipSlot::HAND_MAIN, ItemID::LONGSWORD);
-    game_state_ = GameState::DUNGEON;
-    ui_->dungeon_mode_ui(true);
-}
-
-// The player has taken an action which causes some time to pass.
-void GameManager::pass_time(float time)
-{
-    heartbeat_ += time;
-    heartbeat10_ += time;
-}
-
-// Returns a pointer to the player character object.
-const std::shared_ptr<Player> GameManager::player() const { return player_; }
-
-// Renders the game over screen.
-void GameManager::render_death_screen(bool failure)
+// Renders the game-over screen.
+void GameManager::game_over_screen(GameOverType type)
 {
     auto terminal = core()->terminal();
     ui_->dungeon_mode_ui(false);
-    game_state_ = GameState::DEAD;
+    game_state_ = GameState::GAME_OVER;
     bool redraw = true;
     int key = 0;
 
@@ -203,8 +176,14 @@ void GameManager::render_death_screen(bool failure)
                     }
                 }
             }
-            if (failure) terminal->print("YOU HAVE ESCAPED WITH YOUR LIFE... BUT WITH NO GLORY", midcol - 26, midrow - 8, Colour::RED_BOLD);
-            else terminal->print("YOU HAVE DIED... YOUR ADVENTURE HAS COME TO AN END", midcol - 25, midrow - 8, Colour::RED_BOLD);
+            std::string top_line;
+            switch(type)
+            {
+                case GameOverType::DEAD: top_line = "YOU HAVE DIED... YOUR ADVENTURE HAS COME TO AN END"; break;
+                case GameOverType::FAILED: top_line = "YOU HAVE ESCAPED WITH YOUR LIFE... BUT WITH NO GLORY"; break;
+                case GameOverType::SUCCESS: top_line = "YOU HAVE BROUGHT HONOUR AND GLORY TO THE KINGDOM"; break;
+            }
+            terminal->print(top_line, midcol - (top_line.size() / 2), midrow - 8, Colour::RED_BOLD);
             terminal->print("{g}.~{r}* {R}THANKS FOR PLAYING MORIOR INVICTUS {r}*{g}~.", midcol - 21, midrow + 5);
             terminal->print("PRESS THE SPACE BAR WHEN YOU ARE READY TO MOVE ON", midcol - 25, midrow + 7, Colour::RED_BOLD);
             terminal->flip();
@@ -219,6 +198,75 @@ void GameManager::render_death_screen(bool failure)
         }
     }
 }
+
+// Retrieves the current state of the game.
+GameState GameManager::game_state() const { return game_state_; }
+
+// Sets up for a new game.
+void GameManager::new_game()
+{
+    auto terminal = core()->terminal();
+    std::string intro_str = "Welcome to the prototype {W}0.1 {w}build of {R}Morior Invictus{w}! You must delve deep into {Y}the Tomb of Forgotten Kings {w}and \
+seek out the long-lost {M}Crown of Kings{w}, then return to the surface with your prize!";
+    bool redraw = true;
+    while (true)
+    {
+        if (redraw)
+        {
+            std::vector<std::string> intro_vec = StrX::string_explode_colour(intro_str, terminal->get_cols());
+            terminal->cls();
+            for (unsigned int i = 0; i < intro_vec.size(); i++)
+                terminal->print(intro_vec.at(i), 0, i);
+            int line = intro_vec.size() + 1;
+            terminal->print("{C}GAME CONTOLS:", 0, line++);
+            terminal->print("{G}Arrow Keys{w}, {G}Numeric Keypad{w} or {G}vi keys {g}(h j k l y u b n) {w}- movement", 0, line++);
+            terminal->print("{G}< {w}or {G}> {w}- go up or down stairs", 0, line++);
+            terminal->print("{G}. {w}or {G}g {w}- interact with items on the ground", 0, line++);
+            terminal->print("{G}e {w}- check equipment", 0, line++);
+            terminal->print("{G}i {w}- check carried items", 0, line++);
+            terminal->print("{G}o {w}- open a door", 0, line++);
+            terminal->print("{G}c {w}- close a door", 0, line++);
+            terminal->print("{G}shift-S {w}- save the game", 0, line++);
+            terminal->print("{G}, {w}or {G}numpad 5 {w}- wait for a moment", 0, line++);
+            terminal->print("{G}= {w}- open main menu", 0, line++);
+            terminal->print("{G}space bar {w}- close a menu", 0, line++);
+            line++;
+            terminal->print("{C}To load a saved game, specify the -load parameter on the command-line.", 0, line++);
+            line++;
+            terminal->print("{R}PRESS THE SPACE BAR TO BEGIN", 0, line++);
+            line++;
+            terminal->print("{R}IF YOU DO NOT WISH TO LOSE AN EXISTING SAVE FILE, CLOSE THE GAME (CTRL-C) NOW!", 0, line++);
+            terminal->flip();
+            redraw = false;
+        }
+        int key = terminal->get_key();
+        if (key == Key::RESIZE) redraw = true;
+        else if (key == ' ') break;
+    }
+
+    erase_save_files();
+    area_ = std::make_shared<Area>(50, 50);
+    area_->set_level(1);
+    area_->set_file("tfk");
+    auto generator = std::make_unique<DungeonGenerator>(area_);
+    generator->generate();
+    auto stair_coords = area_->find_tile_tag(TileTag::StairsUp);
+    player_->set_pos(stair_coords.first, stair_coords.second);
+    player_->set_equipment(EquipSlot::BODY, ItemID::LEATHER_ARMOUR);
+    player_->set_equipment(EquipSlot::HAND_MAIN, ItemID::LONGSWORD);
+    game_state_ = GameState::DUNGEON;
+    ui_->dungeon_mode_ui(true);
+}
+
+// The player has taken an action which causes some time to pass.
+void GameManager::pass_time(float time)
+{
+    heartbeat_ += time;
+    heartbeat10_ += time;
+}
+
+// Returns a pointer to the player character object.
+const std::shared_ptr<Player> GameManager::player() const { return player_; }
 
 // Retrieves the name of the saved game folder currently in use.
 const std::string GameManager::save_folder() const { return save_folder_; }
@@ -276,7 +324,21 @@ void GameManager::use_stairs(bool up)
     int current_level = area_->level();
     int new_level = current_level + (up ? -1 : 1);
 
-    if (new_level <= 0)
+    bool has_crown_of_kings = false;
+    if (player_->equipment(EquipSlot::HEAD)->name() == "{M}The Crown of Kings") has_crown_of_kings = true;
+    else
+    {
+        for (auto item : *player_->inv())
+        {
+            if (item->name() == "{M}The Crown of Kings")
+            {
+                has_crown_of_kings = true;
+                break;
+            }
+        }
+    }
+
+    if (new_level <= 0 && !has_crown_of_kings)
     {
         core()->message("{y}Are you sure you want to return to the surface?");
         if (!UI::are_you_sure())
@@ -296,8 +358,9 @@ void GameManager::use_stairs(bool up)
 
     if (new_level <= 0)
     {
+        if (has_crown_of_kings) game_over_screen(GameOverType::SUCCESS);
+        else game_over_screen(GameOverType::FAILED);
         erase_save_files();
-        render_death_screen(true);
     }
 
     // Check if the new Area should be loaded from a file, or generated fresh.
@@ -318,6 +381,16 @@ void GameManager::use_stairs(bool up)
         generator->generate();
         auto stair_coords = area_->find_tile_tag(up ? TileTag::StairsDown : TileTag::StairsUp);
         player_->set_pos(stair_coords.first, stair_coords.second);
+
+        // If this is the lowest level, place the Crown of Kings where the down staircase would be.
+        if (new_level == 5)
+        {
+            auto down_stairs = area_->find_tile_tag(TileTag::StairsDown);
+            area_->set_tile(down_stairs.first, down_stairs.second, TileID::FLOOR_STONE);
+            auto crown = CodexItem::generate(ItemID::CROWN_OF_KINGS);
+            crown->set_pos(down_stairs.first, down_stairs.second);
+            area_->entities()->push_back(crown);
+        }
     }
     core()->game()->ui()->full_redraw();
     SaveLoad::save_game();

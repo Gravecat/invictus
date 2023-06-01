@@ -16,7 +16,10 @@ class Player;   // defined in entity/player.hpp
 class UI;       // defined in ui/ui.hpp
 
 
-enum class GameState : uint8_t { INITIALIZING, NEW_GAME, LOAD_GAME, DUNGEON, DUNGEON_DEAD, DEAD };
+enum class GameState : uint8_t { INITIALIZING, NEW_GAME, LOAD_GAME, DUNGEON, DUNGEON_DEAD, GAME_OVER };
+
+enum class GameOverType : uint8_t { DEAD, FAILED, SUCCESS };
+
 
 class GameManager
 {
@@ -39,8 +42,8 @@ public:
 
 private:
     void    dungeon_input(int key);     // Handles the player's input, when in dungeon mode.
+    void    game_over_screen(GameOverType type);        // Renders the game-over screen.
     void    new_game();                 // Sets up for a new game.
-    void    render_death_screen(bool failure = false);  // Renders the death game-over screen.
     void    use_stairs(bool up);        // Attempts to go up or down stairs.
 
     std::shared_ptr<Area>   area_;  // The currently-loaded Area of the game world.

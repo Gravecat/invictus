@@ -42,6 +42,21 @@ std::shared_ptr<Item> CodexItem::generate(ItemID id)
             new_item->set_prop(EntityProp::ARMOUR, 8);
             break;
 
+
+        /******************
+         * HEAD EQUIPMENT *
+         ******************/
+
+        case ItemID::CROWN_OF_KINGS:    // The Crown of Kings, an artifact the player must retrieve to win the game.
+            new_item->name_ = "{M}The Crown of Kings";
+            new_item->ascii_ = ASCII_CROWN;
+            new_item->colour_ = Colour::YELLOW_BOLD;
+            new_item->item_type_ = ItemType::ARMOUR;
+            new_item->item_subtype_ = ItemSub::HEAD;
+            new_item->set_tag(EntityTag::ProperNoun);
+            break;
+
+
         /*****************
          * MELEE WEAPONS *
          *****************/

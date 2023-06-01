@@ -149,6 +149,7 @@ constexpr char  ASCII_ARMOUR =          '[';     // Armour worn on the body.
 constexpr char  ASCII_BLUNT_WEAPON =    '\\';   // Blunt weapons such as maces and clubs.
 
 // ] (93, closed square bracket)
+constexpr char  ASCII_CROWN =           ']';    // Crowns worn on the head.
 
 // ^ (94, caret)
 

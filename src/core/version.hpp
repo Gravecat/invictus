@@ -10,7 +10,7 @@
 namespace invictus
 {
 
-const std::string INVICTUS_VERSION_STRING = "prototype";
+const std::string INVICTUS_VERSION_STRING = "0.1 prototype";
 
 }       // namespace invictus
 #endif  // CORE_VERSION_HPP_
