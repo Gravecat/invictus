@@ -71,6 +71,8 @@ void Terminal::box(std::shared_ptr<Window> window, Colour colour, unsigned int f
     const bool reverse = ((flags & PRINT_FLAG_REVERSE) == PRINT_FLAG_REVERSE);
     const bool blink = ((flags & PRINT_FLAG_BLINK) == PRINT_FLAG_BLINK);
 
+    if (colour == Colour::BLACK_BOLD && reverse) colour = Colour::WHITE;
+
     unsigned int colour_flags = 0;
     if (bold) colour_flags |= A_BOLD;
     if (reverse) colour_flags |= A_REVERSE;
@@ -338,8 +340,14 @@ void Terminal::print(std::string str, int x, int y, Colour col, unsigned int fla
     if (x < 0 || x >= window_w || y < 0 || y >= window_h) return;
     
     unsigned int colour_flags = 0;
+    bool reverse = false;
     if ((flags & PRINT_FLAG_BOLD) == PRINT_FLAG_BOLD) colour_flags |= A_BOLD;
-    if ((flags & PRINT_FLAG_REVERSE) == PRINT_FLAG_REVERSE) colour_flags |= A_REVERSE;
+    if ((flags & PRINT_FLAG_REVERSE) == PRINT_FLAG_REVERSE)
+    {
+        colour_flags |= A_REVERSE;
+        reverse = true;
+        if (col == Colour::BLACK_BOLD) col = Colour::WHITE;
+    }
     if ((flags & PRINT_FLAG_BLINK) == PRINT_FLAG_BLINK) colour_flags |= A_BLINK;
 
     if (str.find("{") == std::string::npos)
@@ -378,7 +386,7 @@ void Terminal::print(std::string str, int x, int y, Colour col, unsigned int fla
             switch(tag[1])
             {
                 case 'b': col = Colour::BLACK; break;
-                case 'B': col = Colour::BLACK_BOLD; break;
+                case 'B': col = (reverse ? Colour::WHITE : Colour::BLACK_BOLD); break;
                 case 'r': col = Colour::RED; break;
                 case 'R': col = Colour::RED_BOLD; break;
                 case 'g': col = Colour::GREEN; break;
@@ -415,8 +423,13 @@ void Terminal::put(uint32_t letter, int x, int y, Colour col, unsigned int flags
 
     unsigned int colour_flags = 0;
     if ((flags & PRINT_FLAG_BOLD) == PRINT_FLAG_BOLD) colour_flags |= A_BOLD;
-    if ((flags & PRINT_FLAG_REVERSE) == PRINT_FLAG_REVERSE) colour_flags |= A_REVERSE;
+    if ((flags & PRINT_FLAG_REVERSE) == PRINT_FLAG_REVERSE)
+    {
+        colour_flags |= A_REVERSE;
+        if (col == Colour::BLACK_BOLD) col = Colour::WHITE;
+    }
     if ((flags & PRINT_FLAG_BLINK) == PRINT_FLAG_BLINK) colour_flags |= A_BLINK;
+
     WINDOW *win = (window ? window->win() : stdscr);
     uint8_t acs_flags = core()->prefs()->acs_flags();
     const bool acs_box = ((acs_flags & 1) == 1);
