@@ -2,7 +2,6 @@
 // Debug/testing code to check user inputs from Curses, and report unknown keycodes or escape sequences.
 // Copyright © 2023 Raine "Gravecat" Simmons. Licensed under the GNU Affero General Public License v3 or any later version.
 
-#include <cstdlib>
 #include <string>
 
 #include "core/core.hpp"

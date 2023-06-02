@@ -4,6 +4,7 @@
 #ifndef CORE_PREFS_HPP_
 #define CORE_PREFS_HPP_
 
+#include <cstdint>
 #include <string>
 
 

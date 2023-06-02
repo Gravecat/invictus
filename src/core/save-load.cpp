@@ -2,7 +2,6 @@
 // Copyright © 2023 Raine "Gravecat" Simmons. Licensed under the GNU Affero General Public License v3 or any later version.
 
 #include <algorithm>
-#include <map>
 
 #include "area/area.hpp"
 #include "area/tile.hpp"
@@ -17,7 +16,6 @@
 #include "entity/player.hpp"
 #include "ui/msglog.hpp"
 #include "ui/ui.hpp"
-#include "util/filex.hpp"
 
 
 namespace invictus

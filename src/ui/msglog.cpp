@@ -1,6 +1,8 @@
 // ui/msglog.cpp -- The message log, which displays important information to the player.
 // Copyright © 2020, 2023 Raine "Gravecat" Simmons. Licensed under the GNU Affero General Public License v3 or any later version.
 
+#include <cstddef>
+
 #include "core/core.hpp"
 #include "core/game-manager.hpp"
 #include "terminal/terminal.hpp"

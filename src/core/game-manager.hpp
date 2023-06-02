@@ -4,6 +4,7 @@
 #ifndef CORE_GAME_MANAGER_HPP_
 #define CORE_GAME_MANAGER_HPP_
 
+#include <cstdint>
 #include <memory>
 #include <string>
 

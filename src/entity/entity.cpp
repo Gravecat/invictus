@@ -8,7 +8,6 @@
 #include "core/game-manager.hpp"
 #include "core/guru.hpp"
 #include "entity/item.hpp"
-#include "terminal/terminal.hpp"
 #include "terminal/window.hpp"
 #include "tune/ascii-symbols.hpp"
 #include "util/strx.hpp"

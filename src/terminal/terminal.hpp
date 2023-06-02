@@ -4,7 +4,6 @@
 #ifndef TERMINAL_TERMINAL_HPP_
 #define TERMINAL_TERMINAL_HPP_
 
-#include <climits>
 #include <cstdint>
 #include <map>
 #include <memory>

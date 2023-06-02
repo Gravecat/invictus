@@ -4,7 +4,6 @@
 #ifndef UI_MSGLOG_HPP_
 #define UI_MSGLOG_HPP_
 
-#include <cstdint>
 #include <memory>
 #include <string>
 #include <vector>

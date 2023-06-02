@@ -4,6 +4,7 @@
 #ifndef UI_BARS_HPP_
 #define UI_BARS_HPP_
 
+#include <cstdint>
 #include <memory>
 #include <string>
 

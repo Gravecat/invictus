@@ -1,8 +1,6 @@
 // entity/monster.cpp -- Derived from Mobile, Monster has extra stats and code that are unique to NPCs, and do not apply to the player.
 // Copyright © 2023 Raine "Gravecat" Simmons. Licensed under the GNU Affero General Public License v3 or any later version.
 
-#include <stdexcept>
-
 #include "area/area.hpp"
 #include "area/pathfind.hpp"
 #include "core/core.hpp"

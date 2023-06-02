@@ -4,7 +4,6 @@
 #ifndef TERMINAL_TERMINAL_SHARED_DEFS_HPP_
 #define TERMINAL_TERMINAL_SHARED_DEFS_HPP_
 
-#include <climits>
 #include <cstdint>
 
 

@@ -4,11 +4,8 @@
 #include <cmath>
 
 #include "core/core.hpp"
-#include "core/game-manager.hpp"
 #include "terminal/terminal.hpp"
-#include "terminal/window.hpp"
 #include "ui/bars.hpp"
-#include "ui/ui.hpp"
 #include "util/strx.hpp"
 
 

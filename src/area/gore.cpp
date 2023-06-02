@@ -12,8 +12,6 @@
 #include "ui/ui.hpp"
 #include "util/random.hpp"
 
-#include "core/guru.hpp"
-
 
 namespace invictus
 {

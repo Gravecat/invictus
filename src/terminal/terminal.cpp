@@ -5,13 +5,11 @@
 #include <panel.h>
 
 #include "core/core.hpp"
-#include "core/game-manager.hpp"
 #include "core/guru.hpp"
 #include "core/prefs.hpp"
 #include "core/version.hpp"
 #include "terminal/terminal.hpp"
 #include "terminal/window.hpp"
-#include "util/strx.hpp"
 
 
 namespace invictus
