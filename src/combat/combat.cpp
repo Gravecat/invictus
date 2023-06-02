@@ -345,7 +345,7 @@ void Combat::perform_attack(std::shared_ptr<Mobile> attacker, std::shared_ptr<Mo
             damage *= CRITICAL_HIT_DAMAGE_MULTI;
         }
 
-        if (damage < 0) damage = 0; // Just in case.
+        if (damage < 1) damage = 1; // Minimum damage is always 1.
 
         if (defender->tag(EntityTag::ImmunityBleed)) bleed = false;
         if (defender->tag(EntityTag::ImmunityPoison)) poison = false;
