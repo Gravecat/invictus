@@ -42,7 +42,11 @@ if(TARGET_WINDOWS)
 elseif(TARGET_LINUX)
 
   # Platform-specific libraries.
-  set(CURSES_LIBRARIES ncurses panel)
+  find_package(Curses REQUIRED)
+  if(${CMAKE_VERSION} VERSION_GREATER_EQUAL "3.1.6")
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${CURSES_CFLAGS}")
+  endif(${CMAKE_VERSION})
+  set(CURSES_LIBRARIES "panel ${CURSES_LIBRARIES}")
 
   # Platform-specific linker flags.
   set(CMAKE_EXE_LINKER_FLAGS_RELEASE "${CMAKE_EXE_LINKER_FLAGS_RELEASE} -Wl,-rpath='${ORIGIN}'")
@@ -115,6 +119,7 @@ if(TARGET_WINDOWS)
 else()
   target_include_directories(invictus PRIVATE
     "${CMAKE_SOURCE_DIR}/src"
+    "${CURSES_INCLUDE_DIRS}"
   )
 endif()
 
