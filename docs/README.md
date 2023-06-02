@@ -14,7 +14,8 @@ are provided for Windows and Linux, and if you're interested in contributing to 
 
 # COPYRIGHT & LICENSE
 
-Morior Invictus is copyright © 2023 [Raine "Gravecat" Simmons](https://github.com/Gravecat). The game is free and open-source, licensed under the
+Morior Invictus is copyright © 2023 [Raine "Gravecat" Simmons](https://github.com/Gravecat) and
+[the project contributors](https://github.com/Gravecat/invictus/graphs/contributors). The game is free and open-source, licensed under the
 [GNU Affero General Public License v3 or any later version](https://www.gnu.org/licenses/agpl-3.0.en.html).
 
 [PDCurses](https://github.com/wmcbrine/PDCurses) maintained by William McBrine.

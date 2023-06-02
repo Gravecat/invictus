@@ -1,6 +1,6 @@
-Morior Invictus is copyright © 2023 Raine "Gravecat" Simmons. The game is free
-and open-source, licensed under the GNU Affero General Public License v3 or any
-later version.
+Morior Invictus is copyright © 2023 Raine "Gravecat" Simmons and the project
+contributors. The game is free and open-source, licensed under the GNU Affero
+General Public License v3 or any later version.
 
 THIS SOFTWARE IS PROVIDED BY THE AUTHOR "AS IS" AND ANY EXPRESS OR IMPLIED
 WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
