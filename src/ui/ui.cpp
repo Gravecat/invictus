@@ -186,9 +186,15 @@ void UI::render_stat_bars()
     Bars::render_bar(hp_bar_width + sp_bar_width, 1, mp_bar_width, "MP", player->mp(), player->mp(true), Colour::BLUE_WHITE, BAR_FLAG_NUMBERS, stat_bars_);
 
     std::string status_messages;
-    if (player->has_buff(BuffType::PAIN)) status_messages += "{Y}[PAIN] ";
+    if (player->has_buff(BuffType::PAIN)) status_messages += "{Y}[PAIN]{b} ";
+    if (status_messages.size()) terminal->print(status_messages.substr(0, status_messages.size() - 1), 0, 0, Colour::WHITE, PRINT_FLAG_REVERSE, stat_bars_);
 
-    if (status_messages.size()) terminal->print(status_messages.substr(0, status_messages.size() - 1), 0, 0, Colour::WHITE, 0, stat_bars_);
+    int level = core()->game()->area()->level();
+    if (level > 0)
+    {
+        std::string level_str = std::to_string(level * 50) + "'";
+        terminal->print(level_str, window_w - level_str.size(), 0, Colour::BLACK_BOLD, PRINT_FLAG_REVERSE, stat_bars_);
+    }
 }
 
 // Gets a pointer to the stat bars window.
