@@ -67,11 +67,15 @@ Terminal::~Terminal() { cleanup(); }
 void Terminal::box(std::shared_ptr<Window> window, Colour colour, unsigned int flags)
 {
     WINDOW *win = (window ? window->win() : stdscr);
-    const bool bold = ((flags & PRINT_FLAG_BOLD) == PRINT_FLAG_BOLD);
-    const bool reverse = ((flags & PRINT_FLAG_REVERSE) == PRINT_FLAG_REVERSE);
-    const bool blink = ((flags & PRINT_FLAG_BLINK) == PRINT_FLAG_BLINK);
+    bool bold = ((flags & PRINT_FLAG_BOLD) == PRINT_FLAG_BOLD);
+    bool reverse = ((flags & PRINT_FLAG_REVERSE) == PRINT_FLAG_REVERSE);
+    bool blink = ((flags & PRINT_FLAG_BLINK) == PRINT_FLAG_BLINK);
 
-    if (colour == Colour::BLACK_BOLD && reverse) colour = Colour::WHITE;
+    if (colour == Colour::BLACK_BOLD && reverse)
+    {
+        colour = Colour::WHITE;
+        bold = false;
+    }
 
     unsigned int colour_flags = 0;
     if (bold) colour_flags |= A_BOLD;
@@ -339,16 +343,20 @@ void Terminal::print(std::string str, int x, int y, Colour col, unsigned int fla
     else { window_w = get_cols(); window_h = get_rows(); }
     if (x < 0 || x >= window_w || y < 0 || y >= window_h) return;
     
-    unsigned int colour_flags = 0;
-    bool reverse = false;
-    if ((flags & PRINT_FLAG_BOLD) == PRINT_FLAG_BOLD) colour_flags |= A_BOLD;
-    if ((flags & PRINT_FLAG_REVERSE) == PRINT_FLAG_REVERSE)
+    bool bold = (flags & PRINT_FLAG_BOLD) == PRINT_FLAG_BOLD;
+    bool reverse = (flags & PRINT_FLAG_REVERSE) == PRINT_FLAG_REVERSE;
+    bool blink = (flags & PRINT_FLAG_BLINK) == PRINT_FLAG_BLINK;
+
+    if (col == Colour::BLACK_BOLD && reverse)
     {
-        colour_flags |= A_REVERSE;
-        reverse = true;
-        if (col == Colour::BLACK_BOLD) col = Colour::WHITE;
+        col = Colour::WHITE;
+        bold = false;
     }
-    if ((flags & PRINT_FLAG_BLINK) == PRINT_FLAG_BLINK) colour_flags |= A_BLINK;
+
+    unsigned int colour_flags = 0;    
+    if (bold) colour_flags |= A_BOLD;
+    if (reverse) colour_flags |= A_REVERSE;
+    if (blink) colour_flags |= A_BLINK;
 
     if (str.find("{") == std::string::npos)
     {
@@ -421,14 +429,20 @@ void Terminal::put(uint32_t letter, int x, int y, Colour col, unsigned int flags
     else { window_w = get_cols(); window_h = get_rows(); }
     if (x < 0 || x >= window_w || y < 0 || y >= window_h) return;
 
-    unsigned int colour_flags = 0;
-    if ((flags & PRINT_FLAG_BOLD) == PRINT_FLAG_BOLD) colour_flags |= A_BOLD;
-    if ((flags & PRINT_FLAG_REVERSE) == PRINT_FLAG_REVERSE)
+    bool bold = (flags & PRINT_FLAG_BOLD) == PRINT_FLAG_BOLD;
+    bool reverse = (flags & PRINT_FLAG_REVERSE) == PRINT_FLAG_REVERSE;
+    bool blink = (flags & PRINT_FLAG_BLINK) == PRINT_FLAG_BLINK;
+
+    if (col == Colour::BLACK_BOLD && reverse)
     {
-        colour_flags |= A_REVERSE;
-        if (col == Colour::BLACK_BOLD) col = Colour::WHITE;
+        col = Colour::WHITE;
+        bold = false;
     }
-    if ((flags & PRINT_FLAG_BLINK) == PRINT_FLAG_BLINK) colour_flags |= A_BLINK;
+
+    unsigned int colour_flags = 0;
+    if (bold) colour_flags |= A_BOLD;
+    if (reverse) colour_flags |= A_REVERSE;
+    if (blink) colour_flags |= A_BLINK;
 
     WINDOW *win = (window ? window->win() : stdscr);
     uint8_t acs_flags = core()->prefs()->acs_flags();
