@@ -288,7 +288,7 @@ void Combat::perform_attack(std::shared_ptr<Mobile> attacker, std::shared_ptr<Mo
             std::to_string(raw_hit_roll + hit_bonus) + "{w}), defender armour: {c}" + std::to_string(defender_armour) + "{w}, defender dodge: {c}" +
             std::to_string(defender_dodge));
 
-    if (guaranteed_hit || hit_roll >= std::max(defender_armour, defender_dodge))    // Evasion failed; the target was hit.
+    if (guaranteed_hit || hit_roll >= std::max(1, std::max(defender_armour, defender_dodge)))   // Evasion failed; the target was hit.
     {
         // Now to check if the defender can successfully parry this attack.
         if (can_parry)
@@ -323,7 +323,7 @@ void Combat::perform_attack(std::shared_ptr<Mobile> attacker, std::shared_ptr<Mo
             {
                 auto defender_armour_item = defender->equipment(EquipSlot::BODY);
                 bool dodged = (defender_armour_item->item_type() == ItemType::NONE);
-                if ((defender_armour > defender_dodge && hit_roll < defender_dodge) || defender_dodge > defender_armour) dodged = true;
+                if ((defender_armour > defender_dodge && hit_roll < defender_dodge) || defender_dodge > defender_armour || hit_roll == 1) dodged = true;
                 if (dodged) core()->message(good_colour_defender + attacker_your_string_c + " " + weapon_name + " misses " + defender_name + ".");
                 else core()->message(good_colour_defender + attacker_your_string_c + " " + weapon_name + " is deflected by " + defender_name_s +
                     " " + defender->equipment(EquipSlot::BODY)->name() + ".");
