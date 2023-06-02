@@ -10,6 +10,7 @@
 #include "core/game-manager.hpp"
 #include "core/guru.hpp"
 #include "core/save-load.hpp"
+#include "core/version.hpp"
 #include "entity/item.hpp"
 #include "entity/player.hpp"
 #include "terminal/terminal.hpp"
@@ -215,8 +216,8 @@ GameState GameManager::game_state() const { return game_state_; }
 void GameManager::new_game()
 {
     auto terminal = core()->terminal();
-    std::string intro_str = "Welcome to the prototype {W}0.1 {w}build of {R}Morior Invictus{w}! You must delve deep into {Y}the Tomb of Forgotten Kings {w}and \
-seek out the long-lost {M}Crown of Kings{w}, then return to the surface with your prize!";
+    std::string intro_str = "Welcome to the {W}" + INVICTUS_VERSION_STRING + " {w}build of {R}Morior Invictus{w}! You must delve deep into {Y}the Tomb of \
+Forgotten Kings {w}and seek out the long-lost {M}Crown of Kings{w}, then return to the surface with your prize!";
     bool redraw = true;
     while (true)
     {
