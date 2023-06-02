@@ -136,9 +136,9 @@ void UI::redraw_nearby() { nearby_needs_redraw_ = true; }
 void UI::redraw_stat_bars() { stat_bars_need_redraw_ = true; }
 
 // Renders the UI elements, if needed.
-void UI::render(bool force_flip)
+void UI::render(ForceFlipMode mode)
 {
-    bool flip = force_flip;
+    bool flip = (mode == ForceFlipMode::FORCE_FLIP);
     if (dungeon_needs_redraw_)
     {
         core()->terminal()->cls(dungeon_view_);
@@ -167,7 +167,7 @@ void UI::render(bool force_flip)
         stat_bars_need_redraw_ = false;
         flip = true;
     }
-    if (flip) core()->terminal()->flip();
+    if (flip && mode != ForceFlipMode::FORCE_NO_FLIP) core()->terminal()->flip();
 }
 
 // Renders the player's health, mana and stamina bars.

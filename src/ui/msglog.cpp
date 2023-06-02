@@ -41,6 +41,58 @@ void MessageLog::amend(const std::string &str)
 // Prints a blank line.
 void MessageLog::blank_line() { message(""); }
 
+// Gets user input from the message log window.
+std::string MessageLog::get_string()
+{
+    auto ui = core()->game()->ui();
+    auto terminal = core()->terminal();
+    std::string result;
+    bool redraw = true;
+    auto msg_window = ui->message_log_window();
+    int key;
+    unsigned int window_height, window_width;
+
+    blank_line();
+    while(true)
+    {
+        if (redraw)
+        {
+            msg_window = ui->message_log_window();
+            window_height = msg_window->get_height();
+            window_width = msg_window->get_width();
+            if (result.size() >= window_width - 5) result = result.substr(0, window_width - 5);
+            ui->redraw_message_log();
+            ui->render(ForceFlipMode::FORCE_NO_FLIP);
+            terminal->print("> " + result, 1, window_height - 2, Colour::GREEN_BOLD, 0, msg_window);
+            terminal->put(' ', result.size() + 3, window_height - 2, Colour::GREEN_BOLD, PRINT_FLAG_REVERSE | PRINT_FLAG_BLINK, msg_window);
+            terminal->flip();
+            redraw = false;
+        }
+
+        key = terminal->get_key();
+        if (key == Key::RESIZE)
+        {
+            ui->window_resized();
+            redraw = true;
+        }
+        else if (key >= ' ' && key <= '~' && key != '{' && key != '}')
+        {
+            result += std::string(1, key);
+            redraw = true;
+        }
+        else if (key == Key::BACKSPACE && result.size())
+        {
+            result = result.substr(0, result.size() - 1);
+            redraw = true;
+        }
+        else if (key == Key::ENTER) break;
+    }
+
+    amend("{g}> " + result);
+    ui->redraw_message_log();
+    return result;
+}
+
 // Adds a message to the log!
 void MessageLog::message(std::string msg, unsigned char awaken_chance)
 {

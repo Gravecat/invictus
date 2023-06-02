@@ -4,6 +4,7 @@
 #ifndef UI_UI_HPP_
 #define UI_UI_HPP_
 
+#include <cstdint>
 #include <memory>
 
 
@@ -12,6 +13,9 @@ namespace invictus
 
 class MessageLog;   // defined in ui/msglog.hpp
 class Window;       // defined in terminal/window.hpp
+
+
+enum class ForceFlipMode : uint8_t { NORMAL, FORCE_FLIP, FORCE_NO_FLIP };   // Modes for render()
 
 
 class UI
@@ -26,7 +30,7 @@ public:
     void    redraw_message_log();   // Marks the message log window as needing to be redrawn.
     void    redraw_nearby();    // Marks the nearby window as needing to be redrawn.
     void    redraw_stat_bars(); // Marks the stat bars as needing to be redrawn.
-    void    render(bool force_flip = false);    // Renders the UI elements, if needed.
+    void    render(ForceFlipMode mode = ForceFlipMode::NORMAL); // Renders the UI elements, if needed.
     void    window_resized();   // The terminal window has been resized.
 
     static bool are_you_sure(); // Renders an "are you sure?" window.

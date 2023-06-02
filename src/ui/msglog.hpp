@@ -21,6 +21,7 @@ public:
             MessageLog();       // Constructor, sets up the message log window.
     void    amend(const std::string &str);  // Amends the last message, adding additional text.
     void    blank_line();       // Prints a blank line.
+    std::string get_string();   // Gets user input from the message log window.
     void    message(std::string msg, unsigned char awaken_chance = 0);  // Adds a message to the output buffer.
     void    render();           // Draws the message log on the screen.
     void    screen_resized();   // Lets the message log know the screen size has changed.

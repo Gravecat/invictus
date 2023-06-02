@@ -80,7 +80,7 @@ int Menu::render()
             redraw = false;
         }
 
-        ui->render(true);
+        ui->render(ForceFlipMode::FORCE_FLIP);
         key = terminal->get_key();
         if (key == Key::RESIZE)
         {
