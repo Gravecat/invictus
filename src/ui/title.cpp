@@ -84,25 +84,27 @@ void TitleScreen::title_screen()
 
         key = terminal->get_key();
         
-        switch(key)
+        if (game->is_key_north(key))
+        {
+            if (selected_ > 0)
+            {
+                selected_--;
+                redraw = true;
+            }
+        }
+        else if (game->is_key_south(key))
+        {
+            if (selected_ < 3)
+            {
+                selected_++;
+                redraw = true;
+            }
+        }
+        else switch(key)
         {
             case Key::RESIZE:
                 game->ui()->window_resized();
                 redraw = true;
-                break;
-            case 'k': case Key::ARROW_UP: case Key::KP8:
-                if (selected_ > 0)
-                {
-                    selected_--;
-                    redraw = true;
-                }
-                break;
-            case 'j': case Key::ARROW_DOWN: case Key::KP2:
-                if (selected_ < 3)
-                {
-                    selected_++;
-                    redraw = true;
-                }
                 break;
             case Key::ENTER: case ' ':
                 switch(selected_)

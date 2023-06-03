@@ -88,13 +88,13 @@ int Menu::render()
             redraw = true;
             reposition();
         }
-        else if ((key == Key::ARROW_UP || key == Key::KP8 || key == 'k') && selected_ > 0)
+        else if (game->is_key_north(key) && selected_ > 0)
         {
             selected_--;
             while (selected_ > 0 && (!items_.at(selected_).size() || colour_.at(selected_) == Colour::BLACK_BOLD)) selected_--;
             redraw = true;
         }
-        else if ((key == Key::ARROW_DOWN || key == Key::KP2 || key == 'j') && selected_ < items_.size() - 1)
+        else if (game->is_key_south(key) && selected_ < items_.size() - 1)
         {
             selected_++;
             while (selected_ < items_.size() - 1 && (!items_.at(selected_).size() || colour_.at(selected_) == Colour::BLACK_BOLD)) selected_++;

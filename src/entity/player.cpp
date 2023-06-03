@@ -120,25 +120,24 @@ void Player::get_direction(int *dx, int *dy) const
 {
     *dx = *dy = 0;
     int key = 0;
+    auto game = core()->game();
     core()->message("{C}Which direction? (Direction key to choose, cancel key to abort.)");
     while (true)
     {
-        core()->game()->ui()->redraw_message_log();
-        core()->game()->ui()->render();
-        key = core()->terminal()->get_key();
-        switch(key)
-        {
-            case 'k': case Key::ARROW_UP: *dy = -1; return;             // North
-            case 'j': case Key::ARROW_DOWN: *dy = 1; return;            // South
-            case 'h': case Key::ARROW_LEFT: *dx = -1; return;           // West
-            case 'l': case Key::ARROW_RIGHT: *dx = 1; return;           // East
-            case 'b': case Key::END: *dx = -1; *dy = 1; return;         // Southwest
-            case 'n': case Key::PAGE_DOWN: *dx = 1; *dy = 1; return;    // Southeast
-            case 'y': case Key::HOME: *dx = -1; *dy = -1; return;       // Northwest
-            case 'u': case Key::PAGE_UP: *dx = 1; *dy = -1; return;     // Northeast
-        }
+        game->ui()->redraw_message_log();
+        game->ui()->render();
+        key = game->get_key();
+        if (game->is_key_north(key)) { *dy = -1; return; }
+        else if (game->is_key_south(key)) { *dy = 1; return; }
+        else if (game->is_key_east(key)) { *dx = 1; return; }
+        else if (game->is_key_west(key)) { *dx = -1; return; }
+        else if (game->is_key_northeast(key)) { *dx = 1; *dy = -1; return; }
+        else if (game->is_key_northwest(key)) { *dx = -1; *dy = -1; return; }
+        else if (game->is_key_southeast(key)) { *dx = 1; *dy = 1; return; }
+        else if (game->is_key_southwest(key)) { *dx = -1; *dy = 1; return; }
+        else if (key == Key::RESIZE || !key) { }
+        else { core()->message("{C}Selection cancelled."); return; }
     }
-    core()->message("{C}Selection cancelled.");
 }
 
 // Picks something up off the ground.

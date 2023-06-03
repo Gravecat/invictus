@@ -33,7 +33,15 @@ public:
     void        game_loop();        // Brøther, may I have some lööps?
     GameState   game_state() const; // Retrieves the current state of the game.
     int         get_key();          // Gets a key from the user, while handling UI resizing internally.
-    void        pass_time(float time);  // The player has taken an action which causes some time to pass.
+    bool        is_key_east(int key);       // Checks if a key is one of the valid options for moving east or going right in a menu.
+    bool        is_key_north(int key);      // Checks if a key is one of the valid options for moving north or going up in a menu.
+    bool        is_key_northeast(int key);  // Checks if a key is one of the valid options for moving northeast.
+    bool        is_key_northwest(int key);  // Checks if a key is one of the valid options for moving northwest.
+    bool        is_key_south(int key);      // Checks if a key is one of the valid options for moving south or going down in a menu.
+    bool        is_key_southeast(int key);  // Checks if a key is one of the valid options for moving southeast.
+    bool        is_key_southwest(int key);  // Checks if a key is one of the valid options for moving southwest.
+    bool        is_key_west(int key);       // Checks if a key is one of the valid options for moving west or going left in a menu.
+    void        pass_time(float time);      // The player has taken an action which causes some time to pass.
     const std::string save_folder() const;  // Retrieves the name of the saved game folder currently in use.
     void        set_game_state(GameState new_state);    // Sets the game state.
     void        tick();             // Processes non-player actions and progresses the world state.

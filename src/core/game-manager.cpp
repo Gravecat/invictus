@@ -72,19 +72,18 @@ void GameManager::die()
 void GameManager::dungeon_input(int key)
 {
     int dx = 0, dy = 0;
-    switch(key)
+
+    if (!key) return;
+    else if (is_key_north(key)) dy = -1;    // Move north.
+    else if (is_key_south(key)) dy = 1;     // Move south.
+    else if (is_key_east(key)) dx = 1;      // Move east.
+    else if (is_key_west(key)) dx = -1;     // Move west.
+    else if (is_key_northeast(key)) { dx = 1; dy = -1; }    // Move northeast.
+    else if (is_key_northwest(key)) { dx = -1; dy = -1; }   // Move northwest.
+    else if (is_key_southeast(key)) { dx = 1; dy = 1; }     // Move southeast.
+    else if (is_key_southwest(key)) { dx = -1; dy = 1; }    // Move southwest.
+    else switch(key)
     {
-        case 0: return;
-
-        case 'k': case Key::ARROW_UP: case Key::KP8: dy = -1; break;    // Move north
-        case 'j': case Key::ARROW_DOWN: case Key::KP2: dy = 1; break;   // Move south
-        case 'h': case Key::ARROW_LEFT: case Key::KP4: dx = -1; break;  // Move west
-        case 'l': case Key::ARROW_RIGHT: case Key::KP6: dx = 1; break;  // Move east
-        case 'b': case Key::KP1: dx = -1; dy = 1; break;    // Move southwest
-        case 'n': case Key::KP3: dx = 1; dy = 1; break;     // Move southeast
-        case 'y': case Key::KP7: dx = -1; dy = -1; break;   // Move northwest
-        case 'u': case Key::KP9: dx = 1; dy = -1; break;    // Move northeast
-
         case '`': DevConsole::open_dev_console(); break;    // Debug/cheat console.
         case ',': case Key::KP5: pass_time(TIME_DO_NOTHING); break; // Do nothing.
         case '.': player_->ground_items(); break;           // Interact with items on the ground.
@@ -221,6 +220,30 @@ int GameManager::get_key()
     if (key == Key::RESIZE) ui_->window_resized();
     return key;
 }
+
+// Checks if a key is one of the valid options for moving east or going right in a menu.
+bool GameManager::is_key_east(int key) { return (key == Key::ARROW_RIGHT || key == Key::KP6 || key == 'l'); }
+
+// Checks if a key is one of the valid options for moving north or going up in a menu.
+bool GameManager::is_key_north(int key) { return (key == Key::ARROW_UP || key == Key::KP8 || key == 'k'); }
+
+// Checks if a key is one of the valid options for moving northeast.
+bool GameManager::is_key_northeast(int key) { return (key == Key::KP9 || key == Key::PAGE_UP || key == 'u'); }
+
+// Checks if a key is one of the valid options for moving northwest.
+bool GameManager::is_key_northwest(int key) { return (key == Key::KP7 || key == Key::HOME || key == 'y'); }
+
+// Checks if a key is one of the valid options for moving south or going down in a menu.
+bool GameManager::is_key_south(int key) { return (key == Key::ARROW_DOWN || key == Key::KP2 || key == 'j'); }
+
+// Checks if a key is one of the valid options for moving southeast.
+bool GameManager::is_key_southeast(int key) { return (key == Key::KP3 || key == Key::PAGE_DOWN || key == 'n'); }
+
+// Checks if a key is one of the valid options for moving southwest.
+bool GameManager::is_key_southwest(int key) { return (key == Key::KP1 || key == Key::END || key == 'b'); }
+
+// Checks if a key is one of the valid options for moving west or going left in a menu.
+bool GameManager::is_key_west(int key) { return (key == Key::ARROW_LEFT || key == Key::KP4 || key == 'h'); }
 
 // Sets up for a new game.
 void GameManager::new_game()
