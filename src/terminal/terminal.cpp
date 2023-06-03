@@ -111,17 +111,8 @@ void clear_line(std::shared_ptr<Window> window)
 // Clears the screen.
 void Terminal::cls(std::shared_ptr<Window> window)
 {
-#ifdef PDCURSES
-    // Workaround to deal with PDCurses' lack of an inbuilt SIGWINCH handler.
-    if (is_termresized())
-    {
-        resize_term(0, 0);
-        if (get_cols() < 80 || get_rows() < 24) resize_term(24, 80);
-        curs_set(cursor_state_);
-    }
-#endif
-    if (!window) clear();
-    else wclear(window->win());
+    if (!window) erase();
+    else werase(window->win());
 }
 
 // Returns a colour pair code.
