@@ -16,7 +16,7 @@ namespace invictus
 std::map<std::string, std::vector<std::string>> Wiki::wiki_data_ = {
     { "C", { "The following documentation pages start with the letter C: [Controls]" } },
 
-    { "CONTROLS" ,
+    { "CONTROLS",
         { "The game is controlled entirely with the keyboard. You can naviate menus and move around the game world using your choice of {C}arrow keys{w}, "
         "the {C}numeric keypad {w}(if you have one), or {C}vi keys{w}. Navigation in the game world is done via {C}cardinal directions {w}- north, east, south,"
         " west, and the diagonals.",
@@ -58,7 +58,17 @@ std::map<std::string, std::vector<std::string>> Wiki::wiki_data_ = {
         "{C}Shift-S {w}- save the game.",
         } },
 
-    { "D", { "The following documentation pages start with the letter D: [Dungeon_View]" } },
+    { "D", { "The following documentation pages start with the letter D: [Debug_Options] [Dungeon_View]" } },
+
+    { "DEBUG_OPTIONS", {
+        "Some hidden debug options are available if launching the game with certain special parameters. They are as follows:",
+
+        "{C}-acs-display {w}- Renders the Curses ACS glyphs, including the line-drawing characters and others. These may or may not be supported on your "
+        "system, and are grouped into sets which can be disabled entirely via special flags in [prefs.txt].",
+
+        "{C}-keycode-check {w}- Displays either the keycodes or escape sequences returned from Curses for any keys that are pressed. This can be useful for "
+        "debugging or adding escape codes from a terminal not yet supported by the game."
+    } },
 
     { "DUNGEON_VIEW",
         { "The dungeon view is the main mode in which you'll be playing the game. You'll see that it's divided into three distinct sections:",
@@ -150,7 +160,8 @@ std::map<std::string, std::vector<std::string>> Wiki::wiki_data_ = {
 
     { "WIKI_HEADER", {
         "{g}.~{r}* {R}MORIOR INVICTUS: INTERACTIVE DOCUMENTATION {r}*{g}~.",
-        "{R}__________________________________________________" } },
+        "{R}__________________________________________________",
+        " " } },
 };
 
 unsigned int Wiki::buffer_pos_ = 0;                     // The position of the console buffer.
