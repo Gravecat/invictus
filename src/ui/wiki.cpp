@@ -321,10 +321,17 @@ void Wiki::reset_buffer_pos()
     if (wiki_prc_.size() > height) buffer_pos_ = wiki_prc_.size() - height;
 }
 
+void Wiki::wiki()
+{
+    if (!wiki_window_) create_wiki_window();
+    wiki("WIKI");
+    wiki_window_ = nullptr;
+    core()->terminal()->flip();
+}
+
 // Displays a specific wiki window.
 void Wiki::wiki(const std::string &page)
 {
-    if (!wiki_window_) create_wiki_window();
     wiki_raw_.clear();
 
     // Process link pages.
@@ -359,7 +366,6 @@ void Wiki::wiki(const std::string &page)
 
     process_wiki_buffer();
     buffer_pos_ = 0;
-    wiki_window_->set_visible(true);
     render_wiki();
     while(true)
     {
@@ -367,7 +373,6 @@ void Wiki::wiki(const std::string &page)
         if (!wiki_history_.size()) break;
         if (wiki_history_.at(wiki_history_.size() - 1) != page) break;
     }
-    wiki_window_->set_visible(false);
 }
 
 }   // namespace invictus

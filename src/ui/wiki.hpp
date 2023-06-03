@@ -20,7 +20,7 @@ class Window;   // defined in terminal/window.hpp
 class Wiki
 {
 public:
-    static void wiki(const std::string &page);  // Displays a specific wiki window.
+    static void wiki(); // Loads the in-game documentation.
 
 private:
     static void create_wiki_window();   // (re)creates the wiki render window.
@@ -29,6 +29,7 @@ private:
     static void process_wiki_buffer();  // Processes the wiki buffer after an update or screen resize.
     static void render_wiki();          // Redraws in the in-game wiki.
     static void reset_buffer_pos();     // Resets the wiki buffer position.
+    static void wiki(const std::string &page);  // Displays a specific wiki window.
 
     static constexpr int    WIKIBUF_MAX =   256;    // Maximum size of the wiki buffer.
 

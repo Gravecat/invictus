@@ -123,7 +123,7 @@ void TitleScreen::title_screen()
                             return;
                         }
                         break;
-                    case 2: Wiki::wiki("WIKI"); break;
+                    case 2: Wiki::wiki(); break;
                     case 3: break;  // Not implemented yet.
                     case 4:
                         core()->cleanup();

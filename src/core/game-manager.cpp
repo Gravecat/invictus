@@ -19,6 +19,7 @@
 #include "ui/system-menu.hpp"
 #include "ui/title.hpp"
 #include "ui/ui.hpp"
+#include "ui/wiki.hpp"
 #include "util/filex.hpp"
 #include "util/strx.hpp"
 
@@ -89,6 +90,7 @@ void GameManager::dungeon_input(int key)
         case '.': player_->ground_items(); break;           // Interact with items on the ground.
         case '=': SystemMenu::open(); break;                // Opens the system menu.
         case '<': case '>': use_stairs(key == '<'); break;  // Goes up or down stairs.
+        case '?': Wiki::wiki(); break;                      // Opens the in-game help page.
         case 'c': player_->close_a_door(); break;           // Attempts to close something.
         case 'e': player_->take_inventory(true); break;     // Interact with equipped items.
         case 'g': player_->get_item(); break;               // Picks something up.
