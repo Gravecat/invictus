@@ -14,6 +14,43 @@ namespace invictus
 
 // The pages in this wiki.
 std::map<std::string, std::vector<std::string>> Wiki::wiki_data_ = {
+    { "C", { "The following documentation pages start with the letter C: [Controls]" } },
+
+    { "CONTROLS" ,
+        { "The game is controlled entirely with the keyboard. You can naviate menus and move around the game world using your choice of {C}arrow keys{w}, \
+the {C}numeric keypad {w}(if you have one), or {C}vi keys{w}. Navigation in the game world is done via {C}cardinal directions {w}- north, east, south, west, \
+and the diagonals.",
+        "The following grids of keys shows any of the valid controls used to move in the four compass directions, or the four diagonals (northeast, northwest, \
+southeast, southwest). The {C}arrow keys {w}are represented here by {C}^ v < > {w}characters, and are not these literal keys.",
+        "",
+        "{0}{e}{Y}Cardinal     {R}\"vi\"     {G}Numeric    {U}Arrow Keys  ",
+        "{e}{Y}Directions   {R}keys     {G}Keypad     {U}+ Navigation",
+        "{0}{e}{Y}NW N NE      {R}y k u     {G}7 8 9     {U}Home ^ PgUp ",
+        "{0}{e}  {Y}\\|/         \\|/       \\|/          \\|/     ",
+        "{0}{e} {Y}W-+-E       {R}h{Y}-+-{R}l     {G}4{Y}-+-{G}6        {U}<{Y}-+-{U}>    ",
+        "{0}{e}  {Y}/|\\         /|\\       /|\\          /|\\     ",
+        "{e}{Y}SW S SE      {R}b j n     {G}1 2 3      {U}End v PgDn ",
+        "{R}Please note: {w}Some combinations of these keys may not work on certain terminals, particularly if you are playing over an {W}ssh {w}connection. \
+This is largely a limitation of Curses.",
+        "The four primary directional keys are also used to navigate menus. The {C}Enter {w}key selects items in menus, and the {C}Space Bar {w}cancels \
+actions or closes menus.",
+        "During your adventure, you will find yourself needing to travel vertically - descending into deep dungeons, or ascending to higher levels or the \
+surface world above. For this, you can use the {C}< {w}and {C}> {w}keys (not the arrow keys - the actual angle-bracket keys) to travel upward and downward, \
+when in a suitable place to do so.",
+        "The other keys used in the game are listed below. {Y}Please remember, you can always use the {C}? {Y}key during gameplay to open this in-game \
+documentation again.",
+        "{0}{C}, {w}or {C}numpad 5 {w}- do nothing for one turn.",
+        "{0}{C}. {w}- interact with items on the ground.",
+        "{0}{C}= {w}- opens the main menu.",
+        "{0}{C}c {w}- close a nearby door.",
+        "{0}{C}e {w}- check your equipped gear.",
+        "{0}{C}g {w}- pick up items on the ground.",
+        "{0}{C}i {w}- check your carried items.",
+        "{0}{C}o {w}- open a nearby door.",
+        "{0}{C}Shift-R {w}- rest for a while.",
+        "{C}Shift-S {w}- save the game.",
+        } },
+
     { "EXAMPLE", { "This was just an example, to show you how links work. You can press the {C}Space Bar {w}to return to your previously-viewed page." } },
 
     { "G", { "The following documentation pages start with the letter G: [Getting_Started] [GitHub]" } },
@@ -313,8 +350,9 @@ void Wiki::wiki(const std::string &page)
     {
         if (line.size())
         {
-            wiki_raw_.push_back(line);
-            wiki_raw_.push_back(" ");
+            bool zero_tag = (line.size() > 3 && line.substr(0, 3) == "{0}");
+            wiki_raw_.push_back(line.substr(zero_tag ? 3 : 0));
+            if (!zero_tag) wiki_raw_.push_back(" ");
         }
     }
     wiki_raw_.erase(wiki_raw_.end() - 1);
