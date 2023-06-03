@@ -77,8 +77,8 @@ the true hero you were always destined to be!" } },
 
     { "GITHUB",
         { "The official GitHub page for Morior Invictus is located here: {U}https://github.com/Gravecat/invictus",
-        "You can find the latest builds and downloads there, as well as more extneisve documentation in web format, discussions, bug reports, and more. If you \
-notice anything broken with the game, please head to the GitHub page and open an issue - the game's developer will deal with it as soon as possible.",
+        "You can find the latest builds and downloads there, as well as discussions, bug reports, and more. If you notice anything broken with the game, \
+please head to the GitHub page and open an issue - the game's developer will deal with it as soon as possible.",
         "If you are unable or unwilling to use GitHub, you can contact the game's developer via email, at {U}gc@gravecat.com" } },
 
     { "I", { "The following documentation pages start with the letter I: [Index]" } },

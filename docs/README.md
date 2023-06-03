@@ -9,8 +9,7 @@
 
 Morior Invictus is an open-source, traditional roguelike game currently in the very, *very* early stages of development. [Build instructions](building.md)
 are provided for Windows and Linux, and if you're interested in contributing to the project, please also see the [code of conduct](CODE_OF_CONDUCT.md) and
-[contributing guidelines](CONTRIBUTING.md). The [wiki](https://github.com/Gravecat/invictus/wiki) contains much more information, as well as instructions for
-playing the game (which are also provided as in-game documentation).
+[contributing guidelines](CONTRIBUTING.md).
 
 
 # COPYRIGHT & LICENSE
