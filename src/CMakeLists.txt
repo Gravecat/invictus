@@ -96,7 +96,6 @@ set(INVICTUS_CPPS
   ui/title.cpp
   ui/ui.cpp
   ui/wiki.cpp
-  ui/wiki-pages.cpp
   util/bresenham.cpp
   util/filex.cpp
   util/random.cpp

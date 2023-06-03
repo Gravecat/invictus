@@ -4,6 +4,7 @@
 #ifndef UI_WIKI_HPP_
 #define UI_WIKI_HPP_
 
+#include <map>
 #include <memory>
 #include <string>
 #include <utility>
@@ -23,6 +24,7 @@ public:
 
 private:
     static void create_wiki_window();   // (re)creates the wiki render window.
+    static std::string  get_page(const std::string &page_name, unsigned int paragraph_number);  // Gets a given paragraph from a page in the wiki.
     static void process_key(int key);   // Processes input in the wiki window.
     static void process_wiki_buffer();  // Processes the wiki buffer after an update or screen resize.
     static void render_wiki();          // Redraws in the in-game wiki.
@@ -35,6 +37,7 @@ private:
     static std::vector<bool>        link_good_;     // Is this a valid link?
     static unsigned int             link_selected_; // The current active wiki link.
     static std::vector<std::string> link_str_;      // Strings for the links.
+    static std::map<std::string, std::string>   wiki_data_; // The pages in this wiki.
     static std::vector<std::string> wiki_history_;  // Previous wiki pages viewed.
     static std::vector<std::string> wiki_prc_;      // The nicely processed wiki buffer, ready for rendering.
     static std::vector<std::string> wiki_raw_;      // The raw, unprocessed wiki buffer.

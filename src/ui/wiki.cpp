@@ -6,12 +6,47 @@
 #include "terminal/terminal.hpp"
 #include "terminal/window.hpp"
 #include "ui/wiki.hpp"
-#include "ui/wiki-pages.hpp"
 #include "util/strx.hpp"
 
 
 namespace invictus
 {
+
+// The pages in this wiki.
+std::map<std::string, std::string> Wiki::wiki_data_ = {
+    { "WIKI_HEADER1", "{g}.~{r}* {R}MORIOR INVICTUS: INTERACTIVE DOCUMENTATION {r}*{g}~." },
+    { "WIKI_HEADER2", "{R}__________________________________________________" },
+
+    { "EXAMPLE1", "This was just an example, to show you how links work. You can press the {C}Space Bar {w}to return to your previously-viewed page." },
+
+    { "INDEX1", "This index contains all the pages available on the wiki. Please choose a letter below to view the pages (letters marked as red currently \
+contain no pages):" },
+    { "INDEX2", "[A] [B] [C] [D] [E] [F] [G] [H] [I] [J] [K] [L] [M] [N] [O] [P] [Q] [R] [S] [T] [U] [V] [W] [X] [Y] [Z]" },
+
+    { "G1", "The following documentation pages start with the letter G: [GitHub]" },
+
+    { "GITHUB1", "The official GitHub page for Morior Invictus is located here: {U}https://github.com/Gravecat/invictus" },
+    { "GITHUB2", "You can find the latest builds and downloads there, as well as more extneisve documentation in web format, discussions, bug reports, and \
+more. If you notice anything broken with the game, please head to the GitHub page and open an issue - the game's developer will deal with it as soon as \
+possible."},
+    { "GITHUB3", "If you are unable or unwilling to use GitHub, you can contact the game's developer via email, at {U}gc@gravecat.com"},
+
+    { "I1", "The following documentation pages start with the letter I: [Index]" },
+
+    { "LINKS1", "#EXAMPLE" },
+
+    { "THIS_ONE1", "#EXAMPLE" },
+
+    { "WIKI1", "Welcome to the {W}interactive documentation {w}for Morior Invictus. You can scroll up and down through a page with the {C}up and down arrow \
+keys{w}, the {C}Page Up and Page Down keys{w}, or {C}vi keys (j and k){w}." },
+    { "WIKI2", "Throughout this interactive documentation, you will see [links] like [this_one]. You can select a link with the {C}left and right arrow \
+keys{w} or {C}vi keys (h and l){w}, and visit that link to see a new documentation page by pressing {C}Enter{w}." },
+    { "WIKI3", "Sometimes, a link might show up as red, like [this_link]. This indicates that the documentation page is missing, and has likely just not been \
+written yet. If you think this is in error, please head to the [GitHub] page and post a bug report."},
+    { "WIKI4", "At any time, you can press the {C}Space Bar {w}to move back to the previous page you came from, or if you're on the front page, the {C}Space \
+Bar {w}will close the documentation." },
+    { "WIKI5", "You can see an alphabetical [Index] of all available wiki pages." },
+};
 
 unsigned int Wiki::buffer_pos_ = 0;                     // The position of the console buffer.
 std::vector<std::pair<unsigned short, unsigned short>> Wiki::link_coords_;  // Coordinates of the wiki links on the page.
@@ -29,6 +64,14 @@ void Wiki::create_wiki_window()
     auto terminal = core()->terminal();
     wiki_window_ = std::make_shared<Window>(terminal->get_cols(), terminal->get_rows(), 0, 0);
     terminal->box(wiki_window_);
+}
+
+// Gets a given paragraph from a page in the wiki.
+std::string Wiki::get_page(const std::string &page_name, unsigned int paragraph_number)
+{
+    auto result = wiki_data_.find(page_name + std::to_string(paragraph_number));
+    if (result == wiki_data_.end()) return "";
+    else return result->second;
 }
 
 // Processes input in the wiki window.
@@ -146,12 +189,12 @@ void Wiki::process_wiki_buffer()
             const std::string found = wiki_prc_.at(i).substr(pos + 1, pos2 - pos - 1);
             link_str_.push_back(found);
             start_pos = pos2;
-            const std::string page_check = WikiPage::get_page(StrX::str_toupper(found), 1);
+            const std::string page_check = get_page(StrX::str_toupper(found), 1);
             if (page_check.size())
             {
                 if (page_check[0] == '#')
                 {
-                    const std::string page_check_b = WikiPage::get_page(page_check.substr(1), 1);
+                    const std::string page_check_b = get_page(page_check.substr(1), 1);
                     if (page_check_b.size()) link_good_.push_back(true);
                     else link_good_.push_back(false);
                 }
@@ -218,7 +261,7 @@ void Wiki::wiki(const std::string &page)
     wiki_raw_.clear();
 
     // Process link pages.
-    std::string paragraph = WikiPage::get_page(page, 1);
+    std::string paragraph = get_page(page, 1);
     if (paragraph.size() && paragraph[0] == '#')
     {
         wiki(paragraph.substr(1));
@@ -231,7 +274,7 @@ void Wiki::wiki(const std::string &page)
 
     for (int i = 1; i <= 2; i++)
     {
-        line = "{e}" + WikiPage::get_page("WIKI_HEADER", i);
+        line = "{e}" + get_page("WIKI_HEADER", i);
         wiki_raw_.push_back(line);
     }
     wiki_raw_.push_back("");
@@ -239,7 +282,7 @@ void Wiki::wiki(const std::string &page)
     int line_num = 0;
     do
     {
-        line = WikiPage::get_page(page, ++line_num);
+        line = get_page(page, ++line_num);
         if (line.size())
         {
             wiki_raw_.push_back(line);
