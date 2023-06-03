@@ -285,6 +285,7 @@ Forgotten Kings {w}and seek out the long-lost {M}Crown of Kings{w}, then return 
             terminal->print("{G}c {w}- close a door", 0, line++);
             terminal->print("{G}shift-S {w}- save the game", 0, line++);
             terminal->print("{G}, {w}or {G}numpad 5 {w}- wait for a moment", 0, line++);
+            terminal->print("{G}shift-R {w}- rests for a while", 0, line++);
             terminal->print("{G}= {w}- open main menu", 0, line++);
             terminal->print("{G}space bar {w}- close a menu", 0, line++);
             line++;
