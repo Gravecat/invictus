@@ -124,7 +124,7 @@ void Wiki::process_wiki_buffer()
     link_str_.clear();
     link_good_.clear();
     link_selected_ = 0;
-    for (unsigned short i = 0; i < wiki_prc_.size(); i++)
+    for (unsigned int i = 0; i < wiki_prc_.size(); i++)
     {
         size_t start_pos = 0;
         while(true)
