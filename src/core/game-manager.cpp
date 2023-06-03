@@ -264,7 +264,6 @@ bool GameManager::is_key_west(int key) { return (key == Key::ARROW_LEFT || key =
 // Sets up for a new game.
 void GameManager::new_game()
 {
-    core()->terminal()->cls();
     erase_save_files();
     area_ = std::make_shared<Area>(50, 50);
     area_->set_level(1);
@@ -361,10 +360,10 @@ void GameManager::use_stairs(bool up)
 
     if (new_level <= 0 && !has_crown_of_kings)
     {
-        core()->message("{y}Are you sure you want to return to the surface?");
-        if (!UI::are_you_sure())
+        int result = ui_->yes_no("Return to the surface without the Crown of Kings?");
+        if (result != 'Y')
         {
-            core()->message("{u}Wisely, you decide to remain.");
+            core()->terminal()->flip();
             return;
         }
     }

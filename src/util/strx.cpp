@@ -286,6 +286,7 @@ std::vector<std::string> StrX::string_explode(std::string str, const std::string
 std::vector<std::string> StrX::string_explode_colour(const std::string &str, unsigned int line_len)
 {
     std::vector<std::string> output;
+    if (!str.size()) return output;
 
     // Check to see if the line is too short to be worth splitting.
     if (strlen_colour(str) <= line_len)

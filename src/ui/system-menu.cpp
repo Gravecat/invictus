@@ -68,7 +68,8 @@ void SystemMenu::open()
 // Quits the game without saving.
 void SystemMenu::quit_no_save()
 {
-    if (!UI::are_you_sure()) return;
+    int result = core()->game()->ui()->yes_no("This will lose any progress you have made since your last save. Are you sure?");
+    if (result != 'Y') return;
     core()->cleanup();
     exit(EXIT_SUCCESS);
 }

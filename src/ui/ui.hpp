@@ -32,8 +32,7 @@ public:
     void    redraw_stat_bars(); // Marks the stat bars as needing to be redrawn.
     void    render(ForceFlipMode mode = ForceFlipMode::NORMAL); // Renders the UI elements, if needed.
     void    window_resized();   // The terminal window has been resized.
-
-    static bool are_you_sure(); // Renders an "are you sure?" window.
+    int     yes_no(const std::string &message = "", const std::string &title = "Are you sure?");    // Renders a yes/no dialogue box. See ui.cpp for details.
 
     const std::shared_ptr<Window>       dungeon_view() const;       // Gets a pointer to the dungeon view window.
     const std::shared_ptr<Window>       message_log_window() const; // Gets a pointer to the message log window.

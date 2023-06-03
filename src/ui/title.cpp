@@ -73,6 +73,7 @@ void TitleScreen::title_screen()
 {
     auto terminal = core()->terminal();
     auto game = core()->game();
+    auto ui = game->ui();
     int key = 0;
     bool redraw = true;
 
@@ -105,16 +106,28 @@ void TitleScreen::title_screen()
         else switch(key)
         {
             case Key::RESIZE:
-                game->ui()->window_resized();
+                ui->window_resized();
                 redraw = true;
                 break;
             case Key::ENTER: case ' ':
                 switch(selected_)
                 {
                     case 0:
-                        game->set_game_state(GameState::NEW_GAME);
-                        terminal->cls();
-                        return;
+                    {
+                        bool start_new_game = true;
+                        if (save_exists_)
+                        {
+                            int result = ui->yes_no("Starting a new game will {R}delete your existing saved game{w}. Are you sure you want to do this?");
+                            if (result != 'Y') start_new_game = false;
+                        }
+                        if (start_new_game)
+                        {
+                            game->set_game_state(GameState::NEW_GAME);
+                            terminal->cls();
+                            return;
+                        }
+                        break;
+                    }
                     case 1:
                         if (save_exists_)
                         {

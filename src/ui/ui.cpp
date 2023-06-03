@@ -1,6 +1,8 @@
 // ui/ui.cpp -- The UI overlay that displays additional information on top of the game's map, using other UI classes.
 // Copyright © 2023 Raine "Gravecat" Simmons. Licensed under the GNU Affero General Public License v3 or any later version.
 
+#include <cmath>
+
 #include "area/area.hpp"
 #include "core/core.hpp"
 #include "core/game-manager.hpp"
@@ -16,6 +18,7 @@
 #include "ui/msglog.hpp"
 #include "ui/nearby.hpp"
 #include "ui/ui.hpp"
+#include "util/strx.hpp"
 
 
 namespace invictus
@@ -32,18 +35,6 @@ UI::UI() : cleanup_done_(false), dungeon_needs_redraw_(true), dungeon_view_(null
 
 // Destructor, calls cleanup function.
 UI::~UI() { cleanup(); }
-
-// Renders an "are you sure?" window.
-bool UI::are_you_sure()
-{
-    auto menu = std::make_unique<Menu>();
-    menu->set_title("Are you sure?");
-    menu->add_item("{R}No...");
-    menu->add_item("{G}Yes!!");
-    int result = menu->render();
-    if (result == 1) return true;
-    else return false;
-}
 
 // Cleans up any sub-elements.
 void UI::cleanup()
@@ -209,6 +200,47 @@ void UI::window_resized()
     generate_stat_bars();
     if (message_log_ && core() && core()->game() && core()->game()->game_state() != GameState::INITIALIZING) message_log_->screen_resized();
     full_redraw();
+}
+
+// Renders a yes/no dialogue box. To fit in better with different window/UI layouts, it'll return Key::RESIZED if the screen is resized, so the underlying
+// windows can be re-rendered, then it can be safely called again. If successful, it will return 'Y' (89) for a yes, or 'N' (78) for a no.
+int UI::yes_no(const std::string &message, const std::string &title)
+{
+    std::vector<std::string> lines = StrX::string_explode_colour(message, 40);
+    int widest = std::max(10, static_cast<int>(title.size() + 2));
+    for (auto line : lines)
+    {
+        int len = StrX::strlen_colour(line);
+        if (len > widest) widest = len;
+    }
+    auto terminal = core()->terminal();
+    auto game = core()->game();
+    auto yes_no_window = std::make_shared<Window>(widest + 4, 5 + (lines.size() ? 1 + lines.size() : 0));
+    terminal->box(yes_no_window);
+    
+    yes_no_window->move(terminal->get_midcol() - yes_no_window->get_width() / 2, terminal->get_midrow() - yes_no_window->get_height() / 2);
+    terminal->print(" " + title + " ", yes_no_window->get_width() / 2 - title.size() / 2 - 1, 0, Colour::WHITE, PRINT_FLAG_REVERSE, yes_no_window);
+    for (unsigned int i = 0; i < lines.size(); i++)
+        terminal->print(lines.at(i), 2, 2 + i, Colour::WHITE, 0, yes_no_window);
+
+    int yes_no_y_pos = (lines.size() ? lines.size() + 3 : 2);
+    int yes_no_x_pos = yes_no_window->get_width() / 2 - 5;
+    bool result = false;
+    int key;
+
+    while (true)
+    {
+        terminal->print(" YES ", yes_no_x_pos, yes_no_y_pos, Colour::GREEN_BOLD, (result ? PRINT_FLAG_REVERSE : 0), yes_no_window);
+        terminal->print(" NO ", yes_no_x_pos + 6, yes_no_y_pos, Colour::RED_BOLD, (result ? 0 : PRINT_FLAG_REVERSE), yes_no_window);
+        terminal->flip();
+        key = game->get_key();
+        if (key == Key::RESIZE) return Key::RESIZE;
+        else if (game->is_key_west(key)) result = true;
+        else if (game->is_key_east(key)) result = false;
+        else if (key == 'y' || key == 'Y') return 'Y';
+        else if (key == 'n' || key == 'N') return 'N';
+        else if (key == Key::ENTER) return (result ? 'Y' : 'N');
+    }
 }
 
 }   // namespace invictus
