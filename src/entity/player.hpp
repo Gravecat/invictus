@@ -30,17 +30,22 @@ public:
     int8_t      might() const;      // Retrieves this Player's might attribute.
     void        open_a_door();      // Attempts to open a nearby door.
     void        recalc_max_hp_mp_sp();  // Recalculates the maximum HP/SP/MP values, based on Strength, Finesse and Intellect.
+    void        reduce_rest_time(float amount); // Reduces the time the player is spending resting.
+    void        rest();             // Rests for a while.
+    int         rest_time() const;  // Checks if the Player is currently resting.
     void        set_finesse(int8_t new_fin);    // Sets this Player's Finesse attribute.
     void        set_intellect(int8_t new_int);  // Sets this Player's Intellect attribute.
     void        set_might(int8_t new_mig);      // Sets this Player's Might attribute.
     void        take_inventory(bool equipment = false);     // Interact with carried items.
     void        timed_action(float time_taken) override;    // This Player has made an action which takes time.
     EntityType  type() const override { return EntityType::PLAYER; }    // Self-identifier function.
+    void        wake() override;    // Awakens this Player.
 
 private:
     int8_t      finesse_;   // How agile and precise this Player is. This affects using finesse weapons, and dodge bonus to armour.
     int8_t      intellect_; // How smart and well-attuned with magic this Player is.
     int8_t      might_;     // How physicaly strong and fit this Player is. This affects using most melee weapons, and gives a bonus to armour.
+    int         rest_time_; // How long this Player is resting for.
 
 friend class SaveLoad;
 };

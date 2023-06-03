@@ -15,14 +15,16 @@
 #include "terminal/terminal.hpp"
 #include "tune/fov-lighting.hpp"
 #include "ui/menu.hpp"
+#include "ui/msglog.hpp"
 #include "ui/ui.hpp"
+#include "util/strx.hpp"
 
 
 namespace invictus
 {
 
 // Constructor.
-Player::Player() : Mobile(), finesse_(2), intellect_(1), might_(2)
+Player::Player() : Mobile(), finesse_(2), intellect_(1), might_(2), rest_time_(0)
 {
     set_ascii(ASCII_PLAYER);
     set_colour(Colour::WHITE_BOLD);
@@ -311,6 +313,58 @@ void Player::recalc_max_hp_mp_sp()
     set_mp(new_mp, new_mp);
 }
 
+// Reduces the time the player is spending resting.
+void Player::reduce_rest_time(float amount)
+{
+    if (!rest_time_) return;
+    else if (rest_time_ < 0)
+    {
+        if (hp() >= hp(true) && sp() >= sp(true) && mp() >= mp(true))
+        {
+            rest_time_ = 0;
+            core()->message("{g}You awaken from your rest, feeling refreshed!");
+            wake();
+        }
+    }
+    else
+    {
+        amount = std::ceil(amount);
+        rest_time_ -= amount;
+        if (rest_time_ <= 0)
+        {
+            rest_time_ = 0;
+            if (hp() >= hp(true) && sp() >= sp(true) && mp() >= mp(true)) core()->message("{g}You awaken from your rest, feeling refreshed!");
+            else core()->message("{u}You awaken from your rest.");
+            wake();
+        }
+    }
+}
+
+// Rests for a while.
+void Player::rest()
+{
+    auto game = core()->game();
+    core()->message("{u}How long do you want to rest? Enter a number of turns, or {c}* {u}to rest until fully healed.");
+    std::string result = core()->game()->ui()->msglog()->get_string();
+    if (!result.size()) core()->message("{y}Not resting.");
+    else if (result == "*")
+    {
+        sleep();
+        rest_time_ = -1;
+        core()->message("{u}You begin to rest until you feel recovered...");
+    }
+    else if (StrX::is_number(result))
+    {
+        sleep();
+        rest_time_ = std::stoi(result);
+        core()->message("{u}You begin to rest for a while...");
+    }
+    else core()->message("{y}I don't understand that. Not resting.");
+}
+
+// Checks if the Player is currently resting.
+int Player::rest_time() const { return rest_time_; }
+
 // Sets this Mobile's Finesse level.
 void Player::set_finesse(int8_t new_fin) { finesse_ = new_fin; }
 
@@ -383,5 +437,13 @@ void Player::set_might(int8_t new_mig) { might_ = new_mig; }
 
 // This Player has made an action which takes time.
 void Player::timed_action(float time_taken) { core()->game()->pass_time(time_taken); }
+
+// Awakens this Player.
+void Player::wake()
+{
+    if (rest_time_) core()->message("{r}You are awoken abruptly!");
+    rest_time_ = 0;
+    Mobile::wake();
+}
 
 }   // namespace invictus

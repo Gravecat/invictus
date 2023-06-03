@@ -56,6 +56,7 @@ public:
     void            set_hp_regen_speed(float regen_speed);  // Sets the HP regeneration speed for this Mobile.
     void            set_mp(uint16_t current, uint16_t max = UINT16_MAX);    // Sets this Mobile's MP directly.
     void            set_sp(uint16_t current, uint16_t max = UINT16_MAX);    // Sets this Mobile's SP directly.
+    void            sleep();    // Sends this Mobile to sleep.
     uint16_t        sp(bool max = false) const; // Retrieves the current or maximum stamina points of this Mobile.
     void            take_damage(int damage);    // Takes damage!
     void            take_item(uint32_t id); // Picks up a specified item.
@@ -64,7 +65,7 @@ public:
     void            tick_buffs(std::shared_ptr<Mobile> self);       // Ticks any buff/debuffs on this Mobile.
     virtual void    timed_action(float time_taken) = 0; // This Mobile has made an action which takes time.
     void            unequip_item(EquipSlot slot);   // Unequips a specified Item.
-    void            wake(); // Awakens this Mobile, if it's not already.
+    virtual void    wake(); // Awakens this Mobile, if it's not already.
     void            wake_message(EnemyWakeMsg type, bool warning = false);  // Displays a message when an enemy awakes, or begins to awake.
 
 private:

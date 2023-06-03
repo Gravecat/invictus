@@ -28,6 +28,7 @@ public:
     static bool         find_and_replace(std::string &input, const std::string &to_find, const std::string &to_replace);
     static std::string  ftos(double num);           // Converts a float or double to a string.
     static std::string  intostr_pretty(int num);    // Returns a 'pretty' version of a number in string format, such as "12,345".
+    static bool         is_number(const std::string &str);  // Checks if a string is a valid number.
     static bool         is_vowel(char ch);          // Checks if a character is a vowel.
     static std::string  itoh(uint32_t num, uint8_t min_len);    // Converts an integer into a hex string.
     static std::string  number_to_word(unsigned long long number);  // Converts small numbers into words.

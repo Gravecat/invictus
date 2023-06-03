@@ -437,6 +437,9 @@ void Mobile::set_sp(uint16_t current, uint16_t max)
     if (max < UINT16_MAX) sp_[1] = max;
 }
 
+// Sends this Mobile to sleep.
+void Mobile::sleep() { awake_ = false; }
+
 // Retrieves the current or maximum stamina points of this Mobile.
 uint16_t Mobile::sp(bool max) const { return sp_[max ? 1 : 0]; }
 
@@ -452,6 +455,7 @@ void Mobile::take_damage(int damage)
     }
     else hp_[0] -= damage;
     add_buff(BuffType::PAIN, 1, damage + 1, true);
+    wake();
 }
 
 // Picks up a specified item.

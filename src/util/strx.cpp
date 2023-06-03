@@ -2,6 +2,7 @@
 // Copyright © 2023 Raine "Gravecat" Simmons. Licensed under the GNU Affero General Public License v3 or any later version.
 
 #include <algorithm>
+#include <cctype>
 #include <cmath>
 #include <cstdlib>
 #include <sstream>
@@ -129,6 +130,15 @@ std::string StrX::intostr_pretty(int num)
     result = result.substr(0, result.length() - 1);
 
     return((negative ? "-" : "") + result);
+}
+
+// Checks if a string is a valid number.
+bool StrX::is_number(const std::string &str)
+{
+    if (!str.size()) return false;
+    for (auto ch : str)
+        if (!std::isdigit(ch)) return false;
+    return true;
 }
 
 // Checks if a character is a vowel.

@@ -298,6 +298,7 @@ void SaveLoad::load_player(std::ifstream &save_file, std::shared_ptr<Player> pla
     player->finesse_ = load_data<int8_t>(save_file);
     player->intellect_ = load_data<int8_t>(save_file);
     player->might_ = load_data<int8_t>(save_file);
+    player->rest_time_ = load_data<int>(save_file);
 }
 
 // Loads a string from the save game file.
@@ -588,6 +589,7 @@ void SaveLoad::save_player(std::ofstream &save_file, std::shared_ptr<Player> pla
     save_data<int8_t>(save_file, player->finesse_);
     save_data<int8_t>(save_file, player->intellect_);
     save_data<int8_t>(save_file, player->might_);
+    save_data<int>(save_file, player->rest_time_);
 }
 
 // Saves a string to the save game file.

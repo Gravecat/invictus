@@ -94,7 +94,8 @@ void GameManager::dungeon_input(int key)
         case 'g': player_->get_item(); break;               // Picks something up.
         case 'i': player_->take_inventory(); break;         // Interact with carried items.
         case 'o': player_->open_a_door(); break;            // Attempts to open something.
-        case 'S': SaveLoad::save_game(); break;             // Saves the game!
+        case 'R': player_->rest(); break;                   // Rests for a while.
+        case 'S': SaveLoad::save_game(); break;             // Saves the game!'
     }
 
     if (dx || dy)
@@ -147,11 +148,24 @@ void GameManager::game_loop()
         }
 
         tick();
-        if (player_->is_dead()) die();
-        ui_->render();
+        if (player_->is_dead())
+        {
+            player_->wake();
+            die();
+        }
 
-        key = terminal->get_key();
-        if (key == Key::RESIZE) ui_->window_resized();
+        if (player_->is_awake())
+        {
+            ui_->render();
+            key = terminal->get_key();
+            if (key == Key::RESIZE) ui_->window_resized();
+        }
+        else
+        {
+            player_->reduce_rest_time(1.0f);
+            pass_time(1.0f);
+            key = 0;
+        }
     }
 }
 
