@@ -46,7 +46,7 @@ std::map<std::string, std::vector<std::string>> Wiki::wiki_data_ = {
         "The other keys used in the game are listed below. {Y}Please remember, you can always use the {C}? {Y}key during gameplay to open this in-game "
         "documentation again.",
 
-        "{0}{C}, {w}or {C}numpad 5 {w}- do nothing for one turn.",
+        "{0}{C}, {w}or {C}numpad 5 {w}- do nothing for one turn, causing a little [time] to pass.",
         "{0}{C}. {w}- interact with items on the ground.",
         "{0}{C}= {w}- opens the main menu.",
         "{0}{C}c {w}- close a nearby door.",
@@ -54,7 +54,7 @@ std::map<std::string, std::vector<std::string>> Wiki::wiki_data_ = {
         "{0}{C}g {w}- pick up items on the ground.",
         "{0}{C}i {w}- check your carried items.",
         "{0}{C}o {w}- open a nearby door.",
-        "{0}{C}Shift-R {w}- rest for a while.",
+        "{0}{C}Shift-R {w}- rest for a while, causing a longer period of [time] to pass.",
         "{C}Shift-S {w}- save the game.",
         } },
 
@@ -156,7 +156,17 @@ std::map<std::string, std::vector<std::string>> Wiki::wiki_data_ = {
         "{C}use_colour {w}(default: true) - If set to false, will disable the use of most ANSI colour codes (invert and bold effects are still used)."
     } },
 
+    { "T", { "The following documentation pages start with the letter T: [Time]" } },
+
     { "THIS_ONE", { "#EXAMPLE" } },
+
+    { "TIME",
+        { "Most every action you take in-game will take a certain amount of time, usually in a predictable mannner - donning a suit of armour takes longer "
+        "than opening a door, for example.",
+
+        "While the game is turn-based and will always wait for the player to make a move, the actions taken by the player determine how much time passes "
+        "in-game before the player's next turn."
+    } },
 
     { "WIKI", {
         "{R}PLEASE NOTE: {Y}This game is currently in VERY early stages of development, and the gameplay is currently limited. There are many, many more "
