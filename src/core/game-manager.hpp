@@ -32,6 +32,7 @@ public:
     void        die();              // The player has just died.
     void        game_loop();        // Brøther, may I have some lööps?
     GameState   game_state() const; // Retrieves the current state of the game.
+    int         get_key();          // Gets a key from the user, while handling UI resizing internally.
     void        pass_time(float time);  // The player has taken an action which causes some time to pass.
     const std::string save_folder() const;  // Retrieves the name of the saved game folder currently in use.
     void        set_game_state(GameState new_state);    // Sets the game state.

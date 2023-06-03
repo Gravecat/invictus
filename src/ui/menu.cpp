@@ -51,6 +51,7 @@ int Menu::render()
     if (!items_.size()) return -1;
     reposition();
     auto terminal = core()->terminal();
+    auto game = core()->game();
     auto ui = core()->game()->ui();
     int key;    // The user's keyboard input.
     bool redraw = true;
@@ -81,11 +82,10 @@ int Menu::render()
         }
 
         ui->render(ForceFlipMode::FORCE_FLIP);
-        key = terminal->get_key();
+        key = game->get_key();
         if (key == Key::RESIZE)
         {
             redraw = true;
-            ui->window_resized();
             reposition();
         }
         else if ((key == Key::ARROW_UP || key == Key::KP8 || key == 'k') && selected_ > 0)

@@ -69,12 +69,8 @@ std::string MessageLog::get_string()
             redraw = false;
         }
 
-        key = terminal->get_key();
-        if (key == Key::RESIZE)
-        {
-            ui->window_resized();
-            redraw = true;
-        }
+        key = core()->game()->get_key();
+        if (key == Key::RESIZE) redraw = true;
         else if (key >= ' ' && key <= '~' && key != '{' && key != '}')
         {
             result += std::string(1, key);

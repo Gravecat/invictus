@@ -214,6 +214,14 @@ void GameManager::game_over_screen(GameOverType type)
 // Retrieves the current state of the game.
 GameState GameManager::game_state() const { return game_state_; }
 
+// Gets a key from the user, while handling UI resizing internally.
+int GameManager::get_key()
+{
+    int key = core()->terminal()->get_key();
+    if (key == Key::RESIZE) ui_->window_resized();
+    return key;
+}
+
 // Sets up for a new game.
 void GameManager::new_game()
 {
