@@ -255,7 +255,7 @@ Forgotten Kings {w}and seek out the long-lost {M}Crown of Kings{w}, then return 
         if (key == Key::RESIZE)
         {
             redraw = true;
-            core()->game()->ui()->window_resized();
+            ui_->window_resized();
         }
         else if (key == ' ') break;
     }
@@ -409,7 +409,7 @@ void GameManager::use_stairs(bool up)
             area_->entities()->push_back(crown);
         }
     }
-    core()->game()->ui()->full_redraw();
+    ui_->full_redraw();
     SaveLoad::save_game();
 }
 
