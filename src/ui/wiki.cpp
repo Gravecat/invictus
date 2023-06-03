@@ -13,61 +13,65 @@ namespace invictus
 {
 
 // The pages in this wiki.
-std::map<std::string, std::string> Wiki::wiki_data_ = {
-    { "EXAMPLE1", "This was just an example, to show you how links work. You can press the {C}Space Bar {w}to return to your previously-viewed page." },
+std::map<std::string, std::vector<std::string>> Wiki::wiki_data_ = {
+    { "EXAMPLE", { "This was just an example, to show you how links work. You can press the {C}Space Bar {w}to return to your previously-viewed page." } },
 
-    { "G1", "The following documentation pages start with the letter G: [Getting_Started] [GitHub]" },
+    { "G", { "The following documentation pages start with the letter G: [Getting_Started] [GitHub]" } },
 
-    { "GETTING_STARTED1", "{W}Morior Invictus {w}is a {C}traditional roguelike game {w}- this means that it has less in common with more mainstream games \
-bearing the 'roguelike' genre, and is much more like the more oldschool 'classic' roguelike games such as {W}Angband{w}, {W}Nethack{w}, {W}ADOM{w}, \
-{W}Crawl{w}, {W}Omega{w}, {W}Larn {w}or {W}ToME{w}." },
-    { "GETTING_STARTED2", "This game is {W}ASCII{w}-based, which means everything in the game world is represented by a grid of letters on the screen, with \
-each letter representing something in the game world -- for example, the letter {C}z {w}might represent a zombie, or a {C}D {w}might be a fearsome dragon. \
-As is tradition for classic roguelikes, the player character - your avatar in the game world - is represented by the {C}@ {w}symbol." },
-    { "GETTING_STARTED3", "The game is controlled entirely with the {W}keyboard{w}. Various keys perform different actions, or move you around the game world, \
-in a turn-based loop - the game will always wait for you to make a move before reacting. You can see a list of all the controls on the [Controls] page." },
-    { "GETTING_STARTED4", "Unlike many other roguelike games, there is no 'levelling up' and no skills system. Your character is a capable adventurer from the \
-get go, but in order to get stronger, you'll need to find more powerful and useful equipment and items, and learn the most effective way to use them." },
-    { "GETTING_STARTED5", "{R}The world of Morior Invictus is not a fair one! {w}Most everything is out to get you in one form or another, and it's up to you \
-to rely on your wits, knowledge and luck to survive. With that said, you'll likely die early and often - and that's okay! The fun of a roguelike is \
-practicing, learning, and getting better with each new attempt."},
-    { "GETTING_STARTED6", "When you begin the game, you will find yourself in the [Dungeon_View]. This shows an overview of your character - the {W}@ \
-{w}symbol - and everything surrounding you from a top-down, tile-based view. Your goal in this version of the game is to retrieve the fabled relic, {C}The \
-Crown of Kings{w}, which has been lost deep in the zombie-infested {C}Tomb of Forgotten Kings{w}." },
-    { "GETTING_STARTED7", "The crown is hidden deep within the tomb, but if you are able to find it and return to the surface world with the crown, you will \
-be celebrated as the true hero you were always destined to be!" },
+    { "GETTING_STARTED",
+        { "{W}Morior Invictus {w}is a {C}traditional roguelike game {w}- this means that it has less in common with more mainstream games bearing the \
+'roguelike' genre, and is much more like the more oldschool 'classic' roguelike games such as {W}Angband{w}, {W}Nethack{w}, {W}ADOM{w}, {W}Crawl{w}, \
+{W}Omega{w}, {W}Larn {w}or {W}ToME{w}.",
+        "This game is {W}ASCII{w}-based, which means everything in the game world is represented by a grid of letters on the screen, with each letter \
+representing something in the game world -- for example, the letter {C}z {w}might represent a zombie, or a {C}D {w}might be a fearsome dragon. As is tradition \
+for classic roguelikes, the player character - your avatar in the game world - is represented by the {C}@ {w}symbol.",
+        "The game is controlled entirely with the {W}keyboard{w}. Various keys perform different actions, or move you around the game world, in a turn-based \
+loop - the game will always wait for you to make a move before reacting. You can see a list of all the controls on the [Controls] page.",
+        "Unlike many other roguelike games, there is no 'levelling up' and no skills system. Your character is a capable adventurer from the get go, but in \
+order to get stronger, you'll need to find more powerful and useful equipment and items, and learn the most effective way to use them.",
+        "{R}The world of Morior Invictus is not a fair one! {w}Most everything is out to get you in one form or another, and it's up to you to rely on your \
+wits, knowledge and luck to survive. With that said, you'll likely die early and often - and that's okay! The fun of a roguelike is practicing, learning, \
+and getting better with each new attempt.",
+        "When you begin the game, you will find yourself in the [Dungeon_View]. This shows an overview of your character - the {W}@ {w}symbol - and everything \
+surrounding you from a top-down, tile-based view. Your goal in this version of the game is to retrieve the fabled relic, {C}The Crown of Kings{w}, which has \
+been lost deep in the zombie-infested {C}Tomb of Forgotten Kings{w}.",
+        "The crown is hidden deep within the tomb, but if you are able to find it and return to the surface world with the crown, you will be celebrated as \
+the true hero you were always destined to be!" } },
 
-    { "GITHUB1", "The official GitHub page for Morior Invictus is located here: {U}https://github.com/Gravecat/invictus" },
-    { "GITHUB2", "You can find the latest builds and downloads there, as well as more extneisve documentation in web format, discussions, bug reports, and \
-more. If you notice anything broken with the game, please head to the GitHub page and open an issue - the game's developer will deal with it as soon as \
-possible."},
-    { "GITHUB3", "If you are unable or unwilling to use GitHub, you can contact the game's developer via email, at {U}gc@gravecat.com"},
+    { "GITHUB",
+        { "The official GitHub page for Morior Invictus is located here: {U}https://github.com/Gravecat/invictus",
+        "You can find the latest builds and downloads there, as well as more extneisve documentation in web format, discussions, bug reports, and more. If you \
+notice anything broken with the game, please head to the GitHub page and open an issue - the game's developer will deal with it as soon as possible.",
+        "If you are unable or unwilling to use GitHub, you can contact the game's developer via email, at {U}gc@gravecat.com" } },
 
-    { "I1", "The following documentation pages start with the letter I: [Index]" },
+    { "I", { "The following documentation pages start with the letter I: [Index]" } },
 
-    { "INDEX1", "This index contains all the pages available on the in-game documentation. Please choose a letter below to view the pages (letters marked as \
-red currently contain no pages):" },
-    { "INDEX2", "[A] [B] [C] [D] [E] [F] [G] [H] [I] [J] [K] [L] [M] [N] [O] [P] [Q] [R] [S] [T] [U] [V] [W] [X] [Y] [Z]" },
+    { "INDEX",
+        { "This index contains all the pages available on the in-game documentation. Please choose a letter below to view the pages (letters marked as \
+red currently contain no pages):",
+        "[A] [B] [C] [D] [E] [F] [G] [H] [I] [J] [K] [L] [M] [N] [O] [P] [Q] [R] [S] [T] [U] [V] [W] [X] [Y] [Z]" } },
 
-    { "LINKS1", "#EXAMPLE" },
+    { "LINKS", { "#EXAMPLE" } },
 
-    { "THIS_ONE1", "#EXAMPLE" },
+    { "THIS_ONE", { "#EXAMPLE" } },
 
-    { "WIKI1", "{R}PLEASE NOTE: {Y}This game is currently in VERY early stages of development, and the gameplay is currently limited. There are many, many \
-more features planned for future releases!" },
-    { "WIKI2", "Welcome to the {W}interactive documentation {w}for Morior Invictus. You can scroll up and down through a page with the {C}up and down arrow \
-keys{w}, the {C}Page Up and Page Down keys{w}, or {C}vi keys (j and k){w}." },
-    { "WIKI3", "Throughout this interactive documentation, you will see [links] like [this_one]. You can select a link with the {C}left and right arrow \
-keys{w} or {C}vi keys (h and l){w}, and visit that link to see a new documentation page by pressing {C}Enter{w}." },
-    { "WIKI4", "Sometimes, a link might show up as red, like [this_link]. This indicates that the documentation page is missing, and has likely just not been \
-written yet. If you think this is in error, please head to the [GitHub] page and post a bug report."},
-    { "WIKI5", "At any time, you can press the {C}Space Bar {w}to move back to the previous page you came from, or if you're on the front page, the {C}Space \
-Bar {w}will close the documentation." },
-    { "WIKI6", "If you are new to this game, I recommend reading the [Getting_Started], [Controls] and [Dungeon_View] pages. You can also see an alphabetical \
-[Index] of all available documentation pages." },
+    { "WIKI", {
+        "{R}PLEASE NOTE: {Y}This game is currently in VERY early stages of development, and the gameplay is currently limited. There are many, many more \
+features planned for future releases!",
+        "Welcome to the {W}interactive documentation {w}for Morior Invictus. You can scroll up and down through a page with the {C}up and down arrow keys{w}, \
+the {C}Page Up and Page Down keys{w}, or {C}vi keys (j and k){w}.",
+"Throughout this interactive documentation, you will see [links] like [this_one]. You can select a link with the {C}left and right arrow keys{w} or {C}vi keys \
+(h and l){w}, and visit that link to see a new documentation page by pressing {C}Enter{w}.",
+        "Sometimes, a link might show up as red, like [this_link]. This indicates that the documentation page is missing, and has likely just not been \
+written yet. If you think this is in error, please head to the [GitHub] page and post a bug report.",
+        "At any time, you can press the {C}Space Bar {w}to move back to the previous page you came from, or if you're on the front page, the {C}Space Bar \
+{w}will close the documentation.",
+        "If you are new to this game, I recommend reading the [Getting_Started], [Controls] and [Dungeon_View] pages. You can also see an alphabetical \
+[Index] of all available documentation pages." } },
 
-    { "WIKI_HEADER1", "{g}.~{r}* {R}MORIOR INVICTUS: INTERACTIVE DOCUMENTATION {r}*{g}~." },
-    { "WIKI_HEADER2", "{R}__________________________________________________" },
+    { "WIKI_HEADER", {
+        "{g}.~{r}* {R}MORIOR INVICTUS: INTERACTIVE DOCUMENTATION {r}*{g}~.",
+        "{R}__________________________________________________" } },
 };
 
 unsigned int Wiki::buffer_pos_ = 0;                     // The position of the console buffer.
@@ -88,12 +92,16 @@ void Wiki::create_wiki_window()
     terminal->box(wiki_window_);
 }
 
-// Gets a given paragraph from a page in the wiki.
-std::string Wiki::get_page(const std::string &page_name, unsigned int paragraph_number)
+// Gets a given page from the wiki.
+std::vector<std::string> Wiki::get_page(const std::string &page_name)
 {
-    auto result = wiki_data_.find(page_name + std::to_string(paragraph_number));
-    if (result == wiki_data_.end()) return "";
-    else return result->second;
+    auto result = wiki_data_.find(page_name);
+    if (result == wiki_data_.end())
+    {
+        std::vector<std::string> vec;
+        return vec;
+    }
+    return result->second;
 }
 
 // Processes input in the wiki window.
@@ -211,12 +219,12 @@ void Wiki::process_wiki_buffer()
             const std::string found = wiki_prc_.at(i).substr(pos + 1, pos2 - pos - 1);
             link_str_.push_back(found);
             start_pos = pos2;
-            const std::string page_check = get_page(StrX::str_toupper(found), 1);
-            if (page_check.size())
+            const std::vector<std::string> page_check = get_page(StrX::str_toupper(found));
+            if (page_check.size() && page_check.at(0).size())
             {
-                if (page_check[0] == '#')
+                if (page_check.at(0)[0] == '#')
                 {
-                    const std::string page_check_b = get_page(page_check.substr(1), 1);
+                    const std::vector<std::string> page_check_b = get_page(page_check.at(0).substr(1));
                     if (page_check_b.size()) link_good_.push_back(true);
                     else link_good_.push_back(false);
                 }
@@ -283,10 +291,10 @@ void Wiki::wiki(const std::string &page)
     wiki_raw_.clear();
 
     // Process link pages.
-    std::string paragraph = get_page(page, 1);
-    if (paragraph.size() && paragraph[0] == '#')
+    std::vector<std::string> wpage = get_page(page);
+    if (wpage.size() && wpage.at(0).size() && wpage.at(0)[0] == '#')
     {
-        wiki(paragraph.substr(1));
+        wiki(wpage.at(0).substr(1));
         return;
     }
 
@@ -294,23 +302,21 @@ void Wiki::wiki(const std::string &page)
 
     std::string line;
 
-    for (int i = 1; i <= 2; i++)
-    {
-        line = "{e}" + get_page("WIKI_HEADER", i);
-        wiki_raw_.push_back(line);
-    }
+    std::vector<std::string> header = get_page("WIKI_HEADER");
+
+    for (auto line : header)
+        wiki_raw_.push_back("{e}" + line);
     wiki_raw_.push_back("");
 
-    int line_num = 0;
-    do
+    std::vector<std::string> page_data = get_page(page);
+    for (auto line : page_data)
     {
-        line = get_page(page, ++line_num);
         if (line.size())
         {
             wiki_raw_.push_back(line);
             wiki_raw_.push_back(" ");
         }
-    } while (line.size());
+    }
     wiki_raw_.erase(wiki_raw_.end() - 1);
 
     process_wiki_buffer();
