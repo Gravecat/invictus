@@ -9,6 +9,7 @@
 #include "terminal/terminal.hpp"
 #include "ui/title.hpp"
 #include "ui/ui.hpp"
+#include "ui/wiki.hpp"
 #include "util/filex.hpp"
 #include "util/strx.hpp"
 
@@ -29,7 +30,7 @@ void TitleScreen::render()
 
     int dragon_x = midcol - 25, dragon_y = midrow - 10;
     int copyright_y = midrow + 5;
-    int menu_x = dragon_x + 30, menu_y = dragon_y + 5;
+    int menu_x = dragon_x + 30, menu_y = dragon_y + 4;
     int gpl_y = terminal->get_rows() - 2;
     int logo_x = menu_x - 2, logo_y = menu_y - 4;
 
@@ -60,8 +61,9 @@ void TitleScreen::render()
     terminal->print("  New Game  ", menu_x + 3, menu_y, Colour::YELLOW_BOLD, selected_ == 0 ? PRINT_FLAG_REVERSE : 0);
     terminal->print("  Load Game  ", menu_x + 3, menu_y + 2, (save_exists_ ? Colour::YELLOW_BOLD : Colour::BLACK_BOLD), selected_ == 1 ?
         PRINT_FLAG_REVERSE : 0);
-    terminal->print("  Hall of Legends  ", menu_x, menu_y + 4, Colour::BLACK_BOLD, selected_ == 2 ? PRINT_FLAG_REVERSE : 0);
-    terminal->print("  Quit Game  ", menu_x + 3, menu_y + 6, Colour::YELLOW_BOLD, selected_ == 3 ? PRINT_FLAG_REVERSE : 0);
+    terminal->print("  Game Manual  ", menu_x + 2, menu_y + 4, Colour::YELLOW_BOLD, selected_ == 2 ? PRINT_FLAG_REVERSE : 0);
+    terminal->print("  Hall of Legends  ", menu_x, menu_y + 6, Colour::BLACK_BOLD, selected_ == 3 ? PRINT_FLAG_REVERSE : 0);
+    terminal->print("  Quit Game  ", menu_x + 3, menu_y + 8, Colour::YELLOW_BOLD, selected_ == 4 ? PRINT_FLAG_REVERSE : 0);
 
     terminal->flip();
 }
@@ -94,7 +96,7 @@ void TitleScreen::title_screen()
         }
         else if (game->is_key_south(key))
         {
-            if (selected_ < 3)
+            if (selected_ < 4)
             {
                 selected_++;
                 redraw = true;
@@ -121,8 +123,9 @@ void TitleScreen::title_screen()
                             return;
                         }
                         break;
-                    case 2: break;  // Not implemented yet.
-                    case 3:
+                    case 2: Wiki::wiki("WIKI"); break;
+                    case 3: break;  // Not implemented yet.
+                    case 4:
                         core()->cleanup();
                         exit(EXIT_SUCCESS);
                 }

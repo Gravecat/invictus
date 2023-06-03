@@ -16,3 +16,6 @@ along with menus, popup boxes, and other UI-like things.
 * **title.cpp** - The title screen, also handles main-menu options such as loading saved games.
 
 * **ui.cpp** - The UI overlay that displays additional information on top of the game's map, using other UI classes.
+
+* **wiki.cpp** - Interactive documentation system, with links between pages.
+* * **wiki-pages.cpp** - The in-game documentation, stored in a separate file from the wiki rendering code (wiki.cpp).
