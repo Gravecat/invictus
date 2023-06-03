@@ -43,9 +43,6 @@ elseif(TARGET_LINUX)
 
   # Platform-specific libraries.
   find_package(Curses REQUIRED)
-  if(${CMAKE_VERSION} VERSION_GREATER_EQUAL "3.1.6")
-    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${CURSES_CFLAGS}")
-  endif(${CMAKE_VERSION})
   set(CURSES_LIBRARIES "panel ${CURSES_LIBRARIES}")
 
   # Platform-specific linker flags.
