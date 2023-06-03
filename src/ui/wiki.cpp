@@ -17,11 +17,13 @@ std::map<std::string, std::vector<std::string>> Wiki::wiki_data_ = {
     { "C", { "The following documentation pages start with the letter C: [Controls]" } },
 
     { "CONTROLS" ,
-        { "The game is controlled entirely with the keyboard. You can naviate menus and move around the game world using your choice of {C}arrow keys{w}, \
-the {C}numeric keypad {w}(if you have one), or {C}vi keys{w}. Navigation in the game world is done via {C}cardinal directions {w}- north, east, south, west, \
-and the diagonals.",
-        "The following grids of keys shows any of the valid controls used to move in the four compass directions, or the four diagonals (northeast, northwest, \
-southeast, southwest). The {C}arrow keys {w}are represented here by {C}^ v < > {w}characters, and are not these literal keys.",
+        { "The game is controlled entirely with the keyboard. You can naviate menus and move around the game world using your choice of {C}arrow keys{w}, "
+        "the {C}numeric keypad {w}(if you have one), or {C}vi keys{w}. Navigation in the game world is done via {C}cardinal directions {w}- north, east, south,"
+        " west, and the diagonals.",
+
+        "The following grids of keys shows any of the valid controls used to move in the four compass directions, or the four diagonals (northeast, northwest, "
+        "southeast, southwest). The {C}arrow keys {w}are represented here by {C}^ v < > {w}characters, and are not these literal keys.",
+
         "",
         "{0}{e}{Y}Cardinal     {R}\"vi\"     {G}Numeric    {U}Arrow Keys  ",
         "{e}{Y}Directions   {R}keys     {G}Keypad     {U}+ Navigation",
@@ -30,15 +32,20 @@ southeast, southwest). The {C}arrow keys {w}are represented here by {C}^ v < > {
         "{0}{e} {Y}W-+-E       {R}h{Y}-+-{R}l     {G}4{Y}-+-{G}6        {U}<{Y}-+-{U}>    ",
         "{0}{e}  {Y}/|\\         /|\\       /|\\          /|\\     ",
         "{e}{Y}SW S SE      {R}b j n     {G}1 2 3      {U}End v PgDn ",
-        "{R}Please note: {w}Some combinations of these keys may not work on certain terminals, particularly if you are playing over an {W}ssh {w}connection. \
-This is largely a limitation of Curses.",
-        "The four primary directional keys are also used to navigate menus. The {C}Enter {w}key selects items in menus, and the {C}Space Bar {w}cancels \
-actions or closes menus.",
-        "During your adventure, you will find yourself needing to travel vertically - descending into deep dungeons, or ascending to higher levels or the \
-surface world above. For this, you can use the {C}< {w}and {C}> {w}keys (not the arrow keys - the actual angle-bracket keys) to travel upward and downward, \
-when in a suitable place to do so.",
-        "The other keys used in the game are listed below. {Y}Please remember, you can always use the {C}? {Y}key during gameplay to open this in-game \
-documentation again.",
+
+        "{R}Please note: {w}Some combinations of these keys may not work on certain terminals, particularly if you are playing over an {W}ssh {w}connection. "
+        "This is largely a limitation of Curses.",
+
+        "The four primary directional keys are also used to navigate menus. The {C}Enter {w}key selects items in menus, and the {C}Space Bar {w}cancels "
+        "actions or closes menus.",
+
+        "During your adventure, you will find yourself needing to travel vertically - descending into deep dungeons, or ascending to higher levels or the "
+        "surface world above. For this, you can use the {C}< {w}and {C}> {w}keys (not the arrow keys - the actual angle-bracket keys) to travel upward and "
+        "downward, when in a suitable place to do so.",
+
+        "The other keys used in the game are listed below. {Y}Please remember, you can always use the {C}? {Y}key during gameplay to open this in-game "
+        "documentation again.",
+
         "{0}{C}, {w}or {C}numpad 5 {w}- do nothing for one turn.",
         "{0}{C}. {w}- interact with items on the ground.",
         "{0}{C}= {w}- opens the main menu.",
@@ -51,41 +58,71 @@ documentation again.",
         "{C}Shift-S {w}- save the game.",
         } },
 
+    { "D", { "The following documentation pages start with the letter D: [Dungeon_View]" } },
+
+    { "DUNGEON_VIEW",
+        { "The dungeon view is the main mode in which you'll be playing the game. You'll see that it's divided into three distinct sections:",
+
+        "The top-left section is the {W}dungeon view{w}. This displays a top-down view of your surroundings, in the form of {C}ASCII symbols {w}on a grid. The "
+        "large white {W}@ {w}represents your character in the game world.",
+
+        "To the right of this view is the overview window, which will show you what the symbols on the screen all represent, as well as listing any nearby "
+        "hostile foes or items you can see on the ground. The coloured bar with an enemy's name is {R}red {w}if that enemy is 'awake' and aware of your "
+        "presence, or {U}blue {w}if they are still unaware of you.",
+
+        "Just below the dungeon view are some coloured bars - these represent your {R}Hit Points {w}(your general health and life-force), {G}Stamina Points "
+        "{w}(used to perform special attacks and physical feats), and your {U}Mana Points {w}(used to cast spells and use magical items).",
+
+        "You may also see a gray number just above these bars - this represents your current depth below ground, in feet. To the left of this bar, you will be "
+        "notified of any temporary status conditions (known as buffs and debuffs).",
+
+        "Finally, the bottom box is the {W}message log{w}, which displays important messages about what's happening in the game world."
+    } },
+
     { "EXAMPLE", { "This was just an example, to show you how links work. You can press the {C}Space Bar {w}to return to your previously-viewed page." } },
 
     { "G", { "The following documentation pages start with the letter G: [Getting_Started] [GitHub]" } },
 
     { "GETTING_STARTED",
-        { "{W}Morior Invictus {w}is a {C}traditional roguelike game {w}- this means that it has less in common with more mainstream games bearing the \
-'roguelike' genre, and is much more like the more oldschool 'classic' roguelike games such as {W}Angband{w}, {W}Nethack{w}, {W}ADOM{w}, {W}Crawl{w}, \
-{W}Omega{w}, {W}Larn {w}or {W}ToME{w}.",
-        "This game is {W}ASCII{w}-based, which means everything in the game world is represented by a grid of letters on the screen, with each letter \
-representing something in the game world -- for example, the letter {C}z {w}might represent a zombie, or a {C}D {w}might be a fearsome dragon. As is tradition \
-for classic roguelikes, the player character - your avatar in the game world - is represented by the {C}@ {w}symbol.",
-        "The game is controlled entirely with the {W}keyboard{w}. Various keys perform different actions, or move you around the game world, in a turn-based \
-loop - the game will always wait for you to make a move before reacting. You can see a list of all the controls on the [Controls] page.",
-        "Unlike many other roguelike games, there is no 'levelling up' and no skills system. Your character is a capable adventurer from the get go, but in \
-order to get stronger, you'll need to find more powerful and useful equipment and items, and learn the most effective way to use them.",
-        "{R}The world of Morior Invictus is not a fair one! {w}Most everything is out to get you in one form or another, and it's up to you to rely on your \
-wits, knowledge and luck to survive. With that said, you'll likely die early and often - and that's okay! The fun of a roguelike is practicing, learning, \
-and getting better with each new attempt.",
-        "When you begin the game, you will find yourself in the [Dungeon_View]. This shows an overview of your character - the {W}@ {w}symbol - and everything \
-surrounding you from a top-down, tile-based view. Your goal in this version of the game is to retrieve the fabled relic, {C}The Crown of Kings{w}, which has \
-been lost deep in the zombie-infested {C}Tomb of Forgotten Kings{w}.",
-        "The crown is hidden deep within the tomb, but if you are able to find it and return to the surface world with the crown, you will be celebrated as \
-the true hero you were always destined to be!" } },
+        { "{W}Morior Invictus {w}is a {C}traditional roguelike game {w}- this means that it has less in common with more mainstream games bearing the "
+        "'roguelike' genre, and is much more like the more oldschool 'classic' roguelike games such as {W}Angband{w}, {W}Nethack{w}, {W}ADOM{w}, {W}Crawl{w}, "
+        "{W}Omega{w}, {W}Larn {w}or {W}ToME{w}.",
+
+        "This game is {W}ASCII{w}-based, which means everything in the game world is represented by a grid of letters on the screen, with each letter "
+        "representing something in the game world -- for example, the letter {C}z {w}might represent a zombie, or a {C}D {w}might be a fearsome dragon. As is "
+        "tradition for classic roguelikes, the player character - your avatar in the game world - is represented by the {C}@ {w}symbol.",
+
+        "The game is controlled entirely with the {W}keyboard{w}. Various keys perform different actions, or move you around the game world, in a turn-based "
+        "loop - the game will always wait for you to make a move before reacting. You can see a list of all the controls on the [Controls] page.",
+
+        "Unlike many other roguelike games, there is no 'levelling up' and no skills system. Your character is a capable adventurer from the get go, but in "
+        "order to get stronger, you'll need to find more powerful and useful equipment and items, and learn the most effective way to use them.",
+
+        "{R}The world of Morior Invictus is not a fair one! {w}Most everything is out to get you in one form or another, and it's up to you to rely on your "
+        "wits, knowledge and luck to survive. With that said, you'll likely die early and often - and that's okay! The fun of a roguelike is practicing, "
+        "learning,  and getting better with each new attempt.",
+
+        "When you begin the game, you will find yourself in the [Dungeon_View]. This shows an overview of your character - the {W}@ {w}symbol - and everything "
+        "surrounding you from a top-down, tile-based view. Your goal in this version of the game is to retrieve the fabled relic, {C}The Crown of Kings{w}, "
+        "which has been lost deep in the zombie-infested {C}Tomb of Forgotten Kings{w}.",
+
+        "The crown is hidden deep within the tomb, but if you are able to find it and return to the surface world with the crown, you will be celebrated as "
+        "the true hero you were always destined to be!" } },
 
     { "GITHUB",
         { "The official GitHub page for Morior Invictus is located here: {U}https://github.com/Gravecat/invictus",
-        "You can find the latest builds and downloads there, as well as discussions, bug reports, and more. If you notice anything broken with the game, \
-please head to the GitHub page and open an issue - the game's developer will deal with it as soon as possible.",
+
+        "You can find the latest builds and downloads there, as well as discussions, bug reports, and more. If you notice anything broken with the game, "
+        "please head to the GitHub page and open an issue - the game's developer will deal with it as soon as possible.",
+
         "If you are unable or unwilling to use GitHub, you can contact the game's developer via email, at {U}gc@gravecat.com" } },
 
     { "I", { "The following documentation pages start with the letter I: [Index]" } },
 
     { "INDEX",
-        { "This index contains all the pages available on the in-game documentation. Please choose a letter below to view the pages (letters marked as \
-red currently contain no pages):",
+        { "This index contains all the pages available on the in-game documentation. Please choose a letter below to view the pages (letters marked as red "
+        "currently contain no pages):",
+
         "[A] [B] [C] [D] [E] [F] [G] [H] [I] [J] [K] [L] [M] [N] [O] [P] [Q] [R] [S] [T] [U] [V] [W] [X] [Y] [Z]" } },
 
     { "LINKS", { "#EXAMPLE" } },
@@ -93,18 +130,23 @@ red currently contain no pages):",
     { "THIS_ONE", { "#EXAMPLE" } },
 
     { "WIKI", {
-        "{R}PLEASE NOTE: {Y}This game is currently in VERY early stages of development, and the gameplay is currently limited. There are many, many more \
-features planned for future releases!",
-        "Welcome to the {W}interactive documentation {w}for Morior Invictus. You can scroll up and down through a page with the {C}up and down arrow keys{w}, \
-the {C}Page Up and Page Down keys{w}, or {C}vi keys (j and k){w}.",
-"Throughout this interactive documentation, you will see [links] like [this_one]. You can select a link with the {C}left and right arrow keys{w} or {C}vi keys \
-(h and l){w}, and visit that link to see a new documentation page by pressing {C}Enter{w}.",
-        "Sometimes, a link might show up as red, like [this_link]. This indicates that the documentation page is missing, and has likely just not been \
-written yet. If you think this is in error, please head to the [GitHub] page and post a bug report.",
-        "At any time, you can press the {C}Space Bar {w}to move back to the previous page you came from, or if you're on the front page, the {C}Space Bar \
-{w}will close the documentation.",
-        "If you are new to this game, I recommend reading the [Getting_Started], [Controls] and [Dungeon_View] pages. You can also see an alphabetical \
-[Index] of all available documentation pages." } },
+        "{R}PLEASE NOTE: {Y}This game is currently in VERY early stages of development, and the gameplay is currently limited. There are many, many more "
+        "features planned for future releases!",
+
+        "Welcome to the {W}interactive documentation {w}for Morior Invictus. You can scroll up and down through a page with the {C}up and down arrow keys{w}, "
+        "the {C}Page Up and Page Down keys{w}, or {C}vi keys (j and k){w}.",
+
+        "Throughout this interactive documentation, you will see [links] like [this_one]. You can select a link with the {C}left and right arrow keys{w} or "
+        "{C}vi keys (h and l){w}, and visit that link to see a new documentation page by pressing {C}Enter{w}.",
+
+        "Sometimes, a link might show up as red, like [this_link]. This indicates that the documentation page is missing, and has likely just not been "
+        "written yet. If you think this is in error, please head to the [GitHub] page and post a bug report.",
+
+        "At any time, you can press the {C}Space Bar {w}to move back to the previous page you came from, or if you're on the front page, the {C}Space Bar "
+        "{w}will close the documentation.",
+
+        "If you are new to this game, I recommend reading the [Getting_Started], [Controls] and [Dungeon_View] pages. You can also see an alphabetical "
+        "[Index] of all available documentation pages." } },
 
     { "WIKI_HEADER", {
         "{g}.~{r}* {R}MORIOR INVICTUS: INTERACTIVE DOCUMENTATION {r}*{g}~.",
