@@ -80,6 +80,7 @@ set(INVICTUS_CPPS
   core/prefs.cpp
   core/save-load.cpp
   dev/acs-display.cpp
+  dev/console.cpp
   dev/keycode-check.cpp
   entity/buff.cpp
   entity/entity.cpp

@@ -11,6 +11,7 @@
 #include "core/guru.hpp"
 #include "core/save-load.hpp"
 #include "core/version.hpp"
+#include "dev/console.hpp"
 #include "entity/item.hpp"
 #include "entity/player.hpp"
 #include "terminal/terminal.hpp"
@@ -84,6 +85,7 @@ void GameManager::dungeon_input(int key)
         case 'y': case Key::KP7: dx = -1; dy = -1; break;   // Move northwest
         case 'u': case Key::KP9: dx = 1; dy = -1; break;    // Move northeast
 
+        case '`': DevConsole::open_dev_console(); break;    // Debug/cheat console.
         case ',': case Key::KP5: pass_time(TIME_DO_NOTHING); break; // Do nothing.
         case '.': player_->ground_items(); break;           // Interact with items on the ground.
         case '=': SystemMenu::open(); break;                // Opens the system menu.
