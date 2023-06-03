@@ -137,6 +137,25 @@ std::map<std::string, std::vector<std::string>> Wiki::wiki_data_ = {
 
     { "LINKS", { "#EXAMPLE" } },
 
+    { "P", { "The following documentation pages start with the letter P: [prefs.txt]" } },
+
+    { "PREFS.TXT", { 
+        "When the game has been run at least once, it will create a {C}userdata {w}folder, with a {C}prefs.txt {w}file located within. This file can be used "
+        "to tweak some settings in the game. They are as follows:",
+
+#ifdef INVICTUS_TARGET_LINUX
+        "{C}acs_flags {w}(default: 11)"
+#else
+        "{C}acs_flags {w}(default: 15)"        
+#endif
+        " - Which Curses ACS glyphs to use (see [Debug_Options]). Unused glyphs are replaced with the closest similar ASCII symbols.",
+
+        "{C}pathfind_euclidean {w}(default: true) - If set to true, pathfinding will use the Euclidean method, which is more computationally expensive but "
+        "more accurate. If set to false, it will use the faster, less-accurate Manhattan method.",
+
+        "{C}use_colour {w}(default: true) - If set to false, will disable the use of most ANSI colour codes (invert and bold effects are still used)."
+    } },
+
     { "THIS_ONE", { "#EXAMPLE" } },
 
     { "WIKI", {
@@ -160,8 +179,7 @@ std::map<std::string, std::vector<std::string>> Wiki::wiki_data_ = {
 
     { "WIKI_HEADER", {
         "{g}.~{r}* {R}MORIOR INVICTUS: INTERACTIVE DOCUMENTATION {r}*{g}~.",
-        "{R}__________________________________________________",
-        " " } },
+        "{R}__________________________________________________" } },
 };
 
 unsigned int Wiki::buffer_pos_ = 0;                     // The position of the console buffer.
@@ -403,7 +421,7 @@ void Wiki::wiki(const std::string &page)
 
     for (auto line : header)
         wiki_raw_.push_back("{e}" + line);
-    wiki_raw_.push_back("");
+    wiki_raw_.push_back(" ");
 
     std::vector<std::string> page_data = get_page(page);
     for (auto line : page_data)
