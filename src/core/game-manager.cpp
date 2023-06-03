@@ -264,51 +264,7 @@ bool GameManager::is_key_west(int key) { return (key == Key::ARROW_LEFT || key =
 // Sets up for a new game.
 void GameManager::new_game()
 {
-    auto terminal = core()->terminal();
-    std::string intro_str = "Welcome to the {W}" + INVICTUS_VERSION_STRING + " {w}build of {R}Morior Invictus{w}! You must delve deep into {Y}the Tomb of \
-Forgotten Kings {w}and seek out the long-lost {M}Crown of Kings{w}, then return to the surface with your prize!";
-    bool redraw = true;
-    while (true)
-    {
-        if (redraw)
-        {
-            std::vector<std::string> intro_vec = StrX::string_explode_colour(intro_str, terminal->get_cols());
-            terminal->cls();
-            for (unsigned int i = 0; i < intro_vec.size(); i++)
-                terminal->print(intro_vec.at(i), 0, i);
-            int line = intro_vec.size() + 1;
-            terminal->print("{C}GAME CONTOLS:", 0, line++);
-            terminal->print("{G}Arrow Keys{w}, {G}Numeric Keypad{w} or {G}vi keys {g}(h j k l y u b n) {w}- movement", 0, line++);
-            terminal->print("{G}< {w}or {G}> {w}- go up or down stairs", 0, line++);
-            terminal->print("{G}. {w}or {G}g {w}- interact with items on the ground", 0, line++);
-            terminal->print("{G}e {w}- check equipment", 0, line++);
-            terminal->print("{G}i {w}- check carried items", 0, line++);
-            terminal->print("{G}o {w}- open a door", 0, line++);
-            terminal->print("{G}c {w}- close a door", 0, line++);
-            terminal->print("{G}shift-S {w}- save the game", 0, line++);
-            terminal->print("{G}, {w}or {G}numpad 5 {w}- wait for a moment", 0, line++);
-            terminal->print("{G}shift-R {w}- rests for a while", 0, line++);
-            terminal->print("{G}= {w}- open main menu", 0, line++);
-            terminal->print("{G}space bar {w}- close a menu", 0, line++);
-            line++;
-            terminal->print("{C}To load a saved game, specify the -load parameter on the command-line.", 0, line++);
-            line++;
-            terminal->print("{R}PRESS THE SPACE BAR TO BEGIN", 0, line++);
-            line++;
-            terminal->print("{R}IF YOU DO NOT WISH TO LOSE AN EXISTING SAVE FILE, CLOSE THE GAME (CTRL-C) NOW!", 0, line++);
-            terminal->flip();
-            redraw = false;
-        }
-        int key = terminal->get_key();
-        if (key == Key::RESIZE)
-        {
-            redraw = true;
-            ui_->window_resized();
-        }
-        else if (key == ' ') break;
-    }
-    terminal->cls();
-
+    core()->terminal()->cls();
     erase_save_files();
     area_ = std::make_shared<Area>(50, 50);
     area_->set_level(1);
