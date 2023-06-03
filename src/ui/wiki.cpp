@@ -74,7 +74,8 @@ std::map<std::string, std::vector<std::string>> Wiki::wiki_data_ = {
         { "The [dungeon] view is the main mode in which you'll be playing the game. You'll see that it's divided into three distinct sections:",
 
         "The top-left section is the {W}dungeon view{w}. This displays a top-down view of your surroundings, in the form of {C}ASCII symbols {w}on a grid. The "
-        "large white {W}@ {w}represents your character in the game world.",
+        "large white {W}@ {w}represents your character in the game world. You can only see what your character is capable of seeing, though - see the "
+        "[line_of_sight] and [light] pages for more on this.",
 
         "To the right of this view is the overview window, which will show you what the symbols on the screen all represent, as well as listing any nearby "
         "hostile foes or items you can see on the ground. The coloured bar with an [enemy's] name is {R}red {w}if that enemy is 'awake' and aware of your "
@@ -156,6 +157,14 @@ std::map<std::string, std::vector<std::string>> Wiki::wiki_data_ = {
         "currently contain no pages):",
 
         "[A] [B] [C] [D] [E] [F] [G] [H] [I] [J] [K] [L] [M] [N] [O] [P] [Q] [R] [S] [T] [U] [V] [W] [X] [Y] [Z]" } },
+
+    { "L", { "The following documentation pages start with the letter L: [Line_of_Sight]" } },
+
+    { "LINE_OF_SIGHT",
+        { "You are not omnisicent, and your view of the [dungeon] (or other area where you are exploring) is limited by your line-of-sight. Areas that are "
+        "unexplored will be simply shown as empty black space, and areas you have previously visited but cannot currently see will be shown in the "
+        "[dungeon_view] as {u}dark blue{w}."
+    } },
 
     { "LINKS", { "#EXAMPLE" } },
 
