@@ -6,7 +6,7 @@
 *.lnk
 *.o
 *.tmp
-.vscode/*
-build/*
-scripts/*
-wiki/*
+.vscode
+build
+scripts
+wiki
