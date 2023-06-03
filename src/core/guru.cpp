@@ -109,14 +109,15 @@ void Guru::halt(std::string error, int a, int b)
     bool needs_redraw = true;
     
     auto terminal = core()->terminal();
-    auto guru_window = std::make_shared<Window>(43, 9, 0, 0, true);
+    auto guru_window = std::make_shared<Window>(39, 7);
+    if (error.size() >= 37) error = error.substr(0, 37);
 
     while (true)
     {
         if (needs_redraw)
         {
             guru_window->move(terminal->get_midcol() - (guru_window->get_width() / 2), terminal->get_midrow() - (guru_window->get_height() / 2));
-            guru_window->redraw_border(Colour::RED_BOLD, PRINT_FLAG_BLINK);
+            terminal->box(guru_window, Colour::RED_BOLD, PRINT_FLAG_BLINK);
             terminal->print("Software Failure, Halting Execution", 2, 1, Colour::RED_BOLD, 0, guru_window);
             terminal->print(error, terminal->get_midcol(guru_window) - (error.size() / 2), 3, Colour::RED_BOLD, 0, guru_window);
             terminal->print(meditation_str, terminal->get_midcol(guru_window) - (meditation_str.size() / 2), 5, Colour::RED_BOLD, 0, guru_window);

@@ -13,21 +13,13 @@
 namespace invictus
 {
 
-Window::Window(int width, int height, int new_x, int new_y, bool new_border) : border_ptr_(nullptr)
+Window::Window(int width, int height, int new_x, int new_y)
 {
     if (width < 1) width = 1;
     if (height < 1) height = 1;
     if (new_x < 0) new_x = 0;
     if (new_y < 0) new_y = 0;
 
-    if (new_border)
-    {
-        border_ptr_ = std::make_shared<Window>(width, height, new_x, new_y, 0);
-        height -= 2;
-        width -= 4;
-        new_x += 2;
-        new_y += 1;
-    }
     height_ = height;
     width_ = width;
     x_ = new_x;
@@ -54,14 +46,6 @@ void Window::move(int new_x, int new_y)
     x_ = new_x;
     y_ = new_y;
     move_panel(panel_ptr_, y_, x_);
-    if (border_ptr_) border_ptr_->move(new_x - 1, new_y - 1);
-}
-
-// Re-renders the border around this Window, if any.
-void Window::redraw_border(Colour col, uint32_t flags)
-{
-    if (border_ptr_) core()->terminal()->box(border_ptr_, col, flags);
-    else core()->guru()->nonfatal("Attempt to re-render window border, with no border defined.", GURU_WARN);
 }
 
 // Set this Window's panel as visible or invisible.
