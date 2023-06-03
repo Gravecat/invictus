@@ -39,7 +39,7 @@ void MessageLog::amend(const std::string &str)
 }
 
 // Prints a blank line.
-void MessageLog::blank_line() { message(""); }
+void MessageLog::blank_line() { message(" "); }
 
 // Gets user input from the message log window.
 std::string MessageLog::get_string()
@@ -84,6 +84,7 @@ std::string MessageLog::get_string()
         else if (key == Key::ENTER) break;
     }
 
+    output_raw_.at(output_raw_.size() - 1) = "";
     amend("{g}> " + result);
     ui->redraw_message_log();
     return result;
