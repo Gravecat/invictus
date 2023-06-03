@@ -95,21 +95,19 @@ void Mobile::close_door(int dx, int dy)
     }
 
     auto the_tile = area->tile(dx, dy);
-    std::string door_name = the_tile->name();
-    StrX::find_and_replace(door_name, " (open)", "");
     if (!success)
     {
-        if (is_player) core()->message("{y}You can't close it, something seems to be blocking the " + door_name + ".");
+        if (is_player) core()->message("{y}You can't close it, something seems to be blocking the " + the_tile->name(false) + ".");
         return;
     }
 
-    if (is_player) core()->message("You close the " + door_name + ".");
+    if (is_player) core()->message("You close the " + the_tile->name(false) + ".");
     else
     {
         if (area->is_in_fov(dx, dy))
         {
-            if (is_in_fov()) core()->message("{u}You see " + name(NAME_FLAG_A) + " {u}close a " + door_name + "{u}.", AWAKEN_CHANCE_MOB_CLOSE_DOOR);
-            else core()->message("{u}You see a " + door_name + " close.", AWAKEN_CHANCE_MOB_CLOSE_DOOR);
+            if (is_in_fov()) core()->message("{u}You see " + name(NAME_FLAG_A) + " {u}close a " + the_tile->name(false) + "{u}.", AWAKEN_CHANCE_MOB_CLOSE_DOOR);
+            else core()->message("{u}You see a " + the_tile->name(false) + " close.", AWAKEN_CHANCE_MOB_CLOSE_DOOR);
         }
     }
     
@@ -312,12 +310,12 @@ bool Mobile::move_or_attack(std::shared_ptr<Mobile> self, int dx, int dy)
 
         if (openable)
         {
-            if (is_player) core()->message("You open the " + the_tile->name() + ".");
+            if (is_player) core()->message("You open the " + the_tile->name(false) + ".");
             else if (area->is_in_fov(xdx, ydy))
             {
-                if (is_in_fov()) core()->message("{u}You see " + name(NAME_FLAG_THE) + " {u}open a " + the_tile->name() + "{u}.",
+                if (is_in_fov()) core()->message("{u}You see " + name(NAME_FLAG_THE) + " {u}open a " + the_tile->name(false) + "{u}.",
                     AWAKEN_CHANCE_MOB_OPEN_DOOR);
-                else core()->message("{u}You see a " + the_tile->name() + " {u}open.", AWAKEN_CHANCE_MOB_OPEN_DOOR);
+                else core()->message("{u}You see a " + the_tile->name(false) + " {u}open.", AWAKEN_CHANCE_MOB_OPEN_DOOR);
             }
             auto tile = area->tile(xdx, ydy);
             tile->set_ascii(ASCII_DOOR_OPEN);
@@ -345,12 +343,7 @@ bool Mobile::move_or_attack(std::shared_ptr<Mobile> self, int dx, int dy)
             Tile* self_tile = area->tile(xdx, ydy);
             if (self_tile->tag(TileTag::StairsDown)) core()->message("You see a staircase leading downward.");
             else if (self_tile->tag(TileTag::StairsUp)) core()->message("You see a staircase leading upward.");
-            else if (self_tile->tag(TileTag::Open))
-            {
-                std::string door_name = self_tile->name();
-                StrX::find_and_replace(door_name, " (open)", "");
-                core()->message("You pass through an open " + door_name + ".");
-            }
+            else if (self_tile->tag(TileTag::Open)) core()->message("You pass through an open " + self_tile->name(false) + ".");
         }
 
         // Check to see if this Actor's feet get covered in blood.

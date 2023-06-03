@@ -60,10 +60,10 @@ bool Tile::is_identical_to(Tile* tile)
 }
 
 // Gets the name of this Tile.
-std::string Tile::name() const
+std::string Tile::name(bool with_suffixes) const
 {
+    if (!with_suffixes) return name_;
     std::vector<std::string> suffixes;
-
     if (tag(TileTag::Bloodied)) suffixes.push_back("bloodied");
     if (tag(TileTag::Open)) suffixes.push_back("open");
     if (suffixes.size()) return name_ + " (" + StrX::comma_list(suffixes) + ")";
