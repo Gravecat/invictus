@@ -17,7 +17,7 @@ std::map<std::string, std::vector<std::string>> Wiki::wiki_data_ = {
     { "C", { "The following documentation pages start with the letter C: [Controls]" } },
 
     { "CONTROLS",
-        { "The game is controlled entirely with the keyboard. You can naviate menus and move around the game world using your choice of {C}arrow keys{w}, "
+        { "The game is controlled entirely with the keyboard. You can naviate menus and [move] around the game world using your choice of {C}arrow keys{w}, "
         "the {C}numeric keypad {w}(if you have one), or {C}vi keys{w}. Navigation in the game world is done via {C}cardinal directions {w}- north, east, south,"
         " west, and the diagonals.",
 
@@ -125,7 +125,7 @@ std::map<std::string, std::vector<std::string>> Wiki::wiki_data_ = {
         "representing something in the game world -- for example, the letter {C}z {w}might represent a zombie, or a {C}D {w}might be a fearsome dragon. As is "
         "tradition for classic roguelikes, the player character - your avatar in the game world - is represented by the {C}@ {w}symbol.",
 
-        "The game is controlled entirely with the {W}keyboard{w}. Various keys perform different actions, or move you around the game world, in a turn-based "
+        "The game is controlled entirely with the {W}keyboard{w}. Various keys perform different actions, or [move] you around the game world, in a turn-based "
         "loop - the game will always wait for you to make a move before reacting. You can see a list of all the controls on the [Controls] page.",
 
         "Unlike many other roguelike games, there is no 'levelling up' and no skills system. Your character is a capable adventurer from the get go, but in "
@@ -168,9 +168,24 @@ std::map<std::string, std::vector<std::string>> Wiki::wiki_data_ = {
 
     { "LINKS", { "#EXAMPLE" } },
 
-    { "M", { "The following documentation pages start with the letter M: [Monster]" } },
+    { "M", { "The following documentation pages start with the letter M: [Monster] [Movement]" } },
 
     { "MONSTER", { "#ENEMY" } },
+
+    { "MOVE", { "#MOVEMENT" } },
+
+    { "MOVEMENT",
+        { "All movement in the game is done across a two-dimensional grid, in one of eight directions - the four cardinal compass directions, and the four "
+        "diagonals. For the movement controls, see the [controls] page.",
+
+        "{0}{e}{Y}Cardinal  ",
+        "{e}{Y}Directions",
+        "{0}{e} {Y}NW N NE   ",
+        "{0}{e}   {Y}\\|/     ",
+        "{0}{e}  {Y}W-+-E    ",
+        "{0}{e}   {Y}/|\\     ",
+        "{e} {Y}SW S SE   "
+        } },
 
     { "O", { "The following documentation pages start with the letter O: [Overview_Window]" } },
 
